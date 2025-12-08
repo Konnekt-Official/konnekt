@@ -46,7 +46,6 @@ public class user_profile extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
         jRadioButton1 = new javax.swing.JRadioButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
@@ -107,10 +106,6 @@ public class user_profile extends javax.swing.JFrame {
         jLabel7.setText("0 Followings");
         jPanel3.add(jLabel7);
         jLabel7.setBounds(200, 550, 120, 23);
-
-        jLabel8.setText("jLabel8");
-        jPanel3.add(jLabel8);
-        jLabel8.setBounds(550, 330, 42, 17);
 
         jRadioButton1.setText("jRadioButton1");
         jRadioButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -189,7 +184,6 @@ public class user_profile extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
