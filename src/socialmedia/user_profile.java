@@ -49,6 +49,7 @@ public class user_profile extends javax.swing.JFrame {
         jRadioButton1 = new javax.swing.JRadioButton();
         jTextField1 = new javax.swing.JTextField();
         jTextField2 = new javax.swing.JTextField();
+        jRadioButton2 = new javax.swing.JRadioButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
@@ -121,6 +122,10 @@ public class user_profile extends javax.swing.JFrame {
         jPanel3.add(jTextField2);
         jTextField2.setBounds(450, 390, 78, 23);
 
+        jRadioButton2.setText("jRadioButton2");
+        jPanel3.add(jRadioButton2);
+        jRadioButton2.setBounds(170, 370, 105, 21);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -192,6 +197,7 @@ public class user_profile extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JRadioButton jRadioButton1;
+    private javax.swing.JRadioButton jRadioButton2;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     // End of variables declaration//GEN-END:variables
