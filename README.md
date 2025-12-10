@@ -6,8 +6,8 @@ This is the main repository of Konnekt desktop application containing the full a
 
 ## Release
 
-Latest Stable Release
-- [Get the latest stable release]()
+Long-Term Support (LTS) Release
+- [Download the LTS release]()
 
 All Releases
 - [View all releases](https://github.com/Konnekt-Official/konnekt/releases/)
