@@ -1,5 +1,13 @@
 # Konnekt
 
-This is the main repository of Konnekt desktop application containing the full application code, including backend logic, frontend UI, and integration of real-time messaging, audio/video call.
+This is the main repository of Konnekt desktop application containing the full application code, including frontend UI, backend logic, and integration of real-time messaging, audio/video call.
 
-[**ABOUT**](https://github.com/Konnekt-Official/.github/blob/main/profile/README.md) | [**LICENSE**](https://raw.githubusercontent.com/konnekt-official/konnekt/main/LICENSE) | [**CONTRIBUTE**](https://github.com/Konnekt-Official/konnekt/blob/main/CONTRIBUTING.md) | [**RELEASES**](https://github.com/Konnekt-Official/konnekt/releases/)
+[**ABOUT**](https://github.com/Konnekt-Official/.github/blob/main/profile/README.md) | [**LICENSE**](https://raw.githubusercontent.com/konnekt-official/konnekt/main/LICENSE) | [**CONTRIBUTING GUIDELINES**](https://github.com/Konnekt-Official/konnekt/blob/main/CONTRIBUTING.md)
+
+## Release
+
+Latest Stable Release
+- [Download the latest stable release]()
+
+All Releases
+- [View all releases](https://github.com/Konnekt-Official/konnekt/releases/)
