@@ -5,7 +5,7 @@ import konnekt.model.pojo.User;
 
 import java.sql.*;
 
-public class UserDAO {
+public class User {
 
     // Insert new user
     public boolean addUser(User user) {
