@@ -1,14 +1,14 @@
 package konnekt.model.dao;
 
 import konnekt.connection.Database;
-import konnekt.model.pojo.User;
+import konnekt.model.pojo.UserPojo;
 
 import java.sql.*;
 
-public class User {
+public class UserDAO {
 
     // Insert new user
-    public boolean addUser(User user) {
+    public boolean addUser(UserPojo user) {
         String sql = "INSERT INTO users(full_name, username, email, password) VALUES (?, ?, ?, ?)";
         try (PreparedStatement ps = Database.getConnection().prepareStatement(sql)) {
             ps.setString(1, user.getFullName());
