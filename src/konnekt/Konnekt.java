@@ -1,10 +1,10 @@
 package konnekt;
 
-import konnekt.view.SplashView;
+import konnekt.view.LoginView;
 
 public class Konnekt {
     
     public static void main(String[] args) {
-        new SplashView().setVisible(true);
+        new LoginView().setVisible(true);
     }
 }
