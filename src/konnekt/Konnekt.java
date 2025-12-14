@@ -1,10 +1,10 @@
 package konnekt;
 
-import konnekt.view.LoginView;
+import konnekt.view.RegisterView;
 
 public class Konnekt {
     
     public static void main(String[] args) {
-        new LoginView().setVisible(true);
+        new RegisterView().setVisible(true);
     }
 }
