@@ -4,20 +4,21 @@ import java.awt.Dimension;
 import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import java.util.List;
 
 public abstract class BaseFrame extends JFrame {
 
     public BaseFrame() {
         setDefaultSettings();
-        setDefaultIcon(); // sets multi-resolution icons
+        setDefaultIcon();
     }
 
     private void setDefaultSettings() {
-        setPreferredSize(new Dimension(900, 600));
-        pack();
-        setLocationRelativeTo(null);
-        setMinimumSize(new Dimension(700, 450));
-        setResizable(true);
+        setSize(900, 600);                 // FIXED size
+        setMinimumSize(new Dimension(900, 600));
+        setMaximumSize(new Dimension(900, 600));
+        setResizable(false);               
+        setLocationRelativeTo(null);        
     }
 
     protected void setDefaultIcon() {
@@ -28,7 +29,7 @@ public abstract class BaseFrame extends JFrame {
             ImageIcon icon128 = new ImageIcon(getClass().getResource("/konnekt/resources/images/icons/icon128.png"));
             ImageIcon icon256 = new ImageIcon(getClass().getResource("/konnekt/resources/images/icons/icon256.png"));
 
-            setIconImages(java.util.List.of(
+            setIconImages(List.of(
                     icon16.getImage(),
                     icon32.getImage(),
                     icon64.getImage(),
@@ -40,7 +41,6 @@ public abstract class BaseFrame extends JFrame {
         }
     }
 
-    // Set single custom icon using path
     protected void setAppIcon(String path) {
         Image icon = new ImageIcon(getClass().getResource(path)).getImage();
         setIconImage(icon);

@@ -1,10 +1,14 @@
 package konnekt;
 
-import konnekt.view.LoginView;
+import konnekt.view.RegisterView;
 
 public class Konnekt {
     
     public static void main(String[] args) {
-        new LoginView().setVisible(true);
+        /*
+        The code below creating the object to call setVisible method is redundent
+        because view class already does this in there static main method
+        */ 
+        new RegisterView().setVisible(true);
     }
 }
