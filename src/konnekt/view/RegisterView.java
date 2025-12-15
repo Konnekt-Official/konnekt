@@ -212,21 +212,16 @@ public class RegisterView extends BaseFrame {
     }//GEN-LAST:event_redirect
 
     private void registerUser(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_registerUser
-        
-
-    private void registerUser(java.awt.event.MouseEvent evt) {
         String fullName = fullNameTextField.getText().trim();
         String username = usernameTextField.getText().trim();
         String email = emailTextField.getText().trim();
         String password = new String(passwordPasswordField.getPassword()).trim();
 
-        // Check empty fields
         if (userController.isEmptyField(fullName, username, email, password)) {
             JOptionPane.showMessageDialog(this, "All fields are required!", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        // Check if username/email exists
         if (userController.usernameExists(username)) {
             JOptionPane.showMessageDialog(this, "Username already exists!", "Error", JOptionPane.ERROR_MESSAGE);
             return;
@@ -237,11 +232,9 @@ public class RegisterView extends BaseFrame {
             return;
         }
 
-        // Attempt registration
         boolean success = userController.registerUser(fullName, username, email, password);
         if (success) {
             JOptionPane.showMessageDialog(this, "Registration successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
-            // Optional: redirect to login
             this.dispose();
             new LoginView().setVisible(true);
         } else {

@@ -6,6 +6,7 @@ package konnekt.controllers;
 
 import konnekt.model.dao.UserDAO;
 import konnekt.model.pojo.UserPojo;
+import konnekt.utils.Password;
 
 /**
  *
@@ -20,19 +21,18 @@ public class UserController {
     }
 
     public boolean registerUser(String fullName, String username, String email, String password) {
-        if (fullName == null || fullName.isEmpty() ||
-            username == null || username.isEmpty() ||
-            email == null || email.isEmpty() ||
-            password == null || password.isEmpty()) {
+        if (fullName == null || fullName.isEmpty()
+                || username == null || username.isEmpty()
+                || email == null || email.isEmpty()
+                || password == null || password.isEmpty()) {
             return false;
         }
 
-        // 2️⃣ Check if username or email exists
         if (userDAO.existsByUsername(username) || userDAO.existsByEmail(email)) {
             return false;
         }
 
-        String hashedPassword = PasswordUtils.hashPassword(password);
+        String hashedPassword = Password.hashPassword(password);
 
         UserPojo user = new UserPojo(0, fullName, username, email, hashedPassword);
         return userDAO.addUser(user);

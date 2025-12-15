@@ -2,7 +2,6 @@ package konnekt.model.dao;
 
 import konnekt.connection.Database;
 import konnekt.model.pojo.UserPojo;
-import konnekt.utils.Password;
 
 import java.sql.*;
 
@@ -14,7 +13,7 @@ public class UserDAO {
             ps.setString(1, user.getFullName());
             ps.setString(2, user.getUsername());
             ps.setString(3, user.getEmail());
-            ps.setString(4, Password.hashPassword(user.getPassword()));
+            ps.setString(4, user.getPassowrd());
             return ps.executeUpdate() > 0; // returns true if insert succeeds
         } catch (SQLException e) {
             e.printStackTrace();
