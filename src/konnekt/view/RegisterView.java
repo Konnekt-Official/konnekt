@@ -4,7 +4,7 @@
  */
 package konnekt.view;
 
-import konnekt.controllers.UserController;
+import konnekt.controller.UserController;
 import konnekt.model.dao.OTPDao;
 
 import javax.swing.*;

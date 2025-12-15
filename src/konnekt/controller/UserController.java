@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package konnekt.controllers;
+package konnekt.controller;
 
 import konnekt.model.dao.UserDao;
 import konnekt.model.pojo.UserPojo;

@@ -4,7 +4,7 @@
  */
 package konnekt.view;
 
-import konnekt.controllers.UserController;
+import konnekt.controller.UserController;
 
 /**
  *
