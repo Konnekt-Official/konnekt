@@ -53,7 +53,7 @@ public class UserController {
         }
         
         String opt = OTPUtils.generateOTP();
-        String body = "";
+        String body = "this is body";
         new EmailService().sendEmail(email, "Account Register", body);
 
         String message = "An OTP was sent to your email: " + email + "\nPlease enter it below:";

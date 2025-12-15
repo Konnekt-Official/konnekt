@@ -42,7 +42,7 @@ public class DatabaseConnection {
 
                 conn = DriverManager.getConnection(url, user, password);
 
-                System.out.println("Database connected successfully!");
+                // System.out.println("Database connected successfully!");
 
             } catch (Exception e) {
                 e.printStackTrace();
