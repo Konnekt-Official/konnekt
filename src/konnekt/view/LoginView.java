@@ -197,7 +197,7 @@ public class LoginView extends BaseFrame {
             JOptionPane.showMessageDialog(this, "Login successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
             
             this.dispose();
-            new LoginView().setVisible(true);
+            new FeedView().setVisible(true);
         } else {
             JOptionPane.showMessageDialog(this, "Login failed. Try again.", "Error", JOptionPane.ERROR_MESSAGE);
 
