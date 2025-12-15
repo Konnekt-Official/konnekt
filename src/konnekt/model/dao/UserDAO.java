@@ -8,9 +8,8 @@ import java.sql.*;
 
 public class UserDAO {
 
-    // Insert new user
     public boolean addUser(UserPojo user) {
-        String sql = "INSERT INTO users(full_name, username, email, password) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO user(full_name, username, email, password) VALUES (?, ?, ?, ?)";
         try (PreparedStatement ps = Database.getConnection().prepareStatement(sql)) {
             ps.setString(1, user.getFullName());
             ps.setString(2, user.getUsername());
@@ -23,7 +22,6 @@ public class UserDAO {
         return false;
     }
 
-    // Check login
     public boolean login(String emailOrUsername, String password) {
         String sql = "SELECT * FROM users WHERE (email=? OR username=?) AND password=?";
         try (PreparedStatement ps = Database.getConnection().prepareStatement(sql)) {
@@ -32,6 +30,30 @@ public class UserDAO {
             ps.setString(3, password); // hash in real projects
             ResultSet rs = ps.executeQuery();
             return rs.next(); // true if user exists
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    
+    public boolean existsByUsername(String username) {
+        String sql = "SELECT id FROM user WHERE username = ?";
+        try (PreparedStatement ps = Database.getConnection().prepareStatement(sql)) {
+            ps.setString(1, username);
+            ResultSet rs = ps.executeQuery();
+            return rs.next(); // true if a row exists
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean existsByEmail(String email) {
+        String sql = "SELECT id FROM user WHERE email = ?";
+        try (PreparedStatement ps = Database.getConnection().prepareStatement(sql)) {
+            ps.setString(1, email);
+            ResultSet rs = ps.executeQuery();
+            return rs.next(); // true if a row exists
         } catch (SQLException e) {
             e.printStackTrace();
         }
