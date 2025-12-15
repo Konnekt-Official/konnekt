@@ -65,13 +65,13 @@ public class UserController {
                 
         String body = "<html>"
                 + "<body>"
-                + "<p>Hello," + fullName + "</p>"
+                + "<p><b>Hello, </b>" + fullName + "</p>"
                 + "<p>Your <b>One-Time Password (OTP)</b> for registering your account is:</p>"
-                + "<h2 style='color:blue;'>" + otp + "</h2>"
+                + "<h2 style='color:#01FE49;'>" + otp + "</h2>"
                 + "<p>This OTP will expire in <b>5 minutes</b>.</p>"
                 + "<p>If you did not request this, please ignore this email.</p>"
                 + "<br>"
-                + "<p>Best regards,<br>Konnekt Team</p>"
+                + "<p><b>Best regards,</b><br>Konnekt Team</p>"
                 + "</body>"
                 + "</html>";
         new EmailService().sendEmail(email, "Account Register", body);
