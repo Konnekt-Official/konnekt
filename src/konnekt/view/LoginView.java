@@ -181,7 +181,7 @@ public class LoginView extends BaseFrame {
         String email = emailTextField.getText().trim();
         String password = new String(passwordPasswordField.getPassword()).trim();
         
-        userController.loginUser(email, password);
+        userController.loginUser(this, email, password);
     }//GEN-LAST:event_loginUser
 
     /**
