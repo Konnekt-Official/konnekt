@@ -11,7 +11,7 @@ import java.security.NoSuchAlgorithmException;
  *
  * @author Hp
  */
-public class Password {
+public class PasswordUtils {
     
     public static String hashPassword(String password) {
         try {
