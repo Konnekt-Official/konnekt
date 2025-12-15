@@ -55,11 +55,11 @@ public class UserController {
                 message,
                 "OTP Verification",
                 JOptionPane.PLAIN_MESSAGE
-        );
+        ).trim();
 
         if (otp == null) {
             // User pressed Cancel or closed dialog
-        } else if (otp.trim().isEmpty()) {
+        } else if (otp.isEmpty()) {
             JOptionPane.showMessageDialog(rv, "OTP cannot be empty", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
             boolean valid = new OTPDao().validateOtp(email, otp, "REGISTER_ACCOUNT");
