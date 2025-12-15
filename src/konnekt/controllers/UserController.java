@@ -7,6 +7,9 @@ package konnekt.controllers;
 import konnekt.model.dao.UserDao;
 import konnekt.model.pojo.UserPojo;
 import konnekt.utils.Password;
+import konnekt.view.RegisterView;
+
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -14,28 +17,54 @@ import konnekt.utils.Password;
  */
 public class UserController {
 
-    private final UserDao userDAO;
+    private final UserDao userDao;
 
     public UserController() {
-        this.userDAO = new UserDao();
+        this.userDao = new UserDao();
     }
 
-    public boolean registerUser(String fullName, String username, String email, String password) {
-        if (fullName == null || fullName.isEmpty()
-                || username == null || username.isEmpty()
-                || email == null || email.isEmpty()
-                || password == null || password.isEmpty()) {
-            return false;
+    public void registerUser(RegisterView rv, String fullName, String username, String email, String password) {
+        if (this.isEmptyField(fullName, username, email, password)) {
+            JOptionPane.showMessageDialog(rv, "All fields are required!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
         }
 
-        if (userDAO.existsByUsername(username) || userDAO.existsByEmail(email)) {
-            return false;
+        if (this.usernameExists(username)) {
+            JOptionPane.showMessageDialog(rv, "Username already exists!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if (!email.contains("@")) {
+            JOptionPane.showMessageDialog(rv, "Invalid email address!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if (this.emailExists(email)) {
+            JOptionPane.showMessageDialog(rv, "Email already exists!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        // send mail
+
+        String otp = JOptionPane.showInputDialog(
+                rv, // parent frame
+                "Enter OTP:", // message
+                "OTP Verification", // title
+                JOptionPane.PLAIN_MESSAGE
+        );
+
+        if (otp == null) {
+            // User pressed Cancel or closed dialog
+        } else if (otp.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(rv, "OTP cannot be empty");
+        } else {
+            
         }
 
         String hashedPassword = Password.hashPassword(password);
 
         UserPojo user = new UserPojo(0, fullName, username, email, hashedPassword);
-        return userDAO.addUser(user);
+        userDao.addUser(user);
     }
     
     public boolean loginUser(String email, String password) {
@@ -45,7 +74,7 @@ public class UserController {
         
         String hashedPassword = Password.hashPassword(password);
         
-        return userDAO.login(email, hashedPassword);
+        return userDao.login(email, hashedPassword);
     }
 
     public boolean isEmptyField(String fullName, String username, String email, String password) {
@@ -53,10 +82,10 @@ public class UserController {
     }
 
     public boolean usernameExists(String username) {
-        return userDAO.existsByUsername(username);
+        return userDao.existsByUsername(username);
     }
 
     public boolean emailExists(String email) {
-        return userDAO.existsByEmail(email);
+        return userDao.existsByEmail(email);
     }
 }
