@@ -67,16 +67,21 @@ public class UserController {
         new EmailService().sendEmail(email, "Account Register", body);
 
         String message = "An OTP was sent to your email: " + email + "\nPlease enter it below:";
-        String inputOTP = this.askForOTP(rv, message);
+        while (true) {
+            String inputOTP = JOptionPane.showInputDialog(
+                    rv,
+                    message,
+                    "OTP Verification",
+                    JOptionPane.PLAIN_MESSAGE
+            ).trim();
 
-        if (inputOTP == null) {
-            // User pressed Cancel or closed dialog
-        } else if (inputOTP.isEmpty()) {
-            JOptionPane.showMessageDialog(rv, "OTP cannot be empty", "Error", JOptionPane.ERROR_MESSAGE);
-        } else {
-            boolean valid = otpDao.validateOtp(email, inputOTP, "REGISTER_ACCOUNT");
+            if (inputOTP == null) {
+                return;
+            } else if (inputOTP.isEmpty()) {
+                JOptionPane.showMessageDialog(rv, "OTP cannot be empty", "Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+                boolean valid = otpDao.validateOtp(email, inputOTP, "REGISTER_ACCOUNT");
 
-            while (true) {
                 if (valid) {
                     JOptionPane.showMessageDialog(rv, "OTP verified successfully!");
 
@@ -126,16 +131,5 @@ public class UserController {
 
     public boolean emailExists(String email) {
         return userDao.existsByEmail(email);
-    }
-
-    public String askForOTP(RegisterView rv, String message) {
-        String inputOTP = JOptionPane.showInputDialog(
-                rv,
-                message,
-                "OTP Verification",
-                JOptionPane.PLAIN_MESSAGE
-        ).trim();
-
-        return inputOTP;
     }
 }
