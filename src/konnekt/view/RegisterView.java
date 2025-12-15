@@ -4,7 +4,8 @@
  */
 package konnekt.view;
 
-import konnekt.controllers.UserController;
+import konnekt.controller.UserController;
+import konnekt.model.dao.OTPDao;
 
 import javax.swing.*;
 
@@ -22,7 +23,7 @@ public class RegisterView extends BaseFrame {
      */
     public RegisterView() {
         initComponents();
-        
+
         userController = new UserController();
     }
 
@@ -216,36 +217,7 @@ public class RegisterView extends BaseFrame {
         String email = emailTextField.getText().trim();
         String password = new String(passwordPasswordField.getPassword()).trim();
 
-        if (userController.isEmptyField(fullName, username, email, password)) {
-            JOptionPane.showMessageDialog(this, "All fields are required!", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        if (userController.usernameExists(username)) {
-            JOptionPane.showMessageDialog(this, "Username already exists!", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        
-        if (!email.contains("@")) {
-            JOptionPane.showMessageDialog(this, "Invalid email address!", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        if (userController.emailExists(email)) {
-            JOptionPane.showMessageDialog(this, "Email already exists!", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        boolean success = userController.registerUser(fullName, username, email, password);
-        if (success) {
-            JOptionPane.showMessageDialog(this, "Registration successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
-            this.dispose();
-            new LoginView().setVisible(true);
-        } else {
-            JOptionPane.showMessageDialog(this, "Registration failed. Try again.", "Error", JOptionPane.ERROR_MESSAGE);
-
-        }
-
+        userController.registerUser(this, fullName, username, email, password);
     }//GEN-LAST:event_registerUser
 
     private void fullNameTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fullNameTextFieldActionPerformed

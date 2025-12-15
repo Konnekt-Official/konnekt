@@ -5,7 +5,7 @@ import konnekt.model.pojo.UserPojo;
 
 import java.sql.*;
 
-public class UserDAO {
+public class UserDao {
 
     public boolean addUser(UserPojo user) {
         String sql = "INSERT INTO user(full_name, username, email, password) VALUES (?, ?, ?, ?)";
@@ -21,12 +21,11 @@ public class UserDAO {
         return false;
     }
 
-    public boolean login(String emailOrUsername, String password) {
-        String sql = "SELECT * FROM user WHERE (email=? OR username=?) AND password=?";
+    public boolean login(String email, String password) {
+        String sql = "SELECT * FROM user WHERE email=? AND password=?";
         try (PreparedStatement ps = Database.getConnection().prepareStatement(sql)) {
-            ps.setString(1, emailOrUsername);
-            ps.setString(2, emailOrUsername);
-            ps.setString(3, password); // hash in real projects
+            ps.setString(1, email);
+            ps.setString(2, password); // hash in real projects
             ResultSet rs = ps.executeQuery();
             return rs.next(); // true if user exists
         } catch (SQLException e) {

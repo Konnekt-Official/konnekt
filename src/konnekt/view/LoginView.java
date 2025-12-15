@@ -4,10 +4,7 @@
  */
 package konnekt.view;
 
-import konnekt.controllers.UserController;
-import konnekt.manager.Session;
-
-import javax.swing.JOptionPane;
+import konnekt.controller.UserController;
 
 /**
  *
@@ -181,26 +178,10 @@ public class LoginView extends BaseFrame {
     }//GEN-LAST:event_jLabel10redirect
 
     private void loginUser(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_loginUser
-        String emailOrUsername = emailTextField.getText().trim();
+        String email = emailTextField.getText().trim();
         String password = new String(passwordPasswordField.getPassword()).trim();
         
-        if (emailOrUsername.isEmpty() || password.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "All fields are required!", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        
-        boolean success = userController.loginUser(emailOrUsername, password);
-        if (success) {
-            Session.login(emailOrUsername);
-            
-            JOptionPane.showMessageDialog(this, "Login successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
-            
-            this.dispose();
-            new FeedView().setVisible(true);
-        } else {
-            JOptionPane.showMessageDialog(this, "Login failed. Try again.", "Error", JOptionPane.ERROR_MESSAGE);
-
-        }
+        userController.loginUser(this, email, password);
     }//GEN-LAST:event_loginUser
 
     /**
