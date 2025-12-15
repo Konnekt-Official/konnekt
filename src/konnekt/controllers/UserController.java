@@ -4,7 +4,7 @@
  */
 package konnekt.controllers;
 
-import konnekt.model.dao.UserDAO;
+import konnekt.model.dao.UserDao;
 import konnekt.model.pojo.UserPojo;
 import konnekt.utils.Password;
 
@@ -14,10 +14,10 @@ import konnekt.utils.Password;
  */
 public class UserController {
 
-    private final UserDAO userDAO;
+    private final UserDao userDAO;
 
     public UserController() {
-        this.userDAO = new UserDAO();
+        this.userDAO = new UserDao();
     }
 
     public boolean registerUser(String fullName, String username, String email, String password) {

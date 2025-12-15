@@ -12,16 +12,8 @@ public class OTPPojo {
     private Timestamp createdAt;
     private Timestamp expiresAt;
 
-    // Constructor for creating a new OTP
-    public OTPPojo(String otp, OTPType type, String email) {
-        this.otp = otp;
-        this.type = type;
-        this.email = email;
-        this.createdAt = new Timestamp(System.currentTimeMillis());
-        this.expiresAt = new Timestamp(createdAt.getTime() + 5 * 60 * 1000); // 5 min expiry
-    }
+    public OTPPojo() {}
 
-    // Full constructor (for loading from DB)
     public OTPPojo(int id, String otp, OTPType type, String email, Timestamp createdAt, Timestamp expiresAt) {
         this.id = id;
         this.otp = otp;
@@ -31,7 +23,6 @@ public class OTPPojo {
         this.expiresAt = expiresAt;
     }
 
-    // Getters and setters
     public int getId() {
         return id;
     }
@@ -80,7 +71,6 @@ public class OTPPojo {
         this.expiresAt = expiresAt;
     }
 
-    // Check if OTP is expired
     public boolean isExpired() {
         return new Timestamp(System.currentTimeMillis()).after(expiresAt);
     }

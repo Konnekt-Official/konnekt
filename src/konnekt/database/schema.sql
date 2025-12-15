@@ -30,7 +30,13 @@ CREATE TABLE otp (
     ) NOT NULL,
     email VARCHAR(100) NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    expires_at TIMESTAMP
-        GENERATED ALWAYS AS (created_at + INTERVAL 5 MINUTE)
-        STORED
+    expires_at TIMESTAMP AS (created_at + INTERVAL 5 MINUTE) STORED
 );
+
+-- Event to delete expired OTPs every 1 minute
+SET GLOBAL event_scheduler = ON;
+
+CREATE EVENT IF NOT EXISTS delete_expired_otps
+ON SCHEDULE EVERY 1 MINUTE
+DO
+  DELETE FROM otp WHERE expires_at <= NOW();

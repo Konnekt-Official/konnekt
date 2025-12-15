@@ -5,7 +5,7 @@ import konnekt.model.pojo.UserPojo;
 
 import java.sql.*;
 
-public class UserDAO {
+public class UserDao {
 
     public boolean addUser(UserPojo user) {
         String sql = "INSERT INTO user(full_name, username, email, password) VALUES (?, ?, ?, ?)";
