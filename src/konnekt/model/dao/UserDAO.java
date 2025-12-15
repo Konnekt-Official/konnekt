@@ -13,7 +13,7 @@ public class UserDAO {
             ps.setString(1, user.getFullName());
             ps.setString(2, user.getUsername());
             ps.setString(3, user.getEmail());
-            ps.setString(4, user.getPassowrd());
+            ps.setString(4, user.getPassword());
             return ps.executeUpdate() > 0; // returns true if insert succeeds
         } catch (SQLException e) {
             e.printStackTrace();
@@ -22,7 +22,7 @@ public class UserDAO {
     }
 
     public boolean login(String emailOrUsername, String password) {
-        String sql = "SELECT * FROM users WHERE (email=? OR username=?) AND password=?";
+        String sql = "SELECT * FROM user WHERE (email=? OR username=?) AND password=?";
         try (PreparedStatement ps = Database.getConnection().prepareStatement(sql)) {
             ps.setString(1, emailOrUsername);
             ps.setString(2, emailOrUsername);
