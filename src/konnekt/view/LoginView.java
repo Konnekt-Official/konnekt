@@ -23,7 +23,6 @@ public class LoginView extends BaseFrame {
      */
     public LoginView() {
         initComponents();
-        setTitle("Konnekt");
         
         userController = new UserController();
     }
