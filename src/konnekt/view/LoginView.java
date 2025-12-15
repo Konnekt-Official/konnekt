@@ -5,6 +5,7 @@
 package konnekt.view;
 
 import konnekt.controllers.UserController;
+import konnekt.manager.Session;
 
 import javax.swing.JOptionPane;
 
@@ -191,7 +192,10 @@ public class LoginView extends BaseFrame {
         
         boolean success = userController.loginUser(emailOrUsername, password);
         if (success) {
+            Session.login(emailOrUsername);
+            
             JOptionPane.showMessageDialog(this, "Login successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
+            
             this.dispose();
             new LoginView().setVisible(true);
         } else {
