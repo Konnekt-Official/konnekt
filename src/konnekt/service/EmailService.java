@@ -4,6 +4,7 @@ import jakarta.mail.*;
 import jakarta.mail.internet.*;
 import java.util.Properties;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 
 public class EmailService {
 
@@ -32,6 +33,7 @@ public class EmailService {
         props.put("mail.smtp.starttls.enable", "true");
 
         Session session = Session.getInstance(props, new Authenticator() {
+            @Override
             protected PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication(fromEmail, password);
             }
@@ -39,12 +41,21 @@ public class EmailService {
 
         try {
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(fromEmail));
+            
+            // Handle UnsupportedEncodingException
+            try {
+                message.setFrom(new InternetAddress(fromEmail, "Konnekt"));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+                message.setFrom(new InternetAddress(fromEmail)); // fallback
+            }
+
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
             message.setSubject(subject);
             message.setText(body);
 
             Transport.send(message);
+            System.out.println("Email sent successfully to " + toEmail);
 
         } catch (MessagingException e) {
             e.printStackTrace();
