@@ -7,6 +7,8 @@ package konnekt.controller;
 import konnekt.model.dao.UserDao;
 import konnekt.model.pojo.UserPojo;
 import konnekt.model.dao.OTPDao;
+import konnekt.model.pojo.OTPPojo;
+import konnekt.model.enums.OTPType;
 import konnekt.utils.PasswordUtils;
 import konnekt.manager.SessionManager;
 import konnekt.service.EmailService;
@@ -51,8 +53,16 @@ public class UserController {
             JOptionPane.showMessageDialog(rv, "Email already exists!", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
+        
 
         String otp = OTPUtils.generateOTP();
+        
+        OTPPojo otpPojo = new OTPPojo();
+        otpPojo.setOtp(otp);
+        otpPojo.setType(OTPType.REGISTER_ACCOUNT);
+        otpPojo.setEmail(email);
+        otpDao.insertOtp(otpPojo);
+                
         String body = "<html>"
                 + "<body>"
                 + "<p>Hello," + fullName + "</p>"
@@ -90,6 +100,9 @@ public class UserController {
                     UserPojo user = new UserPojo(0, fullName, username, email, hashedPassword);
                     if (userDao.addUser(user)) {
                         JOptionPane.showMessageDialog(rv, "Account registered successfully!");
+                        
+                        rv.dispose();
+                        new LoginView().setVisible(true);
                         return;
                     } else {
                         JOptionPane.showMessageDialog(rv, "Some error occured while registering the account!", "Error", JOptionPane.ERROR_MESSAGE);
