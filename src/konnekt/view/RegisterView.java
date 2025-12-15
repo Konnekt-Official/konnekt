@@ -22,7 +22,7 @@ public class RegisterView extends BaseFrame {
      */
     public RegisterView() {
         initComponents();
-        
+
         userController = new UserController();
     }
 
@@ -225,7 +225,7 @@ public class RegisterView extends BaseFrame {
             JOptionPane.showMessageDialog(this, "Username already exists!", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        
+
         if (!email.contains("@")) {
             JOptionPane.showMessageDialog(this, "Invalid email address!", "Error", JOptionPane.ERROR_MESSAGE);
             return;
@@ -234,6 +234,21 @@ public class RegisterView extends BaseFrame {
         if (userController.emailExists(email)) {
             JOptionPane.showMessageDialog(this, "Email already exists!", "Error", JOptionPane.ERROR_MESSAGE);
             return;
+        }
+
+        String otp = JOptionPane.showInputDialog(
+                this, // parent frame
+                "Enter OTP:", // message
+                "OTP Verification", // title
+                JOptionPane.PLAIN_MESSAGE
+        );
+
+        if (otp == null) {
+            // User pressed Cancel or closed dialog
+        } else if (otp.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "OTP cannot be empty");
+        } else {
+            
         }
 
         boolean success = userController.registerUser(fullName, username, email, password);

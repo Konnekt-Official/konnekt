@@ -181,17 +181,17 @@ public class LoginView extends BaseFrame {
     }//GEN-LAST:event_jLabel10redirect
 
     private void loginUser(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_loginUser
-        String emailOrUsername = emailTextField.getText().trim();
+        String email = emailTextField.getText().trim();
         String password = new String(passwordPasswordField.getPassword()).trim();
         
-        if (emailOrUsername.isEmpty() || password.isEmpty()) {
+        if (email.isEmpty() || password.isEmpty()) {
             JOptionPane.showMessageDialog(this, "All fields are required!", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
         
-        boolean success = userController.loginUser(emailOrUsername, password);
+        boolean success = userController.loginUser(email, password);
         if (success) {
-            Session.login(emailOrUsername);
+            Session.login(email);
             
             JOptionPane.showMessageDialog(this, "Login successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
             

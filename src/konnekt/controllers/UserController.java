@@ -38,14 +38,14 @@ public class UserController {
         return userDAO.addUser(user);
     }
     
-    public boolean loginUser(String emailOrUsername, String password) {
-        if (emailOrUsername == null || emailOrUsername.isEmpty() || password == null || password.isEmpty()) {
+    public boolean loginUser(String email, String password) {
+        if (email == null || email.isEmpty() || password == null || password.isEmpty()) {
             return false;
         }
         
         String hashedPassword = Password.hashPassword(password);
         
-        return userDAO.login(emailOrUsername, hashedPassword);
+        return userDAO.login(email, hashedPassword);
     }
 
     public boolean isEmptyField(String fullName, String username, String email, String password) {
