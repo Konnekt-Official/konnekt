@@ -18,7 +18,8 @@ public abstract class BaseFrame extends JFrame {
         setMinimumSize(new Dimension(900, 600));
         setMaximumSize(new Dimension(900, 600));
         setResizable(false);               
-        setLocationRelativeTo(null);        
+        setLocationRelativeTo(null); 
+        setTitle("Konnekt");
     }
 
     protected void setDefaultIcon() {

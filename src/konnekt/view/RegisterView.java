@@ -22,7 +22,6 @@ public class RegisterView extends BaseFrame {
      */
     public RegisterView() {
         initComponents();
-        setTitle("Konnekt");
         
         userController = new UserController();
     }

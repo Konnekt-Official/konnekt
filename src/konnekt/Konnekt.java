@@ -1,14 +1,17 @@
 package konnekt;
 
+import konnekt.manager.Session;
 import konnekt.view.LoginView;
+import konnekt.view.FeedView;
 
 public class Konnekt {
     
     public static void main(String[] args) {
-        /*
-        The code below creating the object to call setVisible method is redundent
-        because view class already does this in there static main method
-        */ 
+        if (Session.isLoggedIn()) {
+            new FeedView().setVisible(true);
+            return;
+        }
+        
         new LoginView().setVisible(true);
     }
 }

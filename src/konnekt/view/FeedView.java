@@ -8,7 +8,7 @@ package konnekt.view;
  *
  * @author Hp
  */
-public class FeedView extends javax.swing.JFrame {
+public class FeedView extends BaseFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(FeedView.class.getName());
 
