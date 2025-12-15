@@ -9,6 +9,7 @@ import konnekt.model.pojo.UserPojo;
 import konnekt.model.dao.OTPDao;
 import konnekt.utils.Password;
 import konnekt.manager.Session;
+import konnekt.service.Email;
 import konnekt.view.RegisterView;
 import konnekt.view.LoginView;
 import konnekt.view.FeedView;
@@ -22,9 +23,11 @@ import javax.swing.JOptionPane;
 public class UserController {
 
     private final UserDao userDao;
+    private final OTPDao otpDao;
 
     public UserController() {
         this.userDao = new UserDao();
+        this.otpDao = new OTPDao();
     }
 
     public void registerUser(RegisterView rv, String fullName, String username, String email, String password) {
@@ -47,8 +50,9 @@ public class UserController {
             JOptionPane.showMessageDialog(rv, "Email already exists!", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
+        
+        new Email().sendEmail(email, email, email);
 
-        // send mail
         String message = "An OTP was sent to your email: " + email + "\nPlease enter it below:";
         String otp = JOptionPane.showInputDialog(
                 rv,
@@ -62,11 +66,11 @@ public class UserController {
         } else if (otp.isEmpty()) {
             JOptionPane.showMessageDialog(rv, "OTP cannot be empty", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
-            boolean valid = new OTPDao().validateOtp(email, otp, "REGISTER_ACCOUNT");
+            boolean valid = otpDao.validateOtp(email, otp, "REGISTER_ACCOUNT");
 
             if (valid) {
                 JOptionPane.showMessageDialog(rv, "OTP verified successfully!");
-                
+
                 String hashedPassword = Password.hashPassword(password);
 
                 UserPojo user = new UserPojo(0, fullName, username, email, hashedPassword);
@@ -90,9 +94,9 @@ public class UserController {
         String hashedPassword = Password.hashPassword(password);
         if (userDao.login(email, hashedPassword)) {
             Session.login(email);
-            
+
             JOptionPane.showMessageDialog(lv, "Login successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
-            
+
             lv.dispose();
             new FeedView().setVisible(true);
         } else {
