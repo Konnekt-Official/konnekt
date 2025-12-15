@@ -2,7 +2,7 @@ package konnekt.manager;
 
 import java.util.prefs.Preferences;
 
-public class Session {
+public class SessionManager {
 
     private static final Preferences prefs = Preferences.userRoot().node("konnekt");
     private static final String KEY_LOGGED_IN_USER = "loggedInUser";

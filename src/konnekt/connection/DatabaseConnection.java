@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 import java.util.Properties;
 import java.io.InputStream;
 
-public class Database {
+public class DatabaseConnection {
 
     private static Connection conn;
 
@@ -20,7 +20,7 @@ public class Database {
             try {
                 // Load properties from classpath
                 Properties props = new Properties();
-                InputStream input = Database.class.getClassLoader()
+                InputStream input = DatabaseConnection.class.getClassLoader()
                         .getResourceAsStream("konnekt/resources/config.properties");
 
                 if (input == null) {

@@ -1,6 +1,6 @@
 package konnekt;
 
-import konnekt.manager.Session;
+import konnekt.manager.SessionManager;
 import konnekt.view.LoginView;
 import konnekt.view.FeedView;
 

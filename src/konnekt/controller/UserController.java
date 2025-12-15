@@ -7,8 +7,8 @@ package konnekt.controller;
 import konnekt.model.dao.UserDao;
 import konnekt.model.pojo.UserPojo;
 import konnekt.model.dao.OTPDao;
-import konnekt.utils.Password;
-import konnekt.manager.Session;
+import konnekt.utils.PasswordUtils;
+import konnekt.manager.SessionManager;
 import konnekt.service.Email;
 import konnekt.view.RegisterView;
 import konnekt.view.LoginView;
@@ -71,7 +71,7 @@ public class UserController {
             if (valid) {
                 JOptionPane.showMessageDialog(rv, "OTP verified successfully!");
 
-                String hashedPassword = Password.hashPassword(password);
+                String hashedPassword = PasswordUtils.hashPassword(password);
 
                 UserPojo user = new UserPojo(0, fullName, username, email, hashedPassword);
                 if (userDao.addUser(user)) {
@@ -91,9 +91,9 @@ public class UserController {
             return;
         }
 
-        String hashedPassword = Password.hashPassword(password);
+        String hashedPassword = PasswordUtils.hashPassword(password);
         if (userDao.login(email, hashedPassword)) {
-            Session.login(email);
+            SessionManager.login(email);
 
             JOptionPane.showMessageDialog(lv, "Login successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
 
