@@ -64,7 +64,7 @@ public class LoginView extends BaseFrame {
         jButton1.setBackground(new java.awt.Color(0, 0, 0));
         jButton1.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
         jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("REGISTER");
+        jButton1.setText("LOGIN");
         jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton1.addActionListener(this::jButton1ActionPerformed);
 
