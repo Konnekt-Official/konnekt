@@ -9,7 +9,8 @@ import konnekt.model.pojo.UserPojo;
 import konnekt.model.dao.OTPDao;
 import konnekt.utils.PasswordUtils;
 import konnekt.manager.SessionManager;
-import konnekt.service.Email;
+import konnekt.service.EmailService;
+import konnekt.utils.OTPUtils;
 import konnekt.view.RegisterView;
 import konnekt.view.LoginView;
 import konnekt.view.FeedView;
@@ -51,7 +52,9 @@ public class UserController {
             return;
         }
         
-        new Email().sendEmail(email, email, email);
+        String opt = OTPUtils.generateOTP();
+        String body = "";
+        new EmailService().sendEmail(email, "Account Register", body);
 
         String message = "An OTP was sent to your email: " + email + "\nPlease enter it below:";
         String otp = JOptionPane.showInputDialog(

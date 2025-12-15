@@ -3,11 +3,26 @@ package konnekt.service;
 import jakarta.mail.*;
 import jakarta.mail.internet.*;
 import java.util.Properties;
+import java.io.InputStream;
 
-public class Email {
+public class EmailService {
 
-    private final String fromEmail = "youremail@gmail.com";
-    private final String password = "your_app_password";
+    private final String fromEmail;
+    private final String password;
+
+    public EmailService() {
+        Properties config = new Properties();
+        try (InputStream input = getClass().getResourceAsStream("/konnekt/resources/config.properties")) {
+            if (input == null) {
+                throw new RuntimeException("config.properties not found in resources");
+            }
+            config.load(input);
+            fromEmail = config.getProperty("EMAIL_ADDRESS");
+            password = config.getProperty("EMAIL_APP_PASSWORD");
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to load email configuration", e);
+        }
+    }
 
     public void sendEmail(String toEmail, String subject, String body) {
         Properties props = new Properties();
@@ -25,13 +40,11 @@ public class Email {
         try {
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(fromEmail));
-            message.setRecipients(
-                    Message.RecipientType.TO, InternetAddress.parse(toEmail));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
             message.setSubject(subject);
             message.setText(body);
 
             Transport.send(message);
-            // System.out.println("Email sent successfully to " + toEmail);
 
         } catch (MessagingException e) {
             e.printStackTrace();
