@@ -41,8 +41,7 @@ public class EmailService {
 
         try {
             Message message = new MimeMessage(session);
-            
-            // Handle UnsupportedEncodingException
+           
             try {
                 message.setFrom(new InternetAddress(fromEmail, "Konnekt"));
             } catch (UnsupportedEncodingException e) {

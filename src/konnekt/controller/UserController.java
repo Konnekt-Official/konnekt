@@ -51,39 +51,48 @@ public class UserController {
             JOptionPane.showMessageDialog(rv, "Email already exists!", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        
-        String opt = OTPUtils.generateOTP();
-        String body = "this is body";
+
+        String otp = OTPUtils.generateOTP();
+        String body = "<html>"
+                + "<body>"
+                + "<p>Hello," + fullName + "</p>"
+                + "<p>Your <b>One-Time Password (OTP)</b> for registering your account is:</p>"
+                + "<h2 style='color:blue;'>" + otp + "</h2>"
+                + "<p>This OTP will expire in <b>5 minutes</b>.</p>"
+                + "<p>If you did not request this, please ignore this email.</p>"
+                + "<br>"
+                + "<p>Best regards,<br>Konnekt Team</p>"
+                + "</body>"
+                + "</html>";
         new EmailService().sendEmail(email, "Account Register", body);
 
         String message = "An OTP was sent to your email: " + email + "\nPlease enter it below:";
-        String otp = JOptionPane.showInputDialog(
-                rv,
-                message,
-                "OTP Verification",
-                JOptionPane.PLAIN_MESSAGE
-        ).trim();
+        String inputOTP = this.askForOTP(rv, message);
 
-        if (otp == null) {
+        if (inputOTP == null) {
             // User pressed Cancel or closed dialog
-        } else if (otp.isEmpty()) {
+        } else if (inputOTP.isEmpty()) {
             JOptionPane.showMessageDialog(rv, "OTP cannot be empty", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
-            boolean valid = otpDao.validateOtp(email, otp, "REGISTER_ACCOUNT");
+            boolean valid = otpDao.validateOtp(email, inputOTP, "REGISTER_ACCOUNT");
 
-            if (valid) {
-                JOptionPane.showMessageDialog(rv, "OTP verified successfully!");
+            while (true) {
+                if (valid) {
+                    JOptionPane.showMessageDialog(rv, "OTP verified successfully!");
 
-                String hashedPassword = PasswordUtils.hashPassword(password);
+                    String hashedPassword = PasswordUtils.hashPassword(password);
 
-                UserPojo user = new UserPojo(0, fullName, username, email, hashedPassword);
-                if (userDao.addUser(user)) {
-                    JOptionPane.showMessageDialog(rv, "Account registered successfully!");
+                    UserPojo user = new UserPojo(0, fullName, username, email, hashedPassword);
+                    if (userDao.addUser(user)) {
+                        JOptionPane.showMessageDialog(rv, "Account registered successfully!");
+                        return;
+                    } else {
+                        JOptionPane.showMessageDialog(rv, "Some error occured while registering the account!", "Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
                 } else {
-                    JOptionPane.showMessageDialog(rv, "Some error occured while registering the account!", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(rv, "Invalid OTP!", "Error", JOptionPane.ERROR_MESSAGE);
                 }
-            } else {
-                JOptionPane.showMessageDialog(rv, "Invalid OTP!", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -117,5 +126,16 @@ public class UserController {
 
     public boolean emailExists(String email) {
         return userDao.existsByEmail(email);
+    }
+
+    public String askForOTP(RegisterView rv, String message) {
+        String inputOTP = JOptionPane.showInputDialog(
+                rv,
+                message,
+                "OTP Verification",
+                JOptionPane.PLAIN_MESSAGE
+        ).trim();
+
+        return inputOTP;
     }
 }
