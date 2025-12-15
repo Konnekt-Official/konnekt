@@ -2,19 +2,20 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
+package konnekt.view;
 
 /**
  *
- * @author Samjhana
+ * @author Hp
  */
-public class feed extends javax.swing.JFrame {
+public class FeedView extends javax.swing.JFrame {
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(feed.class.getName());
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(FeedView.class.getName());
 
     /**
-     * Creates new form feed
+     * Creates new form FeedView
      */
-    public feed() {
+    public FeedView() {
         initComponents();
     }
 
@@ -27,40 +28,17 @@ public class feed extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
-        KONNEKT = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
-
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/konnekt/image/Screenshot 2025-12-11 215845.png"))); // NOI18N
-        jLabel1.setText("jLabel1");
-
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        KONNEKT.setFont(new java.awt.Font("Trebuchet MS", 2, 18)); // NOI18N
-        KONNEKT.setText("KONNEKT");
-
-        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/konnekt/image/Screenshot 2025-12-11 223645.png"))); // NOI18N
-        jLabel2.setText("jLabel2");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(63, 63, 63)
-                .addComponent(KONNEKT, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(194, Short.MAX_VALUE))
+            .addGap(0, 400, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(KONNEKT, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 378, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addGap(0, 300, Short.MAX_VALUE)
         );
 
         pack();
@@ -88,12 +66,9 @@ public class feed extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new feed().setVisible(true));
+        java.awt.EventQueue.invokeLater(() -> new FeedView().setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField KONNEKT;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     // End of variables declaration//GEN-END:variables
 }
