@@ -8,7 +8,7 @@ package konnekt.model.pojo;
  *
  * @author Hp
  */
-public class OtpPojo {
+public class OTPPojo {
     private String otp;
     private
 }
