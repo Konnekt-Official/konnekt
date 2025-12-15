@@ -4,7 +4,7 @@ import java.security.SecureRandom;
 
 public class OTPUtils {
 
-    private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private static final int OTP_LENGTH = 6;
     private static final SecureRandom random = new SecureRandom();
 
