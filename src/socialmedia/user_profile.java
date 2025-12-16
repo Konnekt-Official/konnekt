@@ -49,7 +49,6 @@ public class user_profile extends javax.swing.JFrame {
         jRadioButton1 = new javax.swing.JRadioButton();
         jTextField2 = new javax.swing.JTextField();
         jRadioButton2 = new javax.swing.JRadioButton();
-        jToggleButton1 = new javax.swing.JToggleButton();
         jPasswordField1 = new javax.swing.JPasswordField();
         jSeparator1 = new javax.swing.JSeparator();
         jScrollBar1 = new javax.swing.JScrollBar();
@@ -126,11 +125,12 @@ public class user_profile extends javax.swing.JFrame {
         jPanel3.add(jRadioButton2);
         jRadioButton2.setBounds(170, 370, 105, 21);
 
-        jToggleButton1.setText("jToggleButton1");
-        jPanel3.add(jToggleButton1);
-        jToggleButton1.setBounds(580, 380, 116, 23);
-
         jPasswordField1.setText("jPasswordField1");
+        jPasswordField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jPasswordField1ActionPerformed(evt);
+            }
+        });
         jPanel3.add(jPasswordField1);
         jPasswordField1.setBounds(530, 440, 90, 23);
         jPanel3.add(jSeparator1);
@@ -172,6 +172,10 @@ public class user_profile extends javax.swing.JFrame {
     private void jLabel2ComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jLabel2ComponentShown
         // TODO add your handling code here:
     }//GEN-LAST:event_jLabel2ComponentShown
+
+    private void jPasswordField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPasswordField1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jPasswordField1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -219,7 +223,6 @@ public class user_profile extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
-    private javax.swing.JToggleButton jToggleButton1;
     // End of variables declaration//GEN-END:variables
 
 }
