@@ -51,6 +51,7 @@ public class user_profile extends javax.swing.JFrame {
         jTextField2 = new javax.swing.JTextField();
         jRadioButton2 = new javax.swing.JRadioButton();
         jToggleButton1 = new javax.swing.JToggleButton();
+        jPasswordField1 = new javax.swing.JPasswordField();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
@@ -131,6 +132,10 @@ public class user_profile extends javax.swing.JFrame {
         jPanel3.add(jToggleButton1);
         jToggleButton1.setBounds(580, 380, 116, 23);
 
+        jPasswordField1.setText("jPasswordField1");
+        jPanel3.add(jPasswordField1);
+        jPasswordField1.setBounds(530, 440, 90, 23);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -201,6 +206,7 @@ public class user_profile extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPasswordField jPasswordField1;
     private javax.swing.JRadioButton jRadioButton1;
     private javax.swing.JRadioButton jRadioButton2;
     private javax.swing.JTextField jTextField1;
