@@ -54,6 +54,7 @@ public class user_profile extends javax.swing.JFrame {
         jPasswordField1 = new javax.swing.JPasswordField();
         jSeparator1 = new javax.swing.JSeparator();
         jScrollBar1 = new javax.swing.JScrollBar();
+        jTextField3 = new javax.swing.JTextField();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
@@ -142,6 +143,10 @@ public class user_profile extends javax.swing.JFrame {
         jPanel3.add(jScrollBar1);
         jScrollBar1.setBounds(590, 510, 10, 48);
 
+        jTextField3.setText("jTextField3");
+        jPanel3.add(jTextField3);
+        jTextField3.setBounds(340, 310, 78, 23);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -219,6 +224,7 @@ public class user_profile extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
+    private javax.swing.JTextField jTextField3;
     private javax.swing.JToggleButton jToggleButton1;
     // End of variables declaration//GEN-END:variables
 
