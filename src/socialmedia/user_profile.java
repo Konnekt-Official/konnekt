@@ -52,6 +52,8 @@ public class user_profile extends javax.swing.JFrame {
         jRadioButton2 = new javax.swing.JRadioButton();
         jToggleButton1 = new javax.swing.JToggleButton();
         jPasswordField1 = new javax.swing.JPasswordField();
+        jSeparator1 = new javax.swing.JSeparator();
+        jScrollBar1 = new javax.swing.JScrollBar();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
@@ -135,6 +137,10 @@ public class user_profile extends javax.swing.JFrame {
         jPasswordField1.setText("jPasswordField1");
         jPanel3.add(jPasswordField1);
         jPasswordField1.setBounds(530, 440, 90, 23);
+        jPanel3.add(jSeparator1);
+        jSeparator1.setBounds(570, 500, 50, 10);
+        jPanel3.add(jScrollBar1);
+        jScrollBar1.setBounds(590, 510, 10, 48);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -209,6 +215,8 @@ public class user_profile extends javax.swing.JFrame {
     private javax.swing.JPasswordField jPasswordField1;
     private javax.swing.JRadioButton jRadioButton1;
     private javax.swing.JRadioButton jRadioButton2;
+    private javax.swing.JScrollBar jScrollBar1;
+    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JToggleButton jToggleButton1;
