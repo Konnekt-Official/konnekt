@@ -63,7 +63,7 @@ public class ForgotPasswordView extends BaseFrame {
         setBackground(new java.awt.Color(255, 255, 255));
 
         jLabel2.setFont(new java.awt.Font("Verdana", 1, 24)); // NOI18N
-        jLabel2.setText("FORGOT PASSWORD");
+        jLabel2.setText("CHANGE PASSWORD");
 
         passwordPasswordField.addActionListener(this::passwordPasswordFieldActionPerformed);
 
