@@ -36,6 +36,22 @@ public class ProfilePanel extends JPanel {
     private static final ImageIcon DEFAULT_PROFILE;
     private static final ImageIcon DEFAULT_BANNER;
 
+    static {
+        URL avatarUrl = ProfilePanel.class.getClassLoader()
+                .getResource("konnekt/resources/images/default_profile.png");
+        DEFAULT_PROFILE = (avatarUrl != null)
+                ? new ImageIcon(new ImageIcon(avatarUrl).getImage()
+                        .getScaledInstance(80, 80, Image.SCALE_SMOOTH))
+                : new ImageIcon();
+
+        URL bannerUrl = ProfilePanel.class.getClassLoader()
+                .getResource("konnekt/resources/images/default_banner.jpg");
+        DEFAULT_BANNER = (bannerUrl != null)
+                ? new ImageIcon(new ImageIcon(bannerUrl).getImage()
+                        .getScaledInstance(685, 170, Image.SCALE_SMOOTH))
+                : new ImageIcon();
+    }
+
     public ProfilePanel(int loggedInUserId, int profileUserId) {
         this.loggedInUserId = loggedInUserId;
         this.profileUserId = profileUserId;
@@ -71,8 +87,6 @@ public class ProfilePanel extends JPanel {
         revalidate();
         repaint();
     }
-
-    private JPanel createHeaderPanel() {
         JPanel header = new JPanel(new BorderLayout());
         header.setBackground(Color.WHITE);
 
