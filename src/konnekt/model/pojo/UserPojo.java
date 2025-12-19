@@ -1,15 +1,15 @@
 package konnekt.model.pojo;
 
-public class User {
+public class UserPojo {
     private int id;
     private String fullName;
     private String username;
     private String email;
     private String password;
 
-    public User() {}
+    public UserPojo() {}
 
-    public User(int id, String fullName, String username, String email, String password) {
+    public UserPojo(int id, String fullName, String username, String email, String password) {
         this.id = id;
         this.fullName = fullName;
         this.username = username;

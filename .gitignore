@@ -4,4 +4,5 @@ dist/
 *.class
 *.log
 *.db
+
 src/konnekt/resources/config.properties
