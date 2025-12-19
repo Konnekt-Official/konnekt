@@ -87,6 +87,8 @@ public class ProfilePanel extends JPanel {
         revalidate();
         repaint();
     }
+
+    private JPanel createHeaderPanel() {
         JPanel header = new JPanel(new BorderLayout());
         header.setBackground(Color.WHITE);
 
