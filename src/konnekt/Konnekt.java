@@ -1,14 +1,17 @@
 package konnekt;
 
+import konnekt.manager.SessionManager;
 import konnekt.view.LoginView;
+import konnekt.view.FeedView;
 
 public class Konnekt {
-
-    /**
-     * @param args the command line arguments
-     */
+    
     public static void main(String[] args) {
+        /*if (Session.isLoggedIn()) {
+            new FeedView().setVisible(true);
+            return;
+        }*/
+        
         new LoginView().setVisible(true);
     }
-    
 }
