@@ -40,12 +40,13 @@ public class user_profile extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imageee/Screenshot 2025-12-16 at 10.36.42 AM.png"))); // NOI18N
         jLabel1.setText("jLabel1");
@@ -68,15 +69,15 @@ public class user_profile extends javax.swing.JFrame {
         jPanel3.add(jPanel4);
         jPanel4.setBounds(2517, 6, 0, 975);
 
+        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/Screenshot 2025-12-20 at 6.29.53 PM.png"))); // NOI18N
+        jLabel5.setText("jLabel5");
+        jPanel3.add(jLabel5);
+        jLabel5.setBounds(80, 180, 170, 130);
+
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imageee/Screenshot 2025-12-16 at 10.36.42 AM.png"))); // NOI18N
         jLabel3.setText("jLabel3");
         jPanel3.add(jLabel3);
         jLabel3.setBounds(0, 0, 814, 250);
-
-        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/Screenshot 2025-12-20 at 6.29.53 PM.png"))); // NOI18N
-        jLabel5.setText("jLabel5");
-        jPanel3.add(jLabel5);
-        jLabel5.setBounds(100, 250, 150, 130);
 
         jLabel2.setFont(new java.awt.Font("Helvetica Neue", 3, 36)); // NOI18N
         jLabel2.setText("Anish Gautam");
@@ -86,7 +87,7 @@ public class user_profile extends javax.swing.JFrame {
             }
         });
         jPanel3.add(jLabel2);
-        jLabel2.setBounds(50, 400, 260, 40);
+        jLabel2.setBounds(40, 370, 260, 40);
 
         jLabel4.setFont(new java.awt.Font("Herculanum", 2, 24)); // NOI18N
         jLabel4.setText("@titu don");
@@ -102,6 +103,10 @@ public class user_profile extends javax.swing.JFrame {
         jLabel7.setText("0 Followings");
         jPanel3.add(jLabel7);
         jLabel7.setBounds(200, 550, 120, 23);
+
+        jLabel8.setText("jLabel8");
+        jPanel3.add(jLabel8);
+        jLabel8.setBounds(550, 330, 42, 17);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -159,6 +164,7 @@ public class user_profile extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
