@@ -49,6 +49,8 @@ public class user_profile extends javax.swing.JFrame {
         jLabel8 = new javax.swing.JLabel();
         jPasswordField1 = new javax.swing.JPasswordField();
         jComboBox1 = new javax.swing.JComboBox<>();
+        jTextField1 = new javax.swing.JTextField();
+        jRadioButton1 = new javax.swing.JRadioButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
@@ -120,6 +122,14 @@ public class user_profile extends javax.swing.JFrame {
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         jPanel3.add(jComboBox1);
         jComboBox1.setBounds(450, 280, 72, 23);
+
+        jTextField1.setText("jTextField1");
+        jPanel3.add(jTextField1);
+        jTextField1.setBounds(380, 430, 78, 23);
+
+        jRadioButton1.setText("jRadioButton1");
+        jPanel3.add(jRadioButton1);
+        jRadioButton1.setBounds(620, 270, 105, 21);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -194,6 +204,8 @@ public class user_profile extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPasswordField jPasswordField1;
+    private javax.swing.JRadioButton jRadioButton1;
+    private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
 
 }
