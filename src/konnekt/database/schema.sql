@@ -39,4 +39,5 @@ SET GLOBAL event_scheduler = ON;
 CREATE EVENT IF NOT EXISTS delete_expired_otps
 ON SCHEDULE EVERY 1 MINUTE
 DO
+
   DELETE FROM otp WHERE expires_at <= NOW();
