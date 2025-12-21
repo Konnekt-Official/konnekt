@@ -46,8 +46,10 @@ public class user_profile extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
         jRadioButton1 = new javax.swing.JRadioButton();
+        jTextField1 = new javax.swing.JTextField();
+        jTextField2 = new javax.swing.JTextField();
+        jRadioButton2 = new javax.swing.JRadioButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
@@ -108,18 +110,21 @@ public class user_profile extends javax.swing.JFrame {
         jPanel3.add(jLabel7);
         jLabel7.setBounds(200, 550, 120, 23);
 
-        jLabel8.setText("jLabel8");
-        jPanel3.add(jLabel8);
-        jLabel8.setBounds(550, 330, 42, 17);
-
         jRadioButton1.setText("jRadioButton1");
-        jRadioButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jRadioButton1ActionPerformed(evt);
-            }
-        });
         jPanel3.add(jRadioButton1);
-        jRadioButton1.setBounds(620, 270, 105, 21);
+        jRadioButton1.setBounds(490, 260, 105, 21);
+
+        jTextField1.setText("jTextField1");
+        jPanel3.add(jTextField1);
+        jTextField1.setBounds(510, 330, 78, 23);
+
+        jTextField2.setText("jTextField2");
+        jPanel3.add(jTextField2);
+        jTextField2.setBounds(450, 390, 78, 23);
+
+        jRadioButton2.setText("jRadioButton2");
+        jPanel3.add(jRadioButton2);
+        jRadioButton2.setBounds(170, 370, 105, 21);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -151,10 +156,6 @@ public class user_profile extends javax.swing.JFrame {
     private void jLabel2ComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jLabel2ComponentShown
         // TODO add your handling code here:
     }//GEN-LAST:event_jLabel2ComponentShown
-
-    private void jRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jRadioButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -189,7 +190,6 @@ public class user_profile extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
@@ -197,6 +197,9 @@ public class user_profile extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JRadioButton jRadioButton1;
+    private javax.swing.JRadioButton jRadioButton2;
+    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextField2;
     // End of variables declaration//GEN-END:variables
 
 }
