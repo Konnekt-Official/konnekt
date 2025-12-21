@@ -64,12 +64,12 @@
                               <Component id="Sendermessage2" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Component id="Sendermessage3" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Group type="102" alignment="0" attributes="0">
-                                  <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
-                                  <Component id="Emoji" min="-2" pref="27" max="-2" attributes="0"/>
-                                  <EmptySpace min="-2" pref="36" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+                                  <Component id="Emoji" min="-2" pref="33" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="33" max="-2" attributes="0"/>
                                   <Component id="Message" min="-2" pref="585" max="-2" attributes="0"/>
-                                  <EmptySpace type="separate" max="-2" attributes="0"/>
-                                  <Component id="Send" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                  <Component id="Send" min="-2" pref="34" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="Voice" min="-2" max="-2" attributes="0"/>
                               </Group>
@@ -95,7 +95,7 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jPanel3" min="-2" pref="72" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" pref="66" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Component id="Sendermessage" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="13" max="-2" attributes="0"/>
                   <Component id="Recievermessage" min="-2" max="-2" attributes="0"/>
@@ -110,7 +110,7 @@
                   <EmptySpace min="-2" pref="35" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="Message" alignment="3" min="-2" pref="36" max="-2" attributes="0"/>
-                      <Component id="Send" alignment="3" min="-2" pref="36" max="-2" attributes="0"/>
+                      <Component id="Send" alignment="3" min="-2" pref="37" max="-2" attributes="0"/>
                       <Component id="Voice" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="Emoji" alignment="3" min="-2" pref="37" max="-2" attributes="0"/>
                   </Group>
