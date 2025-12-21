@@ -47,6 +47,7 @@ public class user_profile extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
+        jPasswordField1 = new javax.swing.JPasswordField();
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imageee/Screenshot 2025-12-16 at 10.36.42 AM.png"))); // NOI18N
         jLabel1.setText("jLabel1");
@@ -108,6 +109,10 @@ public class user_profile extends javax.swing.JFrame {
         jPanel3.add(jLabel8);
         jLabel8.setBounds(550, 330, 42, 17);
 
+        jPasswordField1.setText("jPasswordField1");
+        jPanel3.add(jPasswordField1);
+        jPasswordField1.setBounds(510, 280, 90, 23);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -168,6 +173,7 @@ public class user_profile extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPasswordField jPasswordField1;
     // End of variables declaration//GEN-END:variables
 
 }
