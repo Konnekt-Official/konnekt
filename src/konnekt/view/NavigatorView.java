@@ -14,6 +14,10 @@ import konnekt.component.SearchPanel;
 import konnekt.component.NotificationPanel;
 import konnekt.component.SettingPanel;
 
+import konnekt.manager.SessionManager;
+
+import konnekt.view.LoginView;
+
 /**
  *
  * @author Hp
@@ -308,6 +312,11 @@ public class NavigatorView extends BaseFrame {
 
         jPanel8.setBackground(new java.awt.Color(255, 51, 51));
         jPanel8.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jPanel8.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jPanel8MouseClicked(evt);
+            }
+        });
 
         jLabel15.setFont(new java.awt.Font("Verdana", 1, 14)); // NOI18N
         jLabel15.setForeground(new java.awt.Color(255, 255, 255));
@@ -452,6 +461,14 @@ public class NavigatorView extends BaseFrame {
         setSelectedPanel(jPanel7);
 
     }//GEN-LAST:event_jPanel7MouseClicked
+
+    private void jPanel8MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel8MouseClicked
+        // TODO add your handling code here:
+        SessionManager.logout();
+        
+        this.dispose();
+        new LoginView().setVisible(true);
+    }//GEN-LAST:event_jPanel8MouseClicked
 
     /**
      * @param args the command line arguments
