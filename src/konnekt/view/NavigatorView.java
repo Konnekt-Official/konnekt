@@ -4,12 +4,22 @@
  */
 package konnekt.view;
 
+import java.awt.CardLayout;
+
+import konnekt.component.FeedPanel;
+import konnekt.component.ProfilePanel;
+import konnekt.component.InboxPanel;
+import konnekt.component.SearchPanel;
+import konnekt.component.NotificationPanel;
+import konnekt.component.SettingPanel;
+      
+
 /**
  *
  * @author Hp
  */
 public class NavigatorView extends BaseFrame {
-    
+
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(NavigatorView.class.getName());
 
     /**
@@ -17,6 +27,7 @@ public class NavigatorView extends BaseFrame {
      */
     public NavigatorView() {
         initComponents();
+        initPanels();
     }
 
     /**
@@ -52,6 +63,7 @@ public class NavigatorView extends BaseFrame {
         jPanel8 = new javax.swing.JPanel();
         jLabel15 = new javax.swing.JLabel();
         jLabel16 = new javax.swing.JLabel();
+        mainPanel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -67,6 +79,11 @@ public class NavigatorView extends BaseFrame {
 
         jPanel2.setBackground(new java.awt.Color(51, 51, 51));
         jPanel2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jPanel2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jPanel2MouseClicked(evt);
+            }
+        });
 
         jLabel3.setFont(new java.awt.Font("Verdana", 1, 14)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
@@ -99,6 +116,11 @@ public class NavigatorView extends BaseFrame {
 
         jPanel3.setBackground(new java.awt.Color(51, 51, 51));
         jPanel3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jPanel3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jPanel3MouseClicked(evt);
+            }
+        });
 
         jLabel5.setFont(new java.awt.Font("Verdana", 1, 14)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
@@ -331,21 +353,37 @@ public class NavigatorView extends BaseFrame {
                 .addGap(16, 16, 16))
         );
 
+        mainPanel.setLayout(new java.awt.CardLayout());
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 697, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jPanel2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel2MouseClicked
+        // TODO add your handling code here:
+        CardLayout cl = (CardLayout) mainPanel.getLayout();
+        cl.show(mainPanel, "INBOX");
+    }//GEN-LAST:event_jPanel2MouseClicked
+
+    private void jPanel3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel3MouseClicked
+        // TODO add your handling code here:
+        CardLayout cl = (CardLayout) mainPanel.getLayout();
+        cl.show(mainPanel, "PROFILE");
+    }//GEN-LAST:event_jPanel3MouseClicked
 
     /**
      * @param args the command line arguments
@@ -372,6 +410,16 @@ public class NavigatorView extends BaseFrame {
         java.awt.EventQueue.invokeLater(() -> new NavigatorView().setVisible(true));
     }
 
+    private void initPanels() {
+        mainPanel.add(new FeedPanel(), "FEED");
+        mainPanel.add(new ProfilePanel(), "PROFILE");
+        mainPanel.add(new InboxPanel(), "INBOX");
+
+        CardLayout cl = (CardLayout) mainPanel.getLayout();
+        cl.show(mainPanel, "FEED");
+    }
+
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -397,5 +445,6 @@ public class NavigatorView extends BaseFrame {
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
+    private javax.swing.JPanel mainPanel;
     // End of variables declaration//GEN-END:variables
 }
