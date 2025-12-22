@@ -4,17 +4,23 @@
  */
 package konnekt.component;
 
+import konnekt.controller.PostController;
+
 /**
  *
  * @author Hp
  */
 public class FeedPanel extends javax.swing.JPanel {
+    
+    private final PostController postController;
 
     /**
      * Creates new form FeedPanel
      */
     public FeedPanel() {
         initComponents();
+        
+        postController = new PostController();
     }
 
     /**
@@ -28,7 +34,7 @@ public class FeedPanel extends javax.swing.JPanel {
 
         jPanel4 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
-        postInput = new javax.swing.JTextField();
+        postContentTextField = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
@@ -39,9 +45,9 @@ public class FeedPanel extends javax.swing.JPanel {
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/konnekt/resources/images/profile-small.jpg"))); // NOI18N
         jLabel3.setText("jLabel3");
 
-        postInput.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
-        postInput.setText("What's on your mind?");
-        postInput.addActionListener(this::postInputActionPerformed);
+        postContentTextField.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
+        postContentTextField.setText("What's on your mind?");
+        postContentTextField.addActionListener(this::postContentTextFieldActionPerformed);
 
         jButton1.setBackground(new java.awt.Color(0, 0, 0));
         jButton1.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
@@ -49,6 +55,11 @@ public class FeedPanel extends javax.swing.JPanel {
         jButton1.setText("POST");
         jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton1.setPreferredSize(new java.awt.Dimension(72, 30));
+        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                createPost(evt);
+            }
+        });
         jButton1.addActionListener(this::jButton1ActionPerformed);
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/konnekt/resources/images/gallery.png"))); // NOI18N
@@ -74,7 +85,7 @@ public class FeedPanel extends javax.swing.JPanel {
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGap(16, 16, 16)
-                        .addComponent(postInput, javax.swing.GroupLayout.PREFERRED_SIZE, 322, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(postContentTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 322, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel4Layout.createSequentialGroup()
@@ -93,7 +104,7 @@ public class FeedPanel extends javax.swing.JPanel {
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(postInput)
+                            .addComponent(postContentTextField)
                             .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -143,13 +154,18 @@ public class FeedPanel extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void postInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_postInputActionPerformed
+    private void postContentTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_postContentTextFieldActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_postInputActionPerformed
+    }//GEN-LAST:event_postContentTextFieldActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void createPost(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_createPost
+        // TODO add your handling code here:
+        postController.createPost(this, postContentTextField.getText().trim());
+    }//GEN-LAST:event_createPost
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -161,6 +177,6 @@ public class FeedPanel extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField postInput;
+    private javax.swing.JTextField postContentTextField;
     // End of variables declaration//GEN-END:variables
 }
