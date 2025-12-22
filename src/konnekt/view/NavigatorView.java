@@ -493,7 +493,7 @@ public class NavigatorView extends BaseFrame {
     private javax.swing.JPanel selectedPanel = null; // keep track of selected panel
 
     private void resetSidebar() {
-        Color defaultColor = new Color(51, 51, 51);
+        Color defaultColor = new Color(30, 30, 30);
         jPanel2.setBackground(defaultColor);
         jPanel3.setBackground(defaultColor);
         jPanel4.setBackground(defaultColor);
