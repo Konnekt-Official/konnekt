@@ -1,20 +1,19 @@
 package konnekt.model.pojo;
 
 import java.sql.Timestamp;
-import konnekt.model.enums.OTPType;
 
 public class OTPPojo {
 
     private int id;
     private String otp;
-    private OTPType type;
+    private String type;
     private String email;
     private Timestamp createdAt;
     private Timestamp expiresAt;
 
     public OTPPojo() {}
 
-    public OTPPojo(int id, String otp, OTPType type, String email, Timestamp createdAt, Timestamp expiresAt) {
+    public OTPPojo(int id, String otp, String type, String email, Timestamp createdAt, Timestamp expiresAt) {
         this.id = id;
         this.otp = otp;
         this.type = type;
@@ -39,11 +38,11 @@ public class OTPPojo {
         this.otp = otp;
     }
 
-    public OTPType getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(OTPType type) {
+    public void setType(String type) {
         this.type = type;
     }
 

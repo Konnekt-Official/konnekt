@@ -8,7 +8,6 @@ import konnekt.model.dao.UserDao;
 import konnekt.model.pojo.UserPojo;
 import konnekt.model.dao.OTPDao;
 import konnekt.model.pojo.OTPPojo;
-import konnekt.model.enums.OTPType;
 import konnekt.utils.PasswordUtils;
 import konnekt.manager.SessionManager;
 import konnekt.service.EmailService;
@@ -59,7 +58,7 @@ public class UserController {
         
         OTPPojo otpPojo = new OTPPojo();
         otpPojo.setOtp(otp);
-        otpPojo.setType(OTPType.REGISTER_ACCOUNT);
+        otpPojo.setType("REGISTER_ACCOUNT");
         otpPojo.setEmail(email);
         otpDao.insertOtp(otpPojo);
                 

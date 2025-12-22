@@ -40,7 +40,7 @@ public class FeedPanel extends javax.swing.JPanel {
         jLabel3.setText("jLabel3");
 
         postInput.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
-        postInput.setText("What on your mind?");
+        postInput.setText("What's on your mind?");
         postInput.addActionListener(this::postInputActionPerformed);
 
         jButton1.setBackground(new java.awt.Color(0, 0, 0));
