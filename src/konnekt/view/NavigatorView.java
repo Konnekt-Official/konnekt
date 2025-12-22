@@ -415,7 +415,6 @@ public class NavigatorView extends BaseFrame {
         cl.show(mainPanel, "FEED");
 
         setSelectedPanel(jPanel2);
-
     }//GEN-LAST:event_jPanel2MouseClicked
 
     private void jPanel3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel3MouseClicked
@@ -424,7 +423,6 @@ public class NavigatorView extends BaseFrame {
         cl.show(mainPanel, "PROFILE");
 
         setSelectedPanel(jPanel3);
-
     }//GEN-LAST:event_jPanel3MouseClicked
 
     private void jPanel4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel4MouseClicked
@@ -433,7 +431,6 @@ public class NavigatorView extends BaseFrame {
         cl.show(mainPanel, "INBOX");
 
         setSelectedPanel(jPanel4);
-
     }//GEN-LAST:event_jPanel4MouseClicked
 
     private void jPanel5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel5MouseClicked
@@ -450,7 +447,6 @@ public class NavigatorView extends BaseFrame {
         cl.show(mainPanel, "NOTIFICATION");
 
         setSelectedPanel(jPanel6);
-
     }//GEN-LAST:event_jPanel6MouseClicked
 
     private void jPanel7MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel7MouseClicked
@@ -459,7 +455,6 @@ public class NavigatorView extends BaseFrame {
         cl.show(mainPanel, "SETTING");
 
         setSelectedPanel(jPanel7);
-
     }//GEN-LAST:event_jPanel7MouseClicked
 
     private void jPanel8MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel8MouseClicked
@@ -505,6 +500,8 @@ public class NavigatorView extends BaseFrame {
 
         CardLayout cl = (CardLayout) mainPanel.getLayout();
         cl.show(mainPanel, "FEED");
+        
+        setSelectedPanel(jPanel2);
     }
 
     private javax.swing.JPanel selectedPanel = null; // keep track of selected panel
