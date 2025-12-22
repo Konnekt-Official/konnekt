@@ -8,14 +8,14 @@ package konnekt.view;
  *
  * @author Hp
  */
-public class FeedView extends BaseFrame {
+public class NavigatorView extends BaseFrame {
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(FeedView.class.getName());
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(NavigatorView.class.getName());
 
     /**
      * Creates new form FeedView
      */
-    public FeedView() {
+    public NavigatorView() {
         initComponents();
     }
 
@@ -34,11 +34,11 @@ public class FeedView extends BaseFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGap(0, 900, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGap(0, 500, Short.MAX_VALUE)
         );
 
         pack();
@@ -66,7 +66,7 @@ public class FeedView extends BaseFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new FeedView().setVisible(true));
+        java.awt.EventQueue.invokeLater(() -> new NavigatorView().setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

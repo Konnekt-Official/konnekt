@@ -15,7 +15,7 @@ import konnekt.service.EmailService;
 import konnekt.utils.OTPUtils;
 import konnekt.view.RegisterView;
 import konnekt.view.LoginView;
-import konnekt.view.FeedView;
+import konnekt.view.NavigatorView;
 
 import javax.swing.JOptionPane;
 
@@ -128,7 +128,7 @@ public class UserController {
             // JOptionPane.showMessageDialog(lv, "Login successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
 
             lv.dispose();
-            new FeedView().setVisible(true);
+            new NavigatorView().setVisible(true);
         } else {
             JOptionPane.showMessageDialog(lv, "Login failed. Try again.", "Error", JOptionPane.ERROR_MESSAGE);
         }
