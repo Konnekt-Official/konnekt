@@ -302,7 +302,7 @@ public class NavigatorView extends BaseFrame {
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addGap(7, 7, 7)
                         .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jLabel14, javax.swing.GroupLayout.DEFAULT_SIZE, 47, Short.MAX_VALUE))
+                    .addComponent(jLabel14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -375,7 +375,7 @@ public class NavigatorView extends BaseFrame {
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(28, 28, 28)
+                .addGap(40, 40, 40)
                 .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(16, 16, 16))
         );
@@ -405,8 +405,8 @@ public class NavigatorView extends BaseFrame {
         CardLayout cl = (CardLayout) mainPanel.getLayout();
         cl.show(mainPanel, "FEED");
 
-        resetSidebar();
-        jPanel2.setBackground(new Color(70, 70, 70));
+        setSelectedPanel(jPanel2);
+
     }//GEN-LAST:event_jPanel2MouseClicked
 
     private void jPanel3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel3MouseClicked
@@ -414,8 +414,8 @@ public class NavigatorView extends BaseFrame {
         CardLayout cl = (CardLayout) mainPanel.getLayout();
         cl.show(mainPanel, "PROFILE");
 
-        resetSidebar();
-        jPanel3.setBackground(new Color(70, 70, 70));
+        setSelectedPanel(jPanel3);
+
     }//GEN-LAST:event_jPanel3MouseClicked
 
     private void jPanel4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel4MouseClicked
@@ -423,8 +423,8 @@ public class NavigatorView extends BaseFrame {
         CardLayout cl = (CardLayout) mainPanel.getLayout();
         cl.show(mainPanel, "INBOX");
 
-        resetSidebar();
-        jPanel4.setBackground(new Color(70, 70, 70));
+        setSelectedPanel(jPanel4);
+
     }//GEN-LAST:event_jPanel4MouseClicked
 
     private void jPanel5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel5MouseClicked
@@ -432,8 +432,7 @@ public class NavigatorView extends BaseFrame {
         CardLayout cl = (CardLayout) mainPanel.getLayout();
         cl.show(mainPanel, "SEARCH");
 
-        resetSidebar();
-        jPanel5.setBackground(new Color(70, 70, 70));
+        setSelectedPanel(jPanel5);
     }//GEN-LAST:event_jPanel5MouseClicked
 
     private void jPanel6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel6MouseClicked
@@ -441,8 +440,8 @@ public class NavigatorView extends BaseFrame {
         CardLayout cl = (CardLayout) mainPanel.getLayout();
         cl.show(mainPanel, "NOTIFICATION");
 
-        resetSidebar();
-        jPanel7.setBackground(new Color(70, 70, 70));
+        setSelectedPanel(jPanel6);
+
     }//GEN-LAST:event_jPanel6MouseClicked
 
     private void jPanel7MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel7MouseClicked
@@ -450,8 +449,8 @@ public class NavigatorView extends BaseFrame {
         CardLayout cl = (CardLayout) mainPanel.getLayout();
         cl.show(mainPanel, "SETTING");
 
-        resetSidebar();
-        jPanel7.setBackground(new Color(70, 70, 70));
+        setSelectedPanel(jPanel7);
+
     }//GEN-LAST:event_jPanel7MouseClicked
 
     /**
@@ -491,6 +490,8 @@ public class NavigatorView extends BaseFrame {
         cl.show(mainPanel, "FEED");
     }
 
+    private javax.swing.JPanel selectedPanel = null; // keep track of selected panel
+
     private void resetSidebar() {
         Color defaultColor = new Color(51, 51, 51);
         jPanel2.setBackground(defaultColor);
@@ -499,18 +500,28 @@ public class NavigatorView extends BaseFrame {
         jPanel5.setBackground(defaultColor);
         jPanel6.setBackground(defaultColor);
         jPanel7.setBackground(defaultColor);
-        jPanel8.setBackground(new Color(255, 51, 51)); // keep logout red
+        jPanel8.setBackground(new Color(255, 51, 51));
+    }
+
+    private void setSelectedPanel(javax.swing.JPanel panel) {
+        resetSidebar();
+        panel.setBackground(new Color(70, 70, 70));
+        selectedPanel = panel;
     }
 
     private void addHoverEffect(javax.swing.JPanel panel) {
         Color original = panel.getBackground();
         panel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                panel.setBackground(original.brighter());
+                if (panel != selectedPanel) {
+                    panel.setBackground(original.brighter());
+                }
             }
 
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                panel.setBackground(original);
+                if (panel != selectedPanel) {
+                    panel.setBackground(original);
+                }
             }
         });
     }
