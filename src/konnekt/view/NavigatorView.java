@@ -5,6 +5,7 @@
 package konnekt.view;
 
 import java.awt.CardLayout;
+import java.awt.Color;
 
 import konnekt.component.FeedPanel;
 import konnekt.component.ProfilePanel;
@@ -12,7 +13,6 @@ import konnekt.component.InboxPanel;
 import konnekt.component.SearchPanel;
 import konnekt.component.NotificationPanel;
 import konnekt.component.SettingPanel;
-      
 
 /**
  *
@@ -28,6 +28,13 @@ public class NavigatorView extends BaseFrame {
     public NavigatorView() {
         initComponents();
         initPanels();
+
+        addHoverEffect(jPanel2);
+        addHoverEffect(jPanel3);
+        addHoverEffect(jPanel4);
+        addHoverEffect(jPanel5);
+        addHoverEffect(jPanel6);
+        addHoverEffect(jPanel7);
     }
 
     /**
@@ -153,6 +160,11 @@ public class NavigatorView extends BaseFrame {
 
         jPanel4.setBackground(new java.awt.Color(51, 51, 51));
         jPanel4.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jPanel4.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jPanel4MouseClicked(evt);
+            }
+        });
 
         jLabel7.setFont(new java.awt.Font("Verdana", 1, 14)); // NOI18N
         jLabel7.setForeground(new java.awt.Color(255, 255, 255));
@@ -185,6 +197,11 @@ public class NavigatorView extends BaseFrame {
 
         jPanel5.setBackground(new java.awt.Color(51, 51, 51));
         jPanel5.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jPanel5.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jPanel5MouseClicked(evt);
+            }
+        });
 
         jLabel9.setFont(new java.awt.Font("Verdana", 1, 14)); // NOI18N
         jLabel9.setForeground(new java.awt.Color(255, 255, 255));
@@ -217,6 +234,11 @@ public class NavigatorView extends BaseFrame {
 
         jPanel6.setBackground(new java.awt.Color(51, 51, 51));
         jPanel6.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jPanel6.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jPanel6MouseClicked(evt);
+            }
+        });
 
         jLabel11.setFont(new java.awt.Font("Verdana", 1, 14)); // NOI18N
         jLabel11.setForeground(new java.awt.Color(255, 255, 255));
@@ -249,6 +271,11 @@ public class NavigatorView extends BaseFrame {
 
         jPanel7.setBackground(new java.awt.Color(51, 51, 51));
         jPanel7.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jPanel7.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jPanel7MouseClicked(evt);
+            }
+        });
 
         jLabel13.setFont(new java.awt.Font("Verdana", 1, 14)); // NOI18N
         jLabel13.setForeground(new java.awt.Color(255, 255, 255));
@@ -376,14 +403,56 @@ public class NavigatorView extends BaseFrame {
     private void jPanel2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel2MouseClicked
         // TODO add your handling code here:
         CardLayout cl = (CardLayout) mainPanel.getLayout();
-        cl.show(mainPanel, "INBOX");
+        cl.show(mainPanel, "FEED");
+
+        resetSidebar();
+        jPanel2.setBackground(new Color(70, 70, 70));
     }//GEN-LAST:event_jPanel2MouseClicked
 
     private void jPanel3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel3MouseClicked
         // TODO add your handling code here:
         CardLayout cl = (CardLayout) mainPanel.getLayout();
         cl.show(mainPanel, "PROFILE");
+
+        resetSidebar();
+        jPanel3.setBackground(new Color(70, 70, 70));
     }//GEN-LAST:event_jPanel3MouseClicked
+
+    private void jPanel4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel4MouseClicked
+        // TODO add your handling code here:
+        CardLayout cl = (CardLayout) mainPanel.getLayout();
+        cl.show(mainPanel, "INBOX");
+
+        resetSidebar();
+        jPanel4.setBackground(new Color(70, 70, 70));
+    }//GEN-LAST:event_jPanel4MouseClicked
+
+    private void jPanel5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel5MouseClicked
+        // TODO add your handling code here:
+        CardLayout cl = (CardLayout) mainPanel.getLayout();
+        cl.show(mainPanel, "SEARCH");
+
+        resetSidebar();
+        jPanel5.setBackground(new Color(70, 70, 70));
+    }//GEN-LAST:event_jPanel5MouseClicked
+
+    private void jPanel6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel6MouseClicked
+        // TODO add your handling code here:
+        CardLayout cl = (CardLayout) mainPanel.getLayout();
+        cl.show(mainPanel, "NOTIFICATION");
+
+        resetSidebar();
+        jPanel7.setBackground(new Color(70, 70, 70));
+    }//GEN-LAST:event_jPanel6MouseClicked
+
+    private void jPanel7MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel7MouseClicked
+        // TODO add your handling code here:
+        CardLayout cl = (CardLayout) mainPanel.getLayout();
+        cl.show(mainPanel, "SETTING");
+
+        resetSidebar();
+        jPanel7.setBackground(new Color(70, 70, 70));
+    }//GEN-LAST:event_jPanel7MouseClicked
 
     /**
      * @param args the command line arguments
@@ -414,9 +483,36 @@ public class NavigatorView extends BaseFrame {
         mainPanel.add(new FeedPanel(), "FEED");
         mainPanel.add(new ProfilePanel(), "PROFILE");
         mainPanel.add(new InboxPanel(), "INBOX");
+        mainPanel.add(new SearchPanel(), "SEARCH");
+        mainPanel.add(new NotificationPanel(), "NOTIFICATION");
+        mainPanel.add(new SettingPanel(), "SETTING");
 
         CardLayout cl = (CardLayout) mainPanel.getLayout();
         cl.show(mainPanel, "FEED");
+    }
+
+    private void resetSidebar() {
+        Color defaultColor = new Color(51, 51, 51);
+        jPanel2.setBackground(defaultColor);
+        jPanel3.setBackground(defaultColor);
+        jPanel4.setBackground(defaultColor);
+        jPanel5.setBackground(defaultColor);
+        jPanel6.setBackground(defaultColor);
+        jPanel7.setBackground(defaultColor);
+        jPanel8.setBackground(new Color(255, 51, 51)); // keep logout red
+    }
+
+    private void addHoverEffect(javax.swing.JPanel panel) {
+        Color original = panel.getBackground();
+        panel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                panel.setBackground(original.brighter());
+            }
+
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                panel.setBackground(original);
+            }
+        });
     }
 
 
