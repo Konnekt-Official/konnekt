@@ -93,7 +93,7 @@ public class UserController {
                 boolean valid = otpDao.validateOtp(email, inputOTP, "REGISTER_ACCOUNT");
 
                 if (valid) {
-                    JOptionPane.showMessageDialog(rv, "OTP verified successfully!");
+                    // JOptionPane.showMessageDialog(rv, "OTP verified successfully!");
 
                     String hashedPassword = PasswordUtils.hashPassword(password);
 
@@ -125,7 +125,7 @@ public class UserController {
         if (userDao.login(email, hashedPassword)) {
             SessionManager.login(email);
 
-            JOptionPane.showMessageDialog(lv, "Login successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
+            // JOptionPane.showMessageDialog(lv, "Login successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
 
             lv.dispose();
             new FeedView().setVisible(true);
