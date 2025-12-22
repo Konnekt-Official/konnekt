@@ -54,7 +54,7 @@ public class EmailService {
             message.setContent(body, "text/html; charset=utf-8");
 
             Transport.send(message);
-            System.out.println("Email sent successfully to " + toEmail);
+            // System.out.println("Email sent successfully to " + toEmail);
 
         } catch (MessagingException e) {
             e.printStackTrace();
