@@ -11,6 +11,11 @@ public class PostPojo {
     private Timestamp createdAt;
 
     public PostPojo() {}
+    
+    public PostPojo(int userId, String content) {
+        this.userId = userId;
+        this.content = content;
+    }
 
     public PostPojo(int id, int userId, String content, int likes, Timestamp createdAt) {
         this.id = id;
