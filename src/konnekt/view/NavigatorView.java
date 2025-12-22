@@ -16,8 +16,6 @@ import konnekt.component.SettingPanel;
 
 import konnekt.manager.SessionManager;
 
-import konnekt.view.LoginView;
-
 /**
  *
  * @author Hp
