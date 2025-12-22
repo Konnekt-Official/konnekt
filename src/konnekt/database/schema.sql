@@ -40,19 +40,3 @@ CREATE EVENT IF NOT EXISTS delete_expired_otps
 ON SCHEDULE EVERY 1 MINUTE
 DO
   DELETE FROM otp WHERE expires_at <= NOW();
-
-CREATE TABLE user_follow (
-    follower_id INT NOT NULL,
-    following_id INT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
-    PRIMARY KEY (follower_id, following_id),
-
-    FOREIGN KEY (follower_id)
-        REFERENCES `user`(id)
-        ON DELETE CASCADE,
-
-    FOREIGN KEY (following_id)
-        REFERENCES `user`(id)
-        ON DELETE CASCADE
-);
