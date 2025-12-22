@@ -6,3 +6,5 @@ dist/
 *.db
 
 src/konnekt/resources/config.properties
+
+.vscode
