@@ -46,13 +46,8 @@ public class user_profile extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        jRadioButton1 = new javax.swing.JRadioButton();
-        jTextField2 = new javax.swing.JTextField();
-        jRadioButton2 = new javax.swing.JRadioButton();
-        jPasswordField1 = new javax.swing.JPasswordField();
         jSeparator1 = new javax.swing.JSeparator();
         jScrollBar1 = new javax.swing.JScrollBar();
-        jTextField3 = new javax.swing.JTextField();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
@@ -96,7 +91,7 @@ public class user_profile extends javax.swing.JFrame {
             }
         });
         jPanel3.add(jLabel2);
-        jLabel2.setBounds(40, 370, 260, 40);
+        jLabel2.setBounds(30, 380, 260, 40);
 
         jLabel4.setFont(new java.awt.Font("Herculanum", 2, 24)); // NOI18N
         jLabel4.setText("@titu don");
@@ -112,35 +107,10 @@ public class user_profile extends javax.swing.JFrame {
         jLabel7.setText("0 Followings");
         jPanel3.add(jLabel7);
         jLabel7.setBounds(200, 550, 120, 23);
-
-        jRadioButton1.setText("jRadioButton1");
-        jPanel3.add(jRadioButton1);
-        jRadioButton1.setBounds(490, 260, 105, 21);
-
-        jTextField2.setText("jTextField2");
-        jPanel3.add(jTextField2);
-        jTextField2.setBounds(450, 390, 78, 23);
-
-        jRadioButton2.setText("jRadioButton2");
-        jPanel3.add(jRadioButton2);
-        jRadioButton2.setBounds(170, 370, 105, 21);
-
-        jPasswordField1.setText("jPasswordField1");
-        jPasswordField1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jPasswordField1ActionPerformed(evt);
-            }
-        });
-        jPanel3.add(jPasswordField1);
-        jPasswordField1.setBounds(530, 440, 90, 23);
         jPanel3.add(jSeparator1);
-        jSeparator1.setBounds(570, 500, 50, 10);
+        jSeparator1.setBounds(570, 500, 0, 3);
         jPanel3.add(jScrollBar1);
         jScrollBar1.setBounds(590, 510, 10, 48);
-
-        jTextField3.setText("jTextField3");
-        jPanel3.add(jTextField3);
-        jTextField3.setBounds(340, 310, 78, 23);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -172,10 +142,6 @@ public class user_profile extends javax.swing.JFrame {
     private void jLabel2ComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jLabel2ComponentShown
         // TODO add your handling code here:
     }//GEN-LAST:event_jLabel2ComponentShown
-
-    private void jPasswordField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPasswordField1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jPasswordField1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -216,13 +182,8 @@ public class user_profile extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
-    private javax.swing.JPasswordField jPasswordField1;
-    private javax.swing.JRadioButton jRadioButton1;
-    private javax.swing.JRadioButton jRadioButton2;
     private javax.swing.JScrollBar jScrollBar1;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
     // End of variables declaration//GEN-END:variables
 
 }
