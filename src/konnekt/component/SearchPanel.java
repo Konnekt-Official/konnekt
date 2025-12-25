@@ -100,7 +100,7 @@ public class SearchPanel extends JPanel {
     // ---------- SEARCH LOGIC ----------
     private void search() {
         String keyword = searchInput.getText().trim();
-        if (keyword.isEmpty() || keyword.equals("Search users or posts...")) {
+        if (keyword.isEmpty() || keyword.equals("Search Users or Posts...")) {
             return;
         }
 
