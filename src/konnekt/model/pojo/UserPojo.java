@@ -6,19 +6,16 @@ public class UserPojo {
     private String username;
     private String email;
     private String password;
-    private String profileUrl;
-    private String bannerUrl;
 
     public UserPojo() {}
 
-    public UserPojo(int id, String fullName, String username, String email, String password, String profileUrl, String bannerUrl) {
+    public UserPojo(int id, String fullName, String username, String email,
+                    String password) {
         this.id = id;
         this.fullName = fullName;
         this.username = username;
         this.email = email;
         this.password = password;
-        this.profileUrl = profileUrl;
-        this.bannerUrl = bannerUrl;
     }
 
     public int getId() { return id; }
@@ -35,10 +32,4 @@ public class UserPojo {
 
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
-
-    public String getProfileUrl() { return profileUrl; }
-    public void setProfileUrl(String profileUrl) { this.profileUrl = profileUrl; }
-
-    public String getBannerUrl() { return bannerUrl; }
-    public void setBannerUrl(String bannerUrl) { this.bannerUrl = bannerUrl; }
 }

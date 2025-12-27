@@ -5,6 +5,7 @@ import konnekt.model.pojo.PostPojo;
 import konnekt.manager.SessionManager;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class PostController {
 
@@ -14,8 +15,8 @@ public class PostController {
         this.postDao = new PostDao();
     }
 
-    public void createPost(JFrame parent, String content, String imageUrl) {
-        if (content.isEmpty() && (imageUrl == null || imageUrl.isEmpty())) {
+    public void createPost(Component parent, String content) {
+        if (content.isEmpty()) {
             JOptionPane.showMessageDialog(parent, "Post cannot be empty!", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -23,7 +24,7 @@ public class PostController {
         PostPojo post = new PostPojo();
         post.setUserId(SessionManager.getCurrentUserId());
         post.setContent(content);
-        post.setImageUrl(imageUrl);
+        post.setLikes(0);
 
         if (postDao.addPost(post)) {
             JOptionPane.showMessageDialog(parent, "Post created successfully!");

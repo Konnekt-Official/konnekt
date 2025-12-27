@@ -8,14 +8,12 @@ import java.sql.*;
 public class UserDao {
 
     public boolean addUser(UserPojo user) {
-        String sql = "INSERT INTO user(full_name, username, email, password, profile_url, banner_url) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO user(full_name, username, email, password) VALUES (?, ?, ?, ?)";
         try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement(sql)) {
             ps.setString(1, user.getFullName());
             ps.setString(2, user.getUsername());
             ps.setString(3, user.getEmail());
             ps.setString(4, user.getPassword());
-            ps.setString(5, user.getProfileUrl());
-            ps.setString(6, user.getBannerUrl());
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -65,7 +63,6 @@ public class UserDao {
         try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement(sql)) {
             ps.setString(1, email);
             ResultSet rs = ps.executeQuery();
-
             if (rs.next()) {
                 UserPojo user = new UserPojo();
                 user.setId(rs.getInt("id"));
@@ -73,8 +70,26 @@ public class UserDao {
                 user.setUsername(rs.getString("username"));
                 user.setEmail(rs.getString("email"));
                 user.setPassword(rs.getString("password"));
-                user.setProfileUrl(rs.getString("profile_url"));
-                user.setBannerUrl(rs.getString("banner_url"));
+                return user;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public UserPojo getUserById(int id) {
+        String sql = "SELECT * FROM user WHERE id = ?";
+        try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                UserPojo user = new UserPojo();
+                user.setId(rs.getInt("id"));
+                user.setFullName(rs.getString("full_name"));
+                user.setUsername(rs.getString("username"));
+                user.setEmail(rs.getString("email"));
+                user.setPassword(rs.getString("password"));
                 return user;
             }
         } catch (SQLException e) {

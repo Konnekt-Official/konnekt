@@ -69,18 +69,12 @@ public class UserController {
             } else if (otpDao.validateOtp(email, inputOTP, "REGISTER_ACCOUNT")) {
                 String hashedPassword = PasswordUtils.hashPassword(password);
 
-                // Default images
-                String defaultProfilePicture = "/images/default-profile.png";
-                String defaultBannerPicture = "/images/default-banner.png";
-
                 // Create user
                 UserPojo user = new UserPojo();
                 user.setFullName(fullName);
                 user.setUsername(username);
                 user.setEmail(email);
                 user.setPassword(hashedPassword);
-                user.setProfileUrl(defaultProfilePicture);
-                user.setBannerUrl(defaultBannerPicture);
 
                 if (userDao.addUser(user)) {
                     JOptionPane.showMessageDialog(rv, "Account registered successfully!");
