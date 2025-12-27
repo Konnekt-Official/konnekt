@@ -11,7 +11,7 @@ public class OTPDao {
         String sql = "INSERT INTO otp (otp, type, email) VALUES (?, ?, ?)";
         try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement(sql)) {
             ps.setString(1, otp.getOtp());
-            ps.setString(2, otp.getType().name());
+            ps.setString(2, otp.getType());
             ps.setString(3, otp.getEmail());
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
