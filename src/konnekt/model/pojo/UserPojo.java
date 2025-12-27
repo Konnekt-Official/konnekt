@@ -6,15 +6,17 @@ public class UserPojo {
     private String username;
     private String email;
     private String password;
+    private String profilePicture; // new field
 
     public UserPojo() {}
 
-    public UserPojo(int id, String fullName, String username, String email, String password) {
+    public UserPojo(int id, String fullName, String username, String email, String password, String profilePicture) {
         this.id = id;
         this.fullName = fullName;
         this.username = username;
         this.email = email;
         this.password = password;
+        this.profilePicture = profilePicture;
     }
 
     public int getId() { return id; }
@@ -31,4 +33,7 @@ public class UserPojo {
 
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
+
+    public String getProfilePicture() { return profilePicture; }
+    public void setProfilePicture(String profilePicture) { this.profilePicture = profilePicture; }
 }

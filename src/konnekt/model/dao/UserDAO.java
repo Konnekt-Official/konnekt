@@ -8,13 +8,14 @@ import java.sql.*;
 public class UserDao {
 
     public boolean addUser(UserPojo user) {
-        String sql = "INSERT INTO user(full_name, username, email, password) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO user(full_name, username, email, password, profile_picture) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement(sql)) {
             ps.setString(1, user.getFullName());
             ps.setString(2, user.getUsername());
             ps.setString(3, user.getEmail());
             ps.setString(4, user.getPassword());
-            return ps.executeUpdate() > 0; // returns true if insert succeeds
+            ps.setString(5, user.getProfilePicture());
+            return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -25,9 +26,9 @@ public class UserDao {
         String sql = "SELECT * FROM user WHERE email=? AND password=?";
         try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement(sql)) {
             ps.setString(1, email);
-            ps.setString(2, password); // hash in real projects
+            ps.setString(2, password);
             ResultSet rs = ps.executeQuery();
-            return rs.next(); // true if user exists
+            return rs.next();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -39,7 +40,7 @@ public class UserDao {
         try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement(sql)) {
             ps.setString(1, username);
             ResultSet rs = ps.executeQuery();
-            return rs.next(); // true if a row exists
+            return rs.next();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -51,7 +52,7 @@ public class UserDao {
         try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement(sql)) {
             ps.setString(1, email);
             ResultSet rs = ps.executeQuery();
-            return rs.next(); // true if a row exists
+            return rs.next();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -71,12 +72,12 @@ public class UserDao {
                 user.setUsername(rs.getString("username"));
                 user.setEmail(rs.getString("email"));
                 user.setPassword(rs.getString("password"));
+                user.setProfilePicture(rs.getString("profile_picture"));
                 return user;
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null; // user not found
+        return null;
     }
-
 }
