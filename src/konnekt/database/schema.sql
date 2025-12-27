@@ -39,5 +39,13 @@ SET GLOBAL event_scheduler = ON;
 CREATE EVENT IF NOT EXISTS delete_expired_otps
 ON SCHEDULE EVERY 1 MINUTE
 DO
-
   DELETE FROM otp WHERE expires_at <= NOW();
+
+CREATE TABLE IF NOT EXISTS post (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    content TEXT NOT NULL,
+    likes INT DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    -- FOREIGN KEY (user_id) REFERENCES user(id)
+);
