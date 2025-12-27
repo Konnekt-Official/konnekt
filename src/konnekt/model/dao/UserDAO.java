@@ -33,7 +33,7 @@ public class UserDao {
         }
         return false;
     }
-    
+
     public boolean existsByUsername(String username) {
         String sql = "SELECT id FROM user WHERE username = ?";
         try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement(sql)) {
@@ -57,4 +57,26 @@ public class UserDao {
         }
         return false;
     }
+
+    public UserPojo getUserByEmail(String email) {
+        String sql = "SELECT * FROM user WHERE email = ?";
+        try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement(sql)) {
+            ps.setString(1, email);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                UserPojo user = new UserPojo();
+                user.setId(rs.getInt("id"));
+                user.setFullName(rs.getString("full_name"));
+                user.setUsername(rs.getString("username"));
+                user.setEmail(rs.getString("email"));
+                user.setPassword(rs.getString("password"));
+                return user;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null; // user not found
+    }
+
 }

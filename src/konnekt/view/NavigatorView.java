@@ -16,8 +16,6 @@ import konnekt.component.SettingPanel;
 
 import konnekt.manager.SessionManager;
 
-import konnekt.view.LoginView;
-
 /**
  *
  * @author Hp
@@ -398,7 +396,7 @@ public class NavigatorView extends BaseFrame {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 679, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
