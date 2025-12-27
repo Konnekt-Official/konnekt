@@ -8,13 +8,14 @@ import java.sql.*;
 public class UserDao {
 
     public boolean addUser(UserPojo user) {
-        String sql = "INSERT INTO user(full_name, username, email, password, profile_picture) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO user(full_name, username, email, password, profile_url, banner_url) VALUES (?, ?, ?, ?, ?, ?)";
         try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement(sql)) {
             ps.setString(1, user.getFullName());
             ps.setString(2, user.getUsername());
             ps.setString(3, user.getEmail());
             ps.setString(4, user.getPassword());
-            ps.setString(5, user.getProfilePicture());
+            ps.setString(5, user.getProfileUrl());
+            ps.setString(6, user.getBannerUrl());
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -72,7 +73,8 @@ public class UserDao {
                 user.setUsername(rs.getString("username"));
                 user.setEmail(rs.getString("email"));
                 user.setPassword(rs.getString("password"));
-                user.setProfilePicture(rs.getString("profile_picture"));
+                user.setProfileUrl(rs.getString("profile_url"));
+                user.setBannerUrl(rs.getString("banner_url"));
                 return user;
             }
         } catch (SQLException e) {
