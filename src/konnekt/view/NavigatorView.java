@@ -496,7 +496,7 @@ public class NavigatorView extends BaseFrame {
 
     private void initPanels() {
         mainPanel.add(new FeedPanel(), "FEED");
-        mainPanel.add(new ProfilePanel(), "PROFILE");
+        mainPanel.add(new ProfilePanel(SessionManager.getCurrentUserId(), SessionManager.getCurrentUserId()), "PROFILE");
         mainPanel.add(new InboxPanel(), "INBOX");
         mainPanel.add(new SearchPanel(), "SEARCH");
         mainPanel.add(new NotificationPanel(), "NOTIFICATION");
@@ -551,6 +551,13 @@ public class NavigatorView extends BaseFrame {
         instance.mainPanel.add(cp, "COMMENT");
         CardLayout cl = (CardLayout) instance.mainPanel.getLayout();
         cl.show(instance.mainPanel, "COMMENT");
+    }
+
+    public static void showProfile(int userId) {
+        instance.mainPanel.removeAll();
+        instance.mainPanel.add(new ProfilePanel(SessionManager.getCurrentUserId(), userId));
+        instance.mainPanel.revalidate();
+        instance.mainPanel.repaint();
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

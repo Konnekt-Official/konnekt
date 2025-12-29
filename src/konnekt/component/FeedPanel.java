@@ -10,6 +10,8 @@ import konnekt.view.NavigatorView;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
@@ -142,6 +144,11 @@ public class FeedPanel extends JPanel {
         username.setFont(FONT);
         username.setForeground(Color.BLUE);
         username.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        username.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                NavigatorView.showProfile(post.getUserId());
+            }
+        });
 
         JLabel time = new JLabel("· " + timeAgo(post.getCreatedAt()));
         time.setFont(FONT);

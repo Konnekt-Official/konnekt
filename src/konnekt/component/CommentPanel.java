@@ -9,10 +9,13 @@ import konnekt.model.pojo.PostPojo;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
+import konnekt.view.NavigatorView;
 
 public class CommentPanel extends JPanel {
 
@@ -131,6 +134,11 @@ public class CommentPanel extends JPanel {
         username.setFont(FONT);
         username.setForeground(Color.BLUE);
         username.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        usernameLabel.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                NavigatorView.showProfile(userId);
+            }
+        });
 
         JLabel time = new JLabel("· " + timeAgo(post.getCreatedAt()));
         time.setFont(FONT);
@@ -201,6 +209,13 @@ public class CommentPanel extends JPanel {
         username.setFont(COMMENT_FONT);
         username.setForeground(Color.BLUE);
         username.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        username.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int userId;
+                NavigatorView.showProfile(c.getUserId());
+            }
+        });
 
         JLabel time = new JLabel("· " + timeAgo(c.getCreatedAt()));
         time.setFont(COMMENT_FONT);
@@ -227,11 +242,19 @@ public class CommentPanel extends JPanel {
     }
 
     private String timeAgo(java.sql.Timestamp ts) {
-        if (ts == null) return "";
+        if (ts == null) {
+            return "";
+        }
         Duration d = Duration.between(ts.toInstant(), Instant.now());
-        if (d.toMinutes() < 1) return "just now";
-        if (d.toHours() < 1) return d.toMinutes() + "m";
-        if (d.toDays() < 1) return d.toHours() + "h";
+        if (d.toMinutes() < 1) {
+            return "just now";
+        }
+        if (d.toHours() < 1) {
+            return d.toMinutes() + "m";
+        }
+        if (d.toDays() < 1) {
+            return d.toHours() + "h";
+        }
         return d.toDays() + "d";
     }
 }

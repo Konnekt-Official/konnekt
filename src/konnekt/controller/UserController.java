@@ -53,16 +53,27 @@ public class UserController {
         otpPojo.setEmail(email);
         otpDao.insertOtp(otpPojo);
 
-        String body = "<html><body>"
-                + "<p>Hello, <b>" + fullName + "</b></p>"
-                + "<p>Your OTP is:</p><h2 style='color:#01FE49;'>" + otp + "</h2>"
-                + "<p>Expires in 5 minutes.</p></body></html>";
+        String body = "<html><body style='font-family: Arial, sans-serif; line-height:1.6;'>"
+                + "<h3 style='color:#333;'>Hello, <b>" + fullName + "</b>!</h3>"
+                + "<p>We received a request to access your account.</p>"
+                + "<p>Your One-Time Password (OTP) is:</p>"
+                + "<h2 style='color:#01FE49;'>" + otp + "</h2>"
+                + "<p>This OTP will expire in <b>5 minutes</b>. Please do not share it with anyone.</p>"
+                + "<p>If you did not request this, please ignore this email or contact support immediately.</p>"
+                + "<p><b>Best regards,</b><br>Konnekt Teams</p>"
+                + "<hr style='border:none; border-top:1px solid #ccc;'/>"
+                + "<p style='font-size:12px; color:#888;'>This is an automated message, please do not reply.</p>"
+                + "<p style='font-size:12px; color:#888;'>© 2025 Konnekt. All rights reserved.</p>"
+                + "</body></html>";
+
         new EmailService().sendEmail(email, "Account Registration OTP", body);
 
         String message = "An OTP has been sent to " + email + ". Please enter it below:";
         while (true) {
             String inputOTP = JOptionPane.showInputDialog(rv, message, "OTP Verification", JOptionPane.PLAIN_MESSAGE);
-            if (inputOTP == null) return;
+            if (inputOTP == null) {
+                return;
+            }
             inputOTP = inputOTP.trim();
             if (inputOTP.isEmpty()) {
                 JOptionPane.showMessageDialog(rv, "OTP cannot be empty!", "Error", JOptionPane.ERROR_MESSAGE);

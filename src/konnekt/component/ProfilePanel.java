@@ -1,28 +1,40 @@
 package konnekt.component;
 
-import konnekt.model.dao.FollowDao;
-import konnekt.model.dao.PostDao;
-import konnekt.model.pojo.PostPojo;
-import konnekt.model.pojo.UserPojo; // your user pojo
+import konnekt.model.dao.*;
+import konnekt.model.pojo.*;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.net.URL;
 import java.util.List;
 
 public class ProfilePanel extends JPanel {
 
+    private final int profileUserId;
+    private final int loggedInUserId;
+
     private final PostDao postDao = new PostDao();
     private final FollowDao followDao = new FollowDao();
+    private final UserDao userDao = new UserDao();
 
-    private final JPanel postsContainer = new JPanel();
-    private final JScrollPane scrollPane;
-    private final int profileUserId;
-    private final int loggedInUserId; // current logged-in user
-
+    private JPanel postsContainer;
+    private JPanel headerPanel;
     private JButton followBtn;
 
     private static final Font FONT = new Font("Verdana", Font.PLAIN, 13);
+    private static final Font NAME_FONT = new Font("Verdana", Font.BOLD, 16);
+
+    private static final ImageIcon DEFAULT_PROFILE;
+
+    static {
+        URL url = ProfilePanel.class.getClassLoader()
+                .getResource("konnekt/resources/images/default_profile.png");
+        DEFAULT_PROFILE = (url != null)
+                ? new ImageIcon(new ImageIcon(url).getImage()
+                .getScaledInstance(80, 80, Image.SCALE_SMOOTH))
+                : new ImageIcon();
+    }
 
     public ProfilePanel(int loggedInUserId, int profileUserId) {
         this.loggedInUserId = loggedInUserId;
@@ -31,113 +43,133 @@ public class ProfilePanel extends JPanel {
         setLayout(new BorderLayout());
         setBackground(new Color(245, 245, 245));
 
-        add(createHeaderPanel(), BorderLayout.NORTH);
+        headerPanel = new JPanel(new BorderLayout());
+        add(headerPanel, BorderLayout.NORTH);
 
+        postsContainer = new JPanel();
         postsContainer.setLayout(new BoxLayout(postsContainer, BoxLayout.Y_AXIS));
         postsContainer.setBackground(new Color(245, 245, 245));
 
-        scrollPane = new JScrollPane(postsContainer);
+        JScrollPane scrollPane = new JScrollPane(postsContainer);
         scrollPane.setBorder(null);
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
 
         add(scrollPane, BorderLayout.CENTER);
 
-        refreshPosts();
+        refresh();
     }
 
+    private void refresh() {
+        headerPanel.removeAll();
+        headerPanel.add(createHeaderPanel(), BorderLayout.CENTER);
+
+        refreshPosts();
+
+        revalidate();
+        repaint();
+    }
+
+    // ---------------- HEADER ----------------
     private JPanel createHeaderPanel() {
         JPanel header = new JPanel(new BorderLayout());
         header.setBackground(Color.WHITE);
-        header.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        // Banner + Profile picture
         JLabel banner = new JLabel();
         banner.setPreferredSize(new Dimension(800, 150));
         banner.setOpaque(true);
-        banner.setBackground(Color.LIGHT_GRAY); // default banner
+        banner.setBackground(Color.LIGHT_GRAY);
         header.add(banner, BorderLayout.NORTH);
 
-        JPanel infoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
-        infoPanel.setBackground(Color.WHITE);
+        JPanel info = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 10));
+        info.setBackground(Color.WHITE);
+        info.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        JLabel avatar = new JLabel(new ImageIcon(getClass().getResource("/konnekt/resources/images/default_profile.png")));
-        avatar.setPreferredSize(new Dimension(80, 80));
-        infoPanel.add(avatar);
+        JLabel avatar = new JLabel(DEFAULT_PROFILE);
+        info.add(avatar);
 
-        JPanel userInfo = new JPanel();
-        userInfo.setLayout(new BoxLayout(userInfo, BoxLayout.Y_AXIS));
-        userInfo.setBackground(Color.WHITE);
+        UserPojo user = userDao.getUserById(profileUserId);
 
-        UserPojo user = new UserPojo(); // load user details from dao
-        user.setId(profileUserId);
-        user.setFullName("User Fullname"); // fetch from DAO
-        user.setUsername("username");      // fetch from DAO
+        JPanel text = new JPanel();
+        text.setLayout(new BoxLayout(text, BoxLayout.Y_AXIS));
+        text.setBackground(Color.WHITE);
 
         JLabel fullName = new JLabel(user.getFullName());
-        fullName.setFont(new Font("Verdana", Font.BOLD, 16));
-        userInfo.add(fullName);
+        fullName.setFont(NAME_FONT);
 
         JLabel username = new JLabel("@" + user.getUsername());
         username.setForeground(Color.BLUE);
-        userInfo.add(username);
 
         JLabel followInfo = new JLabel(
                 followDao.getFollowingCount(profileUserId) + " Following • " +
-                        followDao.getFollowersCount(profileUserId) + " Followers"
+                followDao.getFollowersCount(profileUserId) + " Followers"
         );
-        userInfo.add(followInfo);
 
-        infoPanel.add(userInfo);
+        text.add(fullName);
+        text.add(username);
+        text.add(Box.createVerticalStrut(5));
+        text.add(followInfo);
 
-        // Follow button if not same user
+        info.add(text);
+
         if (loggedInUserId != profileUserId) {
-            followBtn = new JButton(followDao.isFollowing(loggedInUserId, profileUserId) ? "Following" : "Follow");
-            followBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            followBtn = new JButton(
+                    followDao.isFollowing(loggedInUserId, profileUserId)
+                            ? "Following" : "Follow"
+            );
             followBtn.addActionListener(e -> toggleFollow());
-            infoPanel.add(followBtn);
+            info.add(followBtn);
         }
 
-        header.add(infoPanel, BorderLayout.CENTER);
+        header.add(info, BorderLayout.CENTER);
         return header;
     }
 
     private void toggleFollow() {
         if (followDao.isFollowing(loggedInUserId, profileUserId)) {
             followDao.unfollowUser(loggedInUserId, profileUserId);
-            followBtn.setText("Follow");
         } else {
             followDao.followUser(loggedInUserId, profileUserId);
-            followBtn.setText("Following");
         }
-        refreshPosts(); // refresh follow count
+        refresh();
     }
 
+    // ---------------- POSTS ----------------
     private void refreshPosts() {
         postsContainer.removeAll();
+
         List<PostPojo> posts = postDao.getPostsByUser(profileUserId);
         for (PostPojo post : posts) {
-            JPanel postCard = new JPanel(new BorderLayout());
-            postCard.setBorder(new EmptyBorder(10, 10, 10, 10));
-            postCard.setBackground(Color.WHITE);
-
-            JLabel content = new JLabel("<html><body style='width: 600px;'>" + post.getContent() + "</body></html>");
-            content.setFont(FONT);
-            postCard.add(content, BorderLayout.CENTER);
-
-            if (loggedInUserId == profileUserId) {
-                JButton delete = new JButton("Delete");
-                delete.addActionListener(e -> {
-                    postDao.deletePost(post.getId());
-                    refreshPosts();
-                });
-                postCard.add(delete, BorderLayout.EAST);
-            }
-
-            postsContainer.add(postCard);
+            postsContainer.add(createPostCard(post));
             postsContainer.add(Box.createVerticalStrut(10));
         }
 
         postsContainer.revalidate();
         postsContainer.repaint();
+    }
+
+    private JPanel createPostCard(PostPojo post) {
+        JPanel card = new JPanel(new BorderLayout());
+        card.setBackground(Color.WHITE);
+        card.setBorder(new EmptyBorder(10, 10, 10, 10));
+
+        JTextArea content = new JTextArea(post.getContent());
+        content.setFont(FONT);
+        content.setLineWrap(true);
+        content.setWrapStyleWord(true);
+        content.setEditable(false);
+        content.setOpaque(false);
+
+        card.add(content, BorderLayout.CENTER);
+
+        if (loggedInUserId == profileUserId) {
+            JButton delete = new JButton("Delete");
+            delete.addActionListener(e -> {
+                postDao.deletePost(post.getId());
+                refreshPosts();
+            });
+            card.add(delete, BorderLayout.EAST);
+        }
+
+        return card;
     }
 }
