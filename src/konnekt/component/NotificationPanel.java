@@ -19,10 +19,10 @@ public class NotificationPanel extends JPanel {
 
     public NotificationPanel() {
         setLayout(new BorderLayout());
-        setBackground(new Color(245,245,245));
+        setBackground(new Color(245, 245, 245));
 
         container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
-        container.setBackground(new Color(245,245,245));
+        container.setBackground(new Color(245, 245, 245));
 
         add(new JScrollPane(container), BorderLayout.CENTER);
         refresh();
@@ -30,8 +30,8 @@ public class NotificationPanel extends JPanel {
 
     public void refresh() {
         container.removeAll();
-        List<NotificationPojo> list =
-                dao.groupedForUser(SessionManager.getCurrentUserId());
+        List<NotificationPojo> list
+                = dao.groupedForUser(SessionManager.getCurrentUserId());
 
         for (NotificationPojo n : list) {
             container.add(card(n));
@@ -44,7 +44,7 @@ public class NotificationPanel extends JPanel {
     private JPanel card(NotificationPojo n) {
         JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 8));
         p.setBackground(Color.WHITE);
-        p.setBorder(new EmptyBorder(8,8,8,8));
+        p.setBorder(new EmptyBorder(8, 8, 8, 8));
 
         JLabel avatar = new JLabel(new ImageIcon(
                 getClass().getResource("/konnekt/resources/images/default_profile.png")
@@ -56,10 +56,11 @@ public class NotificationPanel extends JPanel {
 
         text.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent e) {
-                if ("FOLLOW".equals(n.getType()))
+                if ("FOLLOW".equals(n.getType())) {
                     NavigatorView.showProfile(n.getSenderId());
-                else
+                } else {
                     NavigatorView.showComments(n.getReferenceId());
+                }
 
                 dao.markAllRead(SessionManager.getCurrentUserId());
             }
@@ -70,11 +71,26 @@ public class NotificationPanel extends JPanel {
     }
 
     private String buildText(NotificationPojo n) {
-        return "<html><b>" + n.getSenderFullName() + "</b> " +
-                "<font color='blue'>@" + n.getSenderUsername() + "</font> " +
-                "<b>" + n.getType().toLowerCase() + "</b> your post " +
-                "<span style='color:gray'>" +
-                TimeAgo.format(n.getCreatedAt()) +
-                "</span></html>";
+        String message = "";
+        String senderName = "<b>" + n.getSenderFullName() + "</b>";
+        String username = "<font color='blue'>@" + n.getSenderUsername() + "</font>";
+        String time = "<span style='color:gray'>" + TimeAgo.format(n.getCreatedAt()) + "</span>";
+
+        switch (n.getType()) {
+            case "LIKE":
+                message = senderName + " " + username + " <b>liked</b> your post " + time;
+                break;
+            case "COMMENT":
+                message = senderName + " " + username + " <b>commented</b> on your post " + time;
+                break;
+            case "FOLLOW":
+                message = senderName + " " + username + " <b>followed</b> you " + time;
+                break;
+            default:
+                message = senderName + " " + username + " did something " + time;
+        }
+
+        return "<html>" + message + "</html>";
     }
+
 }
