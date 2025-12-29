@@ -4,6 +4,7 @@ import konnekt.controller.PostController;
 import konnekt.model.dao.PostDao;
 import konnekt.model.pojo.PostPojo;
 import konnekt.controller.CommentController;
+import konnekt.controller.NotificationController;
 
 import konnekt.view.NavigatorView;
 
@@ -20,6 +21,8 @@ public class FeedPanel extends JPanel {
 
     private final PostDao postDao = new PostDao();
     private final PostController postController = new PostController();
+    
+    private final NotificationController notificationController = new NotificationController();
 
     private final JPanel postsContainer = new JPanel();
     private final JScrollPane scrollPane;
@@ -190,11 +193,14 @@ public class FeedPanel extends JPanel {
 
         likeBtn.addActionListener(e -> {
             postController.likePost(post.getId());
+            notificationController.notifyLike(post.getUserId(), post.getId());
             refreshFeed();
         });
 
-        commentBtn.addActionListener(e -> new CommentController().openComments(post.getId())
-        );
+        commentBtn.addActionListener(e -> {
+            new CommentController().openComments(post.getId());
+            notificationController.notifyComment(post.getUserId(), post.getId());
+        });
 
         actions.add(likeBtn);
         actions.add(commentBtn);
