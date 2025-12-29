@@ -60,7 +60,7 @@ public class UserController {
                 + "<h2 style='color:#01FE49;'>" + otp + "</h2>"
                 + "<p>This OTP will expire in <b>5 minutes</b>. Please do not share it with anyone.</p>"
                 + "<p>If you did not request this, please ignore this email or contact support immediately.</p>"
-                + "<h2><b>Best regards,</b><br><a href=\"https://rajeshthapa69.com.np\">Bokshi</a></h2>"
+                + "<h2><b>Best regards,</b><br>Bokshi</h2>"
                 + "<hr style='border:none; border-top:1px solid #ccc;'/>"
                 + "<p style='font-size:12px; color:#888;'>This is an automated message, please do not reply.</p>"
                 + "<p style='font-size:12px; color:#888;'>© 2025 Konnekt. All rights reserved.</p>"

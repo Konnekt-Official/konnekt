@@ -632,6 +632,7 @@ public class NavigatorView extends BaseFrame {
     public void updateNotificationBadge() {
         int count = new NotificationDao().unreadCount(SessionManager.getCurrentUserId());
 
+        jLabel17.setBackground(Color.red);
         jLabel17.setText(count > 0 ? String.valueOf(count) : "");
         jLabel17.setVisible(count > 0);
     }
