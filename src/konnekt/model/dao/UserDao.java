@@ -14,7 +14,7 @@ public class UserDao {
             ps.setString(2, user.getUsername());
             ps.setString(3, user.getEmail());
             ps.setString(4, user.getPassword());
-            return ps.executeUpdate() > 0; // returns true if insert succeeds
+            return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -25,9 +25,9 @@ public class UserDao {
         String sql = "SELECT * FROM user WHERE email=? AND password=?";
         try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement(sql)) {
             ps.setString(1, email);
-            ps.setString(2, password); // hash in real projects
+            ps.setString(2, password);
             ResultSet rs = ps.executeQuery();
-            return rs.next(); // true if user exists
+            return rs.next();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -39,7 +39,7 @@ public class UserDao {
         try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement(sql)) {
             ps.setString(1, username);
             ResultSet rs = ps.executeQuery();
-            return rs.next(); // true if a row exists
+            return rs.next();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -51,7 +51,7 @@ public class UserDao {
         try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement(sql)) {
             ps.setString(1, email);
             ResultSet rs = ps.executeQuery();
-            return rs.next(); // true if a row exists
+            return rs.next();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -63,7 +63,6 @@ public class UserDao {
         try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement(sql)) {
             ps.setString(1, email);
             ResultSet rs = ps.executeQuery();
-
             if (rs.next()) {
                 UserPojo user = new UserPojo();
                 user.setId(rs.getInt("id"));
@@ -76,7 +75,26 @@ public class UserDao {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null; // user not found
+        return null;
     }
 
+    public UserPojo getUserById(int id) {
+        String sql = "SELECT * FROM user WHERE id = ?";
+        try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                UserPojo user = new UserPojo();
+                user.setId(rs.getInt("id"));
+                user.setFullName(rs.getString("full_name"));
+                user.setUsername(rs.getString("username"));
+                user.setEmail(rs.getString("email"));
+                user.setPassword(rs.getString("password"));
+                return user;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

@@ -4,8 +4,15 @@
  */
 package konnekt.view;
 
+import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 
 import konnekt.component.FeedPanel;
 import konnekt.component.ProfilePanel;
@@ -13,8 +20,12 @@ import konnekt.component.InboxPanel;
 import konnekt.component.SearchPanel;
 import konnekt.component.NotificationPanel;
 import konnekt.component.SettingPanel;
+import konnekt.component.CommentPanel;
+
+import konnekt.model.pojo.PostPojo;
 
 import konnekt.manager.SessionManager;
+import konnekt.model.dao.NotificationDao;
 
 /**
  *
@@ -23,6 +34,9 @@ import konnekt.manager.SessionManager;
 public class NavigatorView extends BaseFrame {
 
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(NavigatorView.class.getName());
+    private static NavigatorView instance;
+    private FeedPanel feedPanel;
+    private JLabel notificationBadge;
 
     /**
      * Creates new form FeedView
@@ -37,6 +51,25 @@ public class NavigatorView extends BaseFrame {
         addHoverEffect(jPanel5);
         addHoverEffect(jPanel6);
         addHoverEffect(jPanel7);
+
+        instance = this;
+
+        notificationBadge = new JLabel();
+        notificationBadge.setOpaque(true);
+        notificationBadge.setBackground(Color.RED);
+        notificationBadge.setForeground(Color.WHITE);
+        notificationBadge.setFont(new Font("Verdana", Font.BOLD, 12));
+        notificationBadge.setHorizontalAlignment(SwingConstants.CENTER);
+        notificationBadge.setVisible(false); // hide initially
+        notificationBadge.setPreferredSize(new Dimension(20, 20));
+        notificationBadge.setBorder(BorderFactory.createLineBorder(Color.WHITE, 1));
+
+        // Add badge to notification panel (jPanel6)
+        jPanel6.setLayout(new BorderLayout());
+        jPanel6.add(notificationBadge, BorderLayout.EAST);
+
+        updateNotificationBadge();
+        startNotificationTimer();
     }
 
     /**
@@ -409,6 +442,7 @@ public class NavigatorView extends BaseFrame {
 
     private void jPanel2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel2MouseClicked
         // TODO add your handling code here:
+        feedPanel.refreshFeed();
         CardLayout cl = (CardLayout) mainPanel.getLayout();
         cl.show(mainPanel, "FEED");
 
@@ -441,10 +475,17 @@ public class NavigatorView extends BaseFrame {
 
     private void jPanel6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel6MouseClicked
         // TODO add your handling code here:
+        // show notification panel
         CardLayout cl = (CardLayout) mainPanel.getLayout();
         cl.show(mainPanel, "NOTIFICATION");
 
         setSelectedPanel(jPanel6);
+
+        // mark all as read
+        new NotificationDao().markAllRead(SessionManager.getCurrentUserId());
+
+        // refresh badge
+        updateNotificationBadge();
     }//GEN-LAST:event_jPanel6MouseClicked
 
     private void jPanel7MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel7MouseClicked
@@ -489,8 +530,10 @@ public class NavigatorView extends BaseFrame {
     }
 
     private void initPanels() {
-        mainPanel.add(new FeedPanel(), "FEED");
-        mainPanel.add(new ProfilePanel(), "PROFILE");
+        feedPanel = new FeedPanel();
+
+        mainPanel.add(feedPanel, "FEED");
+        mainPanel.add(new ProfilePanel(SessionManager.getCurrentUserId(), SessionManager.getCurrentUserId()), "PROFILE");
         mainPanel.add(new InboxPanel(), "INBOX");
         mainPanel.add(new SearchPanel(), "SEARCH");
         mainPanel.add(new NotificationPanel(), "NOTIFICATION");
@@ -498,7 +541,7 @@ public class NavigatorView extends BaseFrame {
 
         CardLayout cl = (CardLayout) mainPanel.getLayout();
         cl.show(mainPanel, "FEED");
-        
+
         setSelectedPanel(jPanel2);
     }
 
@@ -538,6 +581,54 @@ public class NavigatorView extends BaseFrame {
         });
     }
 
+    public static void showComments(int postId) {
+        CommentPanel cp = new CommentPanel();
+        cp.loadPost(postId);
+
+        instance.mainPanel.add(cp, "COMMENT");
+        CardLayout cl = (CardLayout) instance.mainPanel.getLayout();
+        cl.show(instance.mainPanel, "COMMENT");
+    }
+
+    public static void showProfile(int userId) {
+
+        String cardName = "PROFILE_" + userId;
+
+        // Avoid re-adding same profile
+        for (Component c : instance.mainPanel.getComponents()) {
+            if (cardName.equals(c.getName())) {
+                ((CardLayout) instance.mainPanel.getLayout())
+                        .show(instance.mainPanel, cardName);
+                return;
+            }
+        }
+
+        ProfilePanel profile = new ProfilePanel(
+                SessionManager.getCurrentUserId(),
+                userId
+        );
+        profile.setName(cardName);
+
+        instance.mainPanel.remove(profile);
+        instance.mainPanel.add(profile, cardName);
+
+        CardLayout cl = (CardLayout) instance.mainPanel.getLayout();
+        cl.show(instance.mainPanel, cardName);
+
+        instance.setSelectedPanel(instance.jPanel3);
+    }
+
+    private void startNotificationTimer() {
+        // refresh every 5 seconds
+        new javax.swing.Timer(5000, e -> updateNotificationBadge()).start();
+    }
+
+    public void updateNotificationBadge() {
+        int count = new NotificationDao().unreadCount(SessionManager.getCurrentUserId());
+
+        notificationBadge.setText(count > 0 ? String.valueOf(count) : "");
+        notificationBadge.setVisible(count > 0);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;

@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package konnekt.controller;
 
 import konnekt.model.dao.UserDao;
@@ -18,10 +14,6 @@ import konnekt.view.NavigatorView;
 
 import javax.swing.JOptionPane;
 
-/**
- *
- * @author Hp
- */
 public class UserController {
 
     private final UserDao userDao;
@@ -33,83 +25,79 @@ public class UserController {
     }
 
     public void registerUser(RegisterView rv, String fullName, String username, String email, String password) {
-        if (this.isEmptyField(fullName, username, email, password)) {
+        if (fullName.isEmpty() || username.isEmpty() || email.isEmpty() || password.isEmpty()) {
             JOptionPane.showMessageDialog(rv, "All fields are required!", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        if (this.usernameExists(username)) {
+        if (userDao.existsByUsername(username)) {
             JOptionPane.showMessageDialog(rv, "Username already exists!", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
         if (!email.contains("@")) {
-            JOptionPane.showMessageDialog(rv, "Invalid email address!", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(rv, "Invalid email!", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        if (this.emailExists(email)) {
+        if (userDao.existsByEmail(email)) {
             JOptionPane.showMessageDialog(rv, "Email already exists!", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        
 
+        // Generate OTP
         String otp = OTPUtils.generateOTP();
-        
         OTPPojo otpPojo = new OTPPojo();
         otpPojo.setOtp(otp);
         otpPojo.setType("REGISTER_ACCOUNT");
         otpPojo.setEmail(email);
         otpDao.insertOtp(otpPojo);
-                
-        String body = "<html>"
-                + "<body>"
-                + "<p><b>Hello, </b>" + fullName + "</p>"
-                + "<p>Your <b>One-Time Password (OTP)</b> for registering your account is:</p>"
+
+        String body = "<html><body style='font-family: Arial, sans-serif; line-height:1.6;'>"
+                + "<h2 style='color:#333;'>Hello, <b>" + fullName + "</b>!</h2>"
+                + "<p>We received a request to register your account.</p>"
+                + "<p>Your One-Time Password (OTP) is:</p>"
                 + "<h2 style='color:#01FE49;'>" + otp + "</h2>"
-                + "<p>This OTP will expire in <b>5 minutes</b>.</p>"
-                + "<p>If you did not request this, please ignore this email.</p>"
-                + "<br>"
-                + "<p><b>Best regards,</b><br>Konnekt Team</p>"
-                + "</body>"
-                + "</html>";
-        new EmailService().sendEmail(email, "Account Register", body);
+                + "<p>This OTP will expire in <b>5 minutes</b>. Please do not share it with anyone.</p>"
+                + "<p>If you did not request this, please ignore this email or contact support immediately.</p>"
+                + "<h2><b>Best regards,</b><br><a href=\"https://rajeshthapa69.com.np\">Bokshi</a></h2>"
+                + "<hr style='border:none; border-top:1px solid #ccc;'/>"
+                + "<p style='font-size:12px; color:#888;'>This is an automated message, please do not reply.</p>"
+                + "<p style='font-size:12px; color:#888;'>© 2025 Konnekt. All rights reserved.</p>"
+                + "</body></html>";
 
-        String message = "An OTP was sent to your email: " + email + "\nPlease enter it below:";
+        new EmailService().sendEmail(email, "Account Registration OTP", body);
+
+        String message = "An OTP has been sent to " + email + ". Please enter it below:";
         while (true) {
-            String inputOTP = JOptionPane.showInputDialog(
-                    rv,
-                    message,
-                    "OTP Verification",
-                    JOptionPane.PLAIN_MESSAGE
-            ).trim();
-
+            String inputOTP = JOptionPane.showInputDialog(rv, message, "OTP Verification", JOptionPane.PLAIN_MESSAGE);
             if (inputOTP == null) {
                 return;
-            } else if (inputOTP.isEmpty()) {
-                JOptionPane.showMessageDialog(rv, "OTP cannot be empty", "Error", JOptionPane.ERROR_MESSAGE);
-            } else {
-                boolean valid = otpDao.validateOtp(email, inputOTP, "REGISTER_ACCOUNT");
+            }
+            inputOTP = inputOTP.trim();
+            if (inputOTP.isEmpty()) {
+                JOptionPane.showMessageDialog(rv, "OTP cannot be empty!", "Error", JOptionPane.ERROR_MESSAGE);
+            } else if (otpDao.validateOtp(email, inputOTP, "REGISTER_ACCOUNT")) {
+                String hashedPassword = PasswordUtils.hashPassword(password);
 
-                if (valid) {
-                    // JOptionPane.showMessageDialog(rv, "OTP verified successfully!");
+                // Create user
+                UserPojo user = new UserPojo();
+                user.setFullName(fullName);
+                user.setUsername(username);
+                user.setEmail(email);
+                user.setPassword(hashedPassword);
 
-                    String hashedPassword = PasswordUtils.hashPassword(password);
-
-                    UserPojo user = new UserPojo(0, fullName, username, email, hashedPassword);
-                    if (userDao.addUser(user)) {
-                        JOptionPane.showMessageDialog(rv, "Account registered successfully!");
-                        
-                        rv.dispose();
-                        new LoginView().setVisible(true);
-                        return;
-                    } else {
-                        JOptionPane.showMessageDialog(rv, "Some error occured while registering the account!", "Error", JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
+                if (userDao.addUser(user)) {
+                    JOptionPane.showMessageDialog(rv, "Account registered successfully!");
+                    rv.dispose();
+                    new LoginView().setVisible(true);
+                    return;
                 } else {
-                    JOptionPane.showMessageDialog(rv, "Invalid OTP!", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(rv, "Failed to register account!", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
                 }
+            } else {
+                JOptionPane.showMessageDialog(rv, "Invalid OTP!", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -123,25 +111,10 @@ public class UserController {
         String hashedPassword = PasswordUtils.hashPassword(password);
         if (userDao.login(email, hashedPassword)) {
             SessionManager.login(email);
-
-            // JOptionPane.showMessageDialog(lv, "Login successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
-
             lv.dispose();
             new NavigatorView().setVisible(true);
         } else {
             JOptionPane.showMessageDialog(lv, "Login failed. Try again.", "Error", JOptionPane.ERROR_MESSAGE);
         }
-    }
-
-    public boolean isEmptyField(String fullName, String username, String email, String password) {
-        return fullName.isEmpty() || username.isEmpty() || email.isEmpty() || password.isEmpty();
-    }
-
-    public boolean usernameExists(String username) {
-        return userDao.existsByUsername(username);
-    }
-
-    public boolean emailExists(String email) {
-        return userDao.existsByEmail(email);
     }
 }

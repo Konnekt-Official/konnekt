@@ -9,7 +9,8 @@ public class UserPojo {
 
     public UserPojo() {}
 
-    public UserPojo(int id, String fullName, String username, String email, String password) {
+    public UserPojo(int id, String fullName, String username, String email,
+                    String password) {
         this.id = id;
         this.fullName = fullName;
         this.username = username;
