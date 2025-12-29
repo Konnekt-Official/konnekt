@@ -56,20 +56,6 @@ public class NavigatorView extends BaseFrame {
 
         instance = this;
 
-        notificationBadge = new JLabel();
-        notificationBadge.setOpaque(true);
-        notificationBadge.setBackground(Color.RED);
-        notificationBadge.setForeground(Color.WHITE);
-        notificationBadge.setFont(new Font("Verdana", Font.BOLD, 12));
-        notificationBadge.setHorizontalAlignment(SwingConstants.CENTER);
-        notificationBadge.setVisible(false); // hide initially
-        notificationBadge.setPreferredSize(new Dimension(20, 20));
-        notificationBadge.setBorder(BorderFactory.createLineBorder(Color.WHITE, 1));
-
-        // Add badge to notification panel (jPanel6)
-        jPanel6.setLayout(new BorderLayout());
-        jPanel6.add(notificationBadge, BorderLayout.EAST);
-
         updateNotificationBadge();
         startNotificationTimer();
     }
@@ -101,6 +87,7 @@ public class NavigatorView extends BaseFrame {
         jPanel6 = new javax.swing.JPanel();
         jLabel11 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
+        jLabel17 = new javax.swing.JLabel();
         jPanel7 = new javax.swing.JPanel();
         jLabel13 = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
@@ -283,6 +270,9 @@ public class NavigatorView extends BaseFrame {
 
         jLabel12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/konnekt/resources/images/bell.png"))); // NOI18N
 
+        jLabel17.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel17.setText("0");
+
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
@@ -292,7 +282,9 @@ public class NavigatorView extends BaseFrame {
                 .addComponent(jLabel12)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel11)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(0, 0, 0)
+                .addComponent(jLabel17)
+                .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -300,9 +292,12 @@ public class NavigatorView extends BaseFrame {
                 .addContainerGap()
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addGap(7, 7, 7)
-                        .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jLabel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jLabel17)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jLabel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addGap(8, 8, 8)
+                        .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -637,8 +632,8 @@ public class NavigatorView extends BaseFrame {
     public void updateNotificationBadge() {
         int count = new NotificationDao().unreadCount(SessionManager.getCurrentUserId());
 
-        notificationBadge.setText(count > 0 ? String.valueOf(count) : "");
-        notificationBadge.setVisible(count > 0);
+        jLabel17.setText(count > 0 ? String.valueOf(count) : "");
+        jLabel17.setVisible(count > 0);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -650,6 +645,7 @@ public class NavigatorView extends BaseFrame {
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;

@@ -8,6 +8,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.net.URL;
 import java.util.List;
+import konnekt.controller.NotificationController;
 
 public class ProfilePanel extends JPanel {
 
@@ -26,6 +27,8 @@ public class ProfilePanel extends JPanel {
     private static final Font NAME_FONT = new Font("Verdana", Font.BOLD, 16);
 
     private static final ImageIcon DEFAULT_PROFILE;
+    
+    private NotificationController notificationController = new NotificationController();
 
     static {
         URL url = ProfilePanel.class.getClassLoader()
@@ -129,6 +132,7 @@ public class ProfilePanel extends JPanel {
             followDao.unfollowUser(loggedInUserId, profileUserId);
         } else {
             followDao.followUser(loggedInUserId, profileUserId);
+            notificationController.notifyFollow(loggedInUserId);
         }
         refresh();
     }
