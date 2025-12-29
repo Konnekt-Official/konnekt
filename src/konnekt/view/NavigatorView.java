@@ -28,6 +28,7 @@ public class NavigatorView extends BaseFrame {
 
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(NavigatorView.class.getName());
     private static NavigatorView instance;
+    private FeedPanel feedPanel;
 
     /**
      * Creates new form FeedView
@@ -416,6 +417,7 @@ public class NavigatorView extends BaseFrame {
 
     private void jPanel2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel2MouseClicked
         // TODO add your handling code here:
+        feedPanel.refreshFeed();
         CardLayout cl = (CardLayout) mainPanel.getLayout();
         cl.show(mainPanel, "FEED");
 
@@ -496,7 +498,9 @@ public class NavigatorView extends BaseFrame {
     }
 
     private void initPanels() {
-        mainPanel.add(new FeedPanel(), "FEED");
+        feedPanel = new FeedPanel();
+        
+        mainPanel.add(feedPanel, "FEED");
         mainPanel.add(new ProfilePanel(SessionManager.getCurrentUserId(), SessionManager.getCurrentUserId()), "PROFILE");
         mainPanel.add(new InboxPanel(), "INBOX");
         mainPanel.add(new SearchPanel(), "SEARCH");

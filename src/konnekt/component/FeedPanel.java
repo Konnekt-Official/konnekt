@@ -100,7 +100,7 @@ public class FeedPanel extends JPanel {
     }
 
     // ================= REFRESH FEED =================
-    private void refreshFeed() {
+    public void refreshFeed() {
         postsContainer.removeAll();
 
         List<PostPojo> posts = postDao.getAllPosts();

@@ -104,16 +104,15 @@ CREATE TABLE IF NOT EXISTS follow (
 -- ===============================
 CREATE TABLE IF NOT EXISTS notification (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT UNSIGNED NOT NULL,         -- receiver
-    sender_id INT UNSIGNED DEFAULT NULL,   -- who triggered it
-    type ENUM (
-        'LIKE',
-        'COMMENT',
-        'FOLLOW',
-        'MESSAGE'
-    ) NOT NULL,
-    reference_id INT DEFAULT NULL,          -- post_id, comment_id, chat_id
+
+    user_id INT UNSIGNED NOT NULL,        -- receiver
+    sender_id INT UNSIGNED DEFAULT NULL,  -- who triggered it
+
+    type ENUM('LIKE','COMMENT','FOLLOW') NOT NULL,
+
+    reference_id INT DEFAULT NULL,        -- post_id (LIKE/COMMENT), null for FOLLOW
     is_read BOOLEAN DEFAULT FALSE,
+
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     FOREIGN KEY (user_id)
