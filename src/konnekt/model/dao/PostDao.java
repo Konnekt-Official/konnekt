@@ -24,11 +24,16 @@ public class PostDao {
 
     public List<PostPojo> getAllPosts() {
         List<PostPojo> posts = new ArrayList<>();
-        String sql = "SELECT p.id, p.user_id, p.content, p.likes, p.created_at, "
-                + "u.full_name, u.username "
-                + "FROM post p "
-                + "JOIN user u ON p.user_id = u.id "
-                + "ORDER BY p.created_at DESC";
+        String sql = """
+                    SELECT p.id, p.user_id, p.content, p.likes, p.created_at,
+                    u.full_name, u.username,
+                    COUNT(c.id) AS comment_count
+                    FROM post p
+                    JOIN user u ON p.user_id = u.id
+                    LEFT JOIN comment c ON c.post_id = p.id
+                    GROUP BY p.id, p.user_id, p.content, p.likes, p.created_at, u.full_name, u.username
+                    ORDER BY p.created_at DESC
+                    """;
 
         try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
 
@@ -41,6 +46,7 @@ public class PostDao {
                 post.setCreatedAt(rs.getTimestamp("created_at"));
                 post.setFullName(rs.getString("full_name"));
                 post.setUsername(rs.getString("username"));
+                post.setCommentCount(rs.getInt("comment_count"));
                 posts.add(post);
             }
         } catch (Exception e) {
