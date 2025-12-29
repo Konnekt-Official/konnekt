@@ -51,12 +51,13 @@ public class PostDao {
 
     public PostPojo getPostById(int postId) {
         String sql = """
-        SELECT p.id, p.content, p.likes, p.created_at,
-               u.username, u.full_name
-        FROM post p
-        JOIN user u ON p.user_id = u.id
-        WHERE p.id = ?
-        """;
+    SELECT p.id, p.user_id, p.content, p.likes, p.created_at,
+           u.username, u.full_name,
+           (SELECT COUNT(*) FROM comment c WHERE c.post_id = p.id) AS comment_count
+    FROM post p
+    JOIN user u ON p.user_id = u.id
+    WHERE p.id = ?
+    """;
 
         try (Connection con = DatabaseConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 
@@ -66,11 +67,13 @@ public class PostDao {
             if (rs.next()) {
                 PostPojo p = new PostPojo();
                 p.setId(rs.getInt("id"));
+                p.setUserId(rs.getInt("user_id"));
                 p.setContent(rs.getString("content"));
                 p.setLikes(rs.getInt("likes"));
                 p.setCreatedAt(rs.getTimestamp("created_at"));
                 p.setUsername(rs.getString("username"));
                 p.setFullName(rs.getString("full_name"));
+                p.setCommentCount(rs.getInt("comment_count"));
                 return p;
             }
 

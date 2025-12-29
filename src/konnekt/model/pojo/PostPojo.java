@@ -10,6 +10,7 @@ public class PostPojo {
     private Timestamp createdAt;
     private String fullName;   // Join from user table
     private String username;   // Join from user table
+    private int commentCount;
 
     // Getters and Setters
     public int getId() { return id; }
@@ -32,4 +33,7 @@ public class PostPojo {
 
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
+    
+    public int getCommentCount() { return commentCount; }
+    public void setCommentCount(int commentCount) { this.commentCount = commentCount; }
 }
