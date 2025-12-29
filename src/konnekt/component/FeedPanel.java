@@ -170,7 +170,7 @@ public class FeedPanel extends JPanel {
         actions.setBorder(new EmptyBorder(0, 48, 0, 0));
 
         JButton likeBtn = new JButton("Like (" + post.getLikes() + ")");
-        JButton commentBtn = new JButton("Comment");
+        JButton commentBtn = new JButton("Comment (" + post.getCommentCount() + ")");
 
         likeBtn.setFont(FONT);
         commentBtn.setFont(FONT);
