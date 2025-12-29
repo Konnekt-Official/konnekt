@@ -1,22 +1,77 @@
-package konnekt.model.pojo;
+package konnekt.model.dao;
 
-import java.sql.Timestamp;
+import konnekt.model.pojo.FollowPojo;
+import konnekt.connection.DatabaseConnection;
 
-public class FollowPojo {
-    private int id;
-    private int followerId;
-    private int followingId;
-    private Timestamp createdAt;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+public class FollowDao {
 
-    public int getFollowerId() { return followerId; }
-    public void setFollowerId(int followerId) { this.followerId = followerId; }
+    public boolean followUser(int followerId, int followingId) {
+        String sql = "INSERT IGNORE INTO follow (follower_id, following_id) VALUES (?, ?)";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, followerId);
+            ps.setInt(2, followingId);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
-    public int getFollowingId() { return followingId; }
-    public void setFollowingId(int followingId) { this.followingId = followingId; }
+    public boolean unfollowUser(int followerId, int followingId) {
+        String sql = "DELETE FROM follow WHERE follower_id = ? AND following_id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, followerId);
+            ps.setInt(2, followingId);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
-    public Timestamp getCreatedAt() { return createdAt; }
-    public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }
+    public boolean isFollowing(int followerId, int followingId) {
+        String sql = "SELECT 1 FROM follow WHERE follower_id = ? AND following_id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, followerId);
+            ps.setInt(2, followingId);
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public int getFollowersCount(int userId) {
+        String sql = "SELECT COUNT(*) FROM follow WHERE following_id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getInt(1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public int getFollowingCount(int userId) {
+        String sql = "SELECT COUNT(*) FROM follow WHERE follower_id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getInt(1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
 }
