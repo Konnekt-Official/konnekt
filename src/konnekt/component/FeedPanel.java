@@ -3,6 +3,9 @@ package konnekt.component;
 import konnekt.controller.PostController;
 import konnekt.model.dao.PostDao;
 import konnekt.model.pojo.PostPojo;
+import konnekt.controller.CommentController;
+
+import konnekt.view.NavigatorView;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -83,8 +86,8 @@ public class FeedPanel extends JPanel {
                 input.setForeground(Color.GRAY);
                 refreshFeed();
 
-                SwingUtilities.invokeLater(() ->
-                        scrollPane.getVerticalScrollBar().setValue(0)
+                SwingUtilities.invokeLater(()
+                        -> scrollPane.getVerticalScrollBar().setValue(0)
                 );
             }
         });
@@ -183,8 +186,7 @@ public class FeedPanel extends JPanel {
             refreshFeed();
         });
 
-        commentBtn.addActionListener(e ->
-                JOptionPane.showMessageDialog(this, "Open comments view")
+        commentBtn.addActionListener(e -> new CommentController().openComments(post.getId())
         );
 
         actions.add(likeBtn);
@@ -196,12 +198,20 @@ public class FeedPanel extends JPanel {
 
     // ================= TIME =================
     private String timeAgo(java.sql.Timestamp ts) {
-        if (ts == null) return "";
+        if (ts == null) {
+            return "";
+        }
 
         Duration d = Duration.between(ts.toInstant(), Instant.now());
-        if (d.toMinutes() < 1) return "just now";
-        if (d.toHours() < 1) return d.toMinutes() + "m";
-        if (d.toDays() < 1) return d.toHours() + "h";
+        if (d.toMinutes() < 1) {
+            return "just now";
+        }
+        if (d.toHours() < 1) {
+            return d.toMinutes() + "m";
+        }
+        if (d.toDays() < 1) {
+            return d.toHours() + "h";
+        }
         return d.toDays() + "d";
     }
 }

@@ -13,6 +13,9 @@ import konnekt.component.InboxPanel;
 import konnekt.component.SearchPanel;
 import konnekt.component.NotificationPanel;
 import konnekt.component.SettingPanel;
+import konnekt.component.CommentPanel;
+
+import konnekt.model.pojo.PostPojo;
 
 import konnekt.manager.SessionManager;
 
@@ -23,6 +26,7 @@ import konnekt.manager.SessionManager;
 public class NavigatorView extends BaseFrame {
 
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(NavigatorView.class.getName());
+    private static NavigatorView instance;
 
     /**
      * Creates new form FeedView
@@ -37,6 +41,8 @@ public class NavigatorView extends BaseFrame {
         addHoverEffect(jPanel5);
         addHoverEffect(jPanel6);
         addHoverEffect(jPanel7);
+
+        instance = this;
     }
 
     /**
@@ -498,7 +504,7 @@ public class NavigatorView extends BaseFrame {
 
         CardLayout cl = (CardLayout) mainPanel.getLayout();
         cl.show(mainPanel, "FEED");
-        
+
         setSelectedPanel(jPanel2);
     }
 
@@ -538,6 +544,14 @@ public class NavigatorView extends BaseFrame {
         });
     }
 
+    public static void showComments(int postId) {
+        CommentPanel cp = new CommentPanel();
+        cp.loadPost(postId);
+
+        instance.mainPanel.add(cp, "COMMENT");
+        CardLayout cl = (CardLayout) instance.mainPanel.getLayout();
+        cl.show(instance.mainPanel, "COMMENT");
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;

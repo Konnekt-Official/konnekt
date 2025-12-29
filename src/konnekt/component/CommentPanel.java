@@ -2,6 +2,7 @@ package konnekt.component;
 
 import konnekt.controller.CommentController;
 import konnekt.model.dao.CommentDao;
+import konnekt.model.dao.PostDao;
 import konnekt.model.pojo.CommentPojo;
 import konnekt.model.pojo.PostPojo;
 
@@ -14,34 +15,38 @@ import java.util.List;
 
 public class CommentPanel extends JPanel {
 
-    private int postId;
     private final JPanel commentList = new JPanel();
     private final CommentDao commentDao = new CommentDao();
     private final CommentController controller = new CommentController();
+    private final PostDao postDao = new PostDao();
+
+    private int postId;
+    private PostPojo post;
 
     private static final Font FONT = new Font("Verdana", Font.PLAIN, 13);
 
     public CommentPanel() {
         setLayout(new BorderLayout());
-        setBackground(new Color(245,245,245));
+        setBackground(new Color(245, 245, 245));
 
         commentList.setLayout(new BoxLayout(commentList, BoxLayout.Y_AXIS));
-        commentList.setBackground(new Color(245,245,245));
+        commentList.setBackground(new Color(245, 245, 245));
 
         add(new JScrollPane(commentList), BorderLayout.CENTER);
-        add(createInput(), BorderLayout.SOUTH);
+        add(createInputPanel(), BorderLayout.SOUTH);
     }
 
-    public void loadPost(PostPojo post) {
-        this.postId = post.getId();
+    public void loadPost(int postId) {
+        this.postId = postId;
+        this.post = postDao.getPostById(postId);
         refresh();
     }
 
-    private JPanel createInput() {
-        JPanel p = new JPanel(new BorderLayout(5,5));
-        p.setBorder(new EmptyBorder(10,10,10,10));
+    private JPanel createInputPanel() {
+        JPanel panel = new JPanel(new BorderLayout(5, 5));
+        panel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        JTextArea input = new JTextArea(2,1);
+        JTextArea input = new JTextArea(2, 1);
         input.setFont(FONT);
         input.setLineWrap(true);
 
@@ -57,17 +62,24 @@ public class CommentPanel extends JPanel {
             }
         });
 
-        p.add(new JScrollPane(input), BorderLayout.CENTER);
-        p.add(send, BorderLayout.EAST);
-        return p;
+        panel.add(new JScrollPane(input), BorderLayout.CENTER);
+        panel.add(send, BorderLayout.EAST);
+        return panel;
     }
 
     private void refresh() {
         commentList.removeAll();
 
+        // ---------- POST ----------
+        if (post != null) {
+            commentList.add(createPostCard(post));
+            commentList.add(Box.createVerticalStrut(15));
+        }
+
+        // ---------- COMMENTS ----------
         List<CommentPojo> comments = commentDao.getCommentsByPost(postId);
         for (CommentPojo c : comments) {
-            commentList.add(commentCard(c));
+            commentList.add(createCommentCard(c));
             commentList.add(Box.createVerticalStrut(8));
         }
 
@@ -75,15 +87,37 @@ public class CommentPanel extends JPanel {
         commentList.repaint();
     }
 
-    private JPanel commentCard(CommentPojo c) {
-        JPanel p = new JPanel(new BorderLayout());
-        p.setBackground(Color.WHITE);
-        p.setBorder(new EmptyBorder(8,8,8,8));
+    private JPanel createPostCard(PostPojo post) {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBackground(Color.WHITE);
+        panel.setBorder(new EmptyBorder(10, 10, 10, 10));
+
+        JLabel header = new JLabel(post.getFullName() + " @" + post.getUsername());
+        header.setFont(new Font("Verdana", Font.BOLD, 14));
+        // message: clicking username should switch to profile panel
+
+        JTextArea body = new JTextArea(post.getContent());
+        body.setFont(FONT);
+        body.setLineWrap(true);
+        body.setWrapStyleWord(true);
+        body.setEditable(false);
+        body.setOpaque(false);
+
+        panel.add(header, BorderLayout.NORTH);
+        panel.add(body, BorderLayout.CENTER);
+        return panel;
+    }
+
+    private JPanel createCommentCard(CommentPojo c) {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBackground(Color.WHITE);
+        panel.setBorder(new EmptyBorder(8, 8, 8, 8));
 
         JLabel header = new JLabel(
                 c.getFullName() + " @" + c.getUsername() + " · " + timeAgo(c.getCreatedAt())
         );
         header.setFont(new Font("Verdana", Font.BOLD, 12));
+        // message: clicking username should switch to profile panel
 
         JTextArea body = new JTextArea(c.getContent());
         body.setFont(FONT);
@@ -92,9 +126,9 @@ public class CommentPanel extends JPanel {
         body.setEditable(false);
         body.setOpaque(false);
 
-        p.add(header, BorderLayout.NORTH);
-        p.add(body, BorderLayout.CENTER);
-        return p;
+        panel.add(header, BorderLayout.NORTH);
+        panel.add(body, BorderLayout.CENTER);
+        return panel;
     }
 
     private String timeAgo(java.sql.Timestamp ts) {
