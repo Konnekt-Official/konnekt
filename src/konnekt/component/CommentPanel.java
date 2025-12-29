@@ -144,8 +144,12 @@ public class CommentPanel extends JPanel {
         card.add(header, BorderLayout.NORTH);
 
         // ---------- CONTENT ----------
-        JLabel content = new JLabel("<html><body style='width: 400px;'>" + post.getContent() + "</body></html>");
+        JTextArea content = new JTextArea(post.getContent());
         content.setFont(FONT);
+        content.setLineWrap(true);
+        content.setWrapStyleWord(true);
+        content.setEditable(false);
+        content.setOpaque(false);
         content.setBorder(new EmptyBorder(6, 48, 6, 0));
         card.add(content, BorderLayout.CENTER);
 
@@ -209,29 +213,25 @@ public class CommentPanel extends JPanel {
         p.add(header, BorderLayout.NORTH);
 
         // ---------- CONTENT ----------
-        JLabel content = new JLabel("<html><body style='width: 350px;'>" + c.getContent() + "</body></html>");
+        JTextArea content = new JTextArea(c.getContent());
         content.setFont(COMMENT_FONT);
+        content.setLineWrap(true);
+        content.setWrapStyleWord(true);
+        content.setEditable(false);
+        content.setOpaque(false);
         content.setBorder(new EmptyBorder(2, 48, 2, 0));
-        p.add(content, BorderLayout.CENTER);
+
         p.add(content, BorderLayout.CENTER);
 
         return p;
     }
 
     private String timeAgo(java.sql.Timestamp ts) {
-        if (ts == null) {
-            return "";
-        }
+        if (ts == null) return "";
         Duration d = Duration.between(ts.toInstant(), Instant.now());
-        if (d.toMinutes() < 1) {
-            return "just now";
-        }
-        if (d.toHours() < 1) {
-            return d.toMinutes() + "m";
-        }
-        if (d.toDays() < 1) {
-            return d.toHours() + "h";
-        }
+        if (d.toMinutes() < 1) return "just now";
+        if (d.toHours() < 1) return d.toMinutes() + "m";
+        if (d.toDays() < 1) return d.toHours() + "h";
         return d.toDays() + "d";
     }
 }
