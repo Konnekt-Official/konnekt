@@ -26,6 +26,7 @@ import konnekt.model.pojo.PostPojo;
 
 import konnekt.manager.SessionManager;
 import konnekt.model.dao.NotificationDao;
+import static konnekt.utils.SoundPlayer.playNotification;
 
 /**
  *
@@ -37,6 +38,7 @@ public class NavigatorView extends BaseFrame {
     private static NavigatorView instance;
     private FeedPanel feedPanel;
     private JLabel notificationBadge;
+    private int lastNotificationCount = 0;
 
     /**
      * Creates new form FeedView
@@ -619,8 +621,17 @@ public class NavigatorView extends BaseFrame {
     }
 
     private void startNotificationTimer() {
-        // refresh every 5 seconds
-        new javax.swing.Timer(5000, e -> updateNotificationBadge()).start();
+        new javax.swing.Timer(5000, e -> {
+            int count = new NotificationDao().unreadCount(SessionManager.getCurrentUserId());
+
+            // Play sound if there’s a new notification
+            if (count > lastNotificationCount) {
+                playNotification();
+            }
+
+            lastNotificationCount = count;
+            updateNotificationBadge();
+        }).start();
     }
 
     public void updateNotificationBadge() {
