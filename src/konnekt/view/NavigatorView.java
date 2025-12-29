@@ -4,9 +4,15 @@
  */
 package konnekt.view;
 
+import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 
 import konnekt.component.FeedPanel;
 import konnekt.component.ProfilePanel;
@@ -19,6 +25,7 @@ import konnekt.component.CommentPanel;
 import konnekt.model.pojo.PostPojo;
 
 import konnekt.manager.SessionManager;
+import konnekt.model.dao.NotificationDao;
 
 /**
  *
@@ -29,6 +36,7 @@ public class NavigatorView extends BaseFrame {
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(NavigatorView.class.getName());
     private static NavigatorView instance;
     private FeedPanel feedPanel;
+    private JLabel notificationBadge;
 
     /**
      * Creates new form FeedView
@@ -45,6 +53,23 @@ public class NavigatorView extends BaseFrame {
         addHoverEffect(jPanel7);
 
         instance = this;
+
+        notificationBadge = new JLabel();
+        notificationBadge.setOpaque(true);
+        notificationBadge.setBackground(Color.RED);
+        notificationBadge.setForeground(Color.WHITE);
+        notificationBadge.setFont(new Font("Verdana", Font.BOLD, 12));
+        notificationBadge.setHorizontalAlignment(SwingConstants.CENTER);
+        notificationBadge.setVisible(false); // hide initially
+        notificationBadge.setPreferredSize(new Dimension(20, 20));
+        notificationBadge.setBorder(BorderFactory.createLineBorder(Color.WHITE, 1));
+
+        // Add badge to notification panel (jPanel6)
+        jPanel6.setLayout(new BorderLayout());
+        jPanel6.add(notificationBadge, BorderLayout.EAST);
+
+        updateNotificationBadge();
+        startNotificationTimer();
     }
 
     /**
@@ -450,10 +475,17 @@ public class NavigatorView extends BaseFrame {
 
     private void jPanel6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel6MouseClicked
         // TODO add your handling code here:
+        // show notification panel
         CardLayout cl = (CardLayout) mainPanel.getLayout();
         cl.show(mainPanel, "NOTIFICATION");
 
         setSelectedPanel(jPanel6);
+
+        // mark all as read
+        new NotificationDao().markAllRead(SessionManager.getCurrentUserId());
+
+        // refresh badge
+        updateNotificationBadge();
     }//GEN-LAST:event_jPanel6MouseClicked
 
     private void jPanel7MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel7MouseClicked
@@ -499,7 +531,7 @@ public class NavigatorView extends BaseFrame {
 
     private void initPanels() {
         feedPanel = new FeedPanel();
-        
+
         mainPanel.add(feedPanel, "FEED");
         mainPanel.add(new ProfilePanel(SessionManager.getCurrentUserId(), SessionManager.getCurrentUserId()), "PROFILE");
         mainPanel.add(new InboxPanel(), "INBOX");
@@ -586,6 +618,17 @@ public class NavigatorView extends BaseFrame {
         instance.setSelectedPanel(instance.jPanel3);
     }
 
+    private void startNotificationTimer() {
+        // refresh every 5 seconds
+        new javax.swing.Timer(5000, e -> updateNotificationBadge()).start();
+    }
+
+    public void updateNotificationBadge() {
+        int count = new NotificationDao().unreadCount(SessionManager.getCurrentUserId());
+
+        notificationBadge.setText(count > 0 ? String.valueOf(count) : "");
+        notificationBadge.setVisible(count > 0);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;

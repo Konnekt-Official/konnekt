@@ -26,7 +26,6 @@ public class NotificationPanel extends JPanel {
 
         add(new JScrollPane(container), BorderLayout.CENTER);
         refresh();
-        startRealtime();
     }
 
     public void refresh() {
@@ -77,15 +76,5 @@ public class NotificationPanel extends JPanel {
                 "<span style='color:gray'>" +
                 TimeAgo.format(n.getCreatedAt()) +
                 "</span></html>";
-    }
-
-    // ---------- REALTIME ----------
-    private void startRealtime() {
-        new Timer(5000, e -> {
-            int before = dao.unreadCount(SessionManager.getCurrentUserId());
-            refresh();
-            int after = dao.unreadCount(SessionManager.getCurrentUserId());
-            if (after > before) SoundPlayer.playNotification();
-        }).start();
     }
 }

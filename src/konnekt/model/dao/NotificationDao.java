@@ -56,7 +56,7 @@ public class NotificationDao {
                 n.reference_id,
                 COUNT(*) cnt,
                 MAX(n.created_at) created_at,
-                u.fullname,
+                u.full_name,
                 u.username,
                 n.sender_id,
                 MIN(n.is_read) is_read
@@ -79,7 +79,7 @@ public class NotificationDao {
                 n.setType(rs.getString("type"));
                 n.setReferenceId(rs.getInt("reference_id"));
                 n.setSenderId(rs.getInt("sender_id"));
-                n.setSenderFullName(rs.getString("fullname"));
+                n.setSenderFullName(rs.getString("full_name"));
                 n.setSenderUsername(rs.getString("username"));
                 n.setRead(rs.getBoolean("is_read"));
                 n.setCreatedAt(rs.getTimestamp("created_at"));
