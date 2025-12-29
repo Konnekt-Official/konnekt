@@ -554,11 +554,32 @@ public class NavigatorView extends BaseFrame {
     }
 
     public static void showProfile(int userId) {
-        instance.mainPanel.removeAll();
-        instance.mainPanel.add(new ProfilePanel(SessionManager.getCurrentUserId(), userId));
-        instance.mainPanel.revalidate();
-        instance.mainPanel.repaint();
+
+        String cardName = "PROFILE_" + userId;
+
+        // Avoid re-adding same profile
+        for (Component c : instance.mainPanel.getComponents()) {
+            if (cardName.equals(c.getName())) {
+                ((CardLayout) instance.mainPanel.getLayout())
+                        .show(instance.mainPanel, cardName);
+                return;
+            }
+        }
+
+        ProfilePanel profile = new ProfilePanel(
+                SessionManager.getCurrentUserId(),
+                userId
+        );
+        profile.setName(cardName);
+
+        instance.mainPanel.add(profile, cardName);
+
+        CardLayout cl = (CardLayout) instance.mainPanel.getLayout();
+        cl.show(instance.mainPanel, cardName);
+
+        instance.setSelectedPanel(instance.jPanel3);
     }
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;

@@ -134,9 +134,9 @@ public class CommentPanel extends JPanel {
         username.setFont(FONT);
         username.setForeground(Color.BLUE);
         username.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        usernameLabel.addMouseListener(new MouseAdapter() {
+        username.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
-                NavigatorView.showProfile(userId);
+                NavigatorView.showProfile(post.getUserId());
             }
         });
 
