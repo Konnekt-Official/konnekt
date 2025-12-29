@@ -6,6 +6,7 @@ package konnekt.view;
 
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Component;
 
 import konnekt.component.FeedPanel;
 import konnekt.component.ProfilePanel;
@@ -572,6 +573,7 @@ public class NavigatorView extends BaseFrame {
         );
         profile.setName(cardName);
 
+        instance.mainPanel.remove(profile);
         instance.mainPanel.add(profile, cardName);
 
         CardLayout cl = (CardLayout) instance.mainPanel.getLayout();
