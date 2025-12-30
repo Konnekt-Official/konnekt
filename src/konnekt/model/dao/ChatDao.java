@@ -55,30 +55,26 @@ public class ChatDao {
     }
 
     // Returns list of distinct users who chatted with current user
-    public List<Integer> getChatUserIds(int userId) {
-        List<Integer> ids = new ArrayList<>();
+    public List<Integer> getChatUserIds(int currentUserId) {
+        List<Integer> userIds = new ArrayList<>();
         String sql = """
         SELECT DISTINCT 
-            CASE 
-                WHEN sender_id = ? THEN receiver_id
-                ELSE sender_id
-            END AS other_user
+            CASE WHEN sender_id = ? THEN receiver_id ELSE sender_id END AS other_user
         FROM chat
         WHERE sender_id = ? OR receiver_id = ?
-        ORDER BY created_at DESC
     """;
         try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement(sql)) {
-            ps.setInt(1, userId);
-            ps.setInt(2, userId);
-            ps.setInt(3, userId);
+            ps.setInt(1, currentUserId);
+            ps.setInt(2, currentUserId);
+            ps.setInt(3, currentUserId);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                ids.add(rs.getInt("other_user"));
+                userIds.add(rs.getInt("other_user"));
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return ids;
+        return userIds;
     }
 
     // mark messages as read **from sender to receiver**

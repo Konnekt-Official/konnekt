@@ -1,90 +1,117 @@
 package konnekt.component;
 
 import konnekt.controller.ChatController;
-import konnekt.controller.UserController;
 import konnekt.manager.SessionManager;
+import konnekt.model.dao.UserDao;
 import konnekt.model.pojo.ChatPojo;
 import konnekt.model.pojo.UserPojo;
 import konnekt.view.NavigatorView;
+import konnekt.utils.AvatarUtil;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.*;
 import java.util.List;
 
 public class InboxPanel extends JPanel {
 
+    private final JPanel userListContainer = new JPanel();
     private final ChatController chatController = new ChatController();
-    private final UserController userController = new UserController();
-    private final JPanel usersContainer = new JPanel();
+    private final int currentUserId = SessionManager.getCurrentUserId();
 
     public InboxPanel() {
         setLayout(new BorderLayout());
-        setBackground(Color.WHITE);
+        setBackground(new Color(245, 245, 245));
 
-        usersContainer.setLayout(new BoxLayout(usersContainer, BoxLayout.Y_AXIS));
-        JScrollPane scroll = new JScrollPane(usersContainer);
-        scroll.setBorder(null);
-        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        add(scroll, BorderLayout.CENTER);
+        userListContainer.setLayout(new BoxLayout(userListContainer, BoxLayout.Y_AXIS));
+        JScrollPane scrollPane = new JScrollPane(userListContainer);
+        scrollPane.setBorder(null);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+
+        add(scrollPane, BorderLayout.CENTER);
 
         loadInbox();
     }
 
-    private void loadInbox() {
-        usersContainer.removeAll();
-        int currentUserId = SessionManager.getCurrentUserId();
+    public void loadInbox() {
+        userListContainer.removeAll();
 
-        List<UserPojo> users = chatController.getChatUsers(currentUserId);
+        // Load all users except current
+        List<UserPojo> allUsers = new UserDao().getAllUsers();
+        allUsers.removeIf(u -> u.getId() == currentUserId);
 
-        for (UserPojo user : users) {
-            ChatPojo latestMessage = chatController.getLatestMessageBetween(currentUserId, user.getId());
-            usersContainer.add(createUserItem(user, latestMessage));
-            usersContainer.add(Box.createVerticalStrut(5));
+        if (allUsers.isEmpty()) {
+            JLabel msg = new JLabel("No users available.");
+            msg.setFont(new Font("Verdana", Font.PLAIN, 12));
+            msg.setForeground(Color.GRAY);
+            msg.setAlignmentX(Component.CENTER_ALIGNMENT);
+            userListContainer.add(Box.createVerticalStrut(20));
+            userListContainer.add(msg);
+        } else {
+            for (UserPojo user : allUsers) {
+                ChatPojo latestMsg = chatController.getLatestMessageBetween(currentUserId, user.getId());
+                userListContainer.add(createUserItem(user, latestMsg));
+                userListContainer.add(Box.createVerticalStrut(5));
+            }
         }
 
-        usersContainer.revalidate();
-        usersContainer.repaint();
+        userListContainer.revalidate();
+        userListContainer.repaint();
     }
 
-    private JPanel createUserItem(UserPojo user, ChatPojo latestMessage) {
-        JPanel panel = new JPanel(new BorderLayout(8, 8));
-        panel.setBorder(new EmptyBorder(5, 5, 5, 5));
-        panel.setBackground(Color.WHITE);
-        panel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+    private JPanel createUserItem(UserPojo user, ChatPojo latestMsg) {
+        JPanel row = new JPanel(new BorderLayout(8, 0));
+        row.setBackground(Color.WHITE);
+        row.setBorder(new EmptyBorder(8, 8, 8, 8));
+        row.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
-        JLabel avatar = new JLabel(new ImageIcon(
-                new ImageIcon(getClass().getResource("/konnekt/resources/images/default_profile.png"))
-                        .getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH)
-        ));
+        JLabel avatar = AvatarUtil.avatar(50);
+        row.add(avatar, BorderLayout.WEST);
 
-        JPanel textPanel = new JPanel();
-        textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
-        textPanel.setBackground(Color.WHITE);
+        JPanel info = new JPanel();
+        info.setLayout(new BoxLayout(info, BoxLayout.Y_AXIS));
+        info.setOpaque(false);
 
-        JLabel nameLabel = new JLabel(user.getFullName());
-        nameLabel.setFont(new Font("Verdana", Font.BOLD, 14));
+        JLabel fullName = new JLabel(user.getFullName());
+        fullName.setFont(new Font("Verdana", Font.BOLD, 14));
 
-        JLabel latestMsgLabel = new JLabel("<html>" + latestMessage.getContent() + "</html>");
-        latestMsgLabel.setFont(new Font("Verdana", Font.PLAIN, 12));
-        latestMsgLabel.setForeground(Color.GRAY);
+        JLabel username = new JLabel("@" + user.getUsername());
+        username.setFont(new Font("Verdana", Font.PLAIN, 12));
+        username.setForeground(Color.BLUE);
 
-        textPanel.add(nameLabel);
-        textPanel.add(latestMsgLabel);
+        JLabel latestMessage = new JLabel(latestMsg != null ? latestMsg.getContent() : "");
+        latestMessage.setFont(new Font("Verdana", Font.PLAIN, 12));
+        latestMessage.setForeground(Color.GRAY);
 
-        panel.add(avatar, BorderLayout.WEST);
-        panel.add(textPanel, BorderLayout.CENTER);
+        info.add(fullName);
+        info.add(username);
+        info.add(Box.createVerticalStrut(2));
+        info.add(latestMessage);
 
-        panel.addMouseListener(new MouseAdapter() {
+        row.add(info, BorderLayout.CENTER);
+
+        row.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                NavigatorView.showChat(user.getId()); // open ChatPanel for this user
+                NavigatorView.showChat(user.getId());
+                // optional: refresh inbox when returning
+                SwingUtilities.invokeLater(InboxPanel.this::loadInbox);
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                row.setBackground(new Color(230, 230, 230));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                row.setBackground(Color.WHITE);
             }
         });
 
-        return panel;
+        row.setMaximumSize(new Dimension(Integer.MAX_VALUE, row.getPreferredSize().height));
+        return row;
     }
 }

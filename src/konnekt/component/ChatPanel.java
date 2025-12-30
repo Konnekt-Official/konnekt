@@ -4,90 +4,113 @@ import konnekt.controller.ChatController;
 import konnekt.manager.SessionManager;
 import konnekt.model.pojo.ChatPojo;
 import konnekt.model.pojo.UserPojo;
+import konnekt.view.NavigatorView;
+import konnekt.utils.AvatarUtil;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 
 public class ChatPanel extends JPanel {
 
-    private final ChatController chatController = new ChatController();
     private final int currentUserId = SessionManager.getCurrentUserId();
-    private final int otherUserId;
-    private final UserPojo otherUser;
+    private UserPojo otherUser;
+
+    private final ChatController chatController = new ChatController();
 
     private final JPanel messagesContainer = new JPanel();
-    private final JScrollPane scrollPane;
-    private final JTextArea inputField = new JTextArea(3, 1);
+    private final JScrollPane scrollPane = new JScrollPane(messagesContainer);
+
+    private final JTextArea inputArea = new JTextArea(2, 1);
 
     public ChatPanel(int otherUserId) {
-        this.otherUserId = otherUserId;
-        this.otherUser = chatController.getUserById(otherUserId);
-
         setLayout(new BorderLayout());
-        setBackground(Color.WHITE);
+        setBackground(new Color(245, 245, 245));
 
-        add(createHeader(), BorderLayout.NORTH);
+        otherUser = chatController.getUserById(otherUserId);
 
-        messagesContainer.setLayout(new BoxLayout(messagesContainer, BoxLayout.Y_AXIS));
-        messagesContainer.setBackground(Color.WHITE);
-        scrollPane = new JScrollPane(messagesContainer);
-        scrollPane.setBorder(null);
-        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        add(scrollPane, BorderLayout.CENTER);
-
+        add(createTopPanel(), BorderLayout.NORTH);
+        add(createMessagesPanel(), BorderLayout.CENTER);
         add(createInputPanel(), BorderLayout.SOUTH);
 
         loadMessages();
         chatController.markMessagesAsRead(otherUserId, currentUserId);
     }
 
-    private JPanel createHeader() {
-        JPanel header = new JPanel(new BorderLayout());
-        header.setBorder(new EmptyBorder(5, 5, 5, 5));
-        header.setBackground(Color.WHITE);
+    private JPanel createTopPanel() {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBackground(Color.WHITE);
+        panel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        JLabel avatar = new JLabel(new ImageIcon(
-                new ImageIcon(getClass().getResource("/konnekt/resources/images/default_profile.png"))
-                        .getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH)
-        ));
+        JLabel avatar = AvatarUtil.avatar(50);
+        panel.add(avatar, BorderLayout.WEST);
 
-        JPanel textPanel = new JPanel();
-        textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
-        textPanel.setBackground(Color.WHITE);
+        JPanel namePanel = new JPanel();
+        namePanel.setLayout(new BoxLayout(namePanel, BoxLayout.Y_AXIS));
+        namePanel.setOpaque(false);
 
-        JLabel nameLabel = new JLabel(otherUser.getFullName());
-        nameLabel.setFont(new Font("Verdana", Font.BOLD, 14));
+        JLabel fullName = new JLabel(otherUser.getFullName());
+        fullName.setFont(new Font("Verdana", Font.BOLD, 14));
 
-        JLabel usernameLabel = new JLabel("@" + otherUser.getUsername());
-        usernameLabel.setFont(new Font("Verdana", Font.PLAIN, 12));
-        usernameLabel.setForeground(Color.GRAY);
+        JLabel username = new JLabel("@" + otherUser.getUsername());
+        username.setFont(new Font("Verdana", Font.PLAIN, 12));
+        username.setForeground(Color.BLUE);
+        username.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        username.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                NavigatorView.showProfile(otherUser.getId());
+            }
+        });
 
-        textPanel.add(nameLabel);
-        textPanel.add(usernameLabel);
+        namePanel.add(Box.createVerticalStrut(8)); // larger gap between avatar and name
+        namePanel.add(fullName);
+        namePanel.add(username);
 
-        JButton videoCallBtn = new JButton("Video Call");
-        videoCallBtn.setFocusable(false);
+        panel.add(namePanel, BorderLayout.CENTER);
 
-        header.add(avatar, BorderLayout.WEST);
-        header.add(textPanel, BorderLayout.CENTER);
-        header.add(videoCallBtn, BorderLayout.EAST);
+        JButton videoCall = new JButton("Video Call");
+        videoCall.setPreferredSize(new Dimension(100, 30));
+        videoCall.setFocusable(false);
+        videoCall.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        panel.add(videoCall, BorderLayout.EAST);
 
-        return header;
+        return panel;
+    }
+
+    private JScrollPane createMessagesPanel() {
+        messagesContainer.setLayout(new BoxLayout(messagesContainer, BoxLayout.Y_AXIS));
+        messagesContainer.setOpaque(false);
+
+        scrollPane.setBorder(null);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+        return scrollPane;
     }
 
     private JPanel createInputPanel() {
-        JPanel panel = new JPanel(new BorderLayout(5, 5));
+        JPanel panel = new JPanel(new BorderLayout(8, 8));
         panel.setBorder(new EmptyBorder(5, 5, 5, 5));
+        panel.setBackground(Color.WHITE);
 
-        inputField.setLineWrap(true);
-        inputField.setWrapStyleWord(true);
-        inputField.setFont(new Font("Verdana", Font.PLAIN, 13));
+        inputArea.setLineWrap(true);
+        inputArea.setWrapStyleWord(true);
+        inputArea.setFont(new Font("Verdana", Font.PLAIN, 13));
 
-        inputField.addKeyListener(new KeyAdapter() {
+        JScrollPane inputScroll = new JScrollPane(inputArea);
+        inputScroll.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200)));
+
+        JButton sendBtn = new JButton("Send");
+        sendBtn.setFocusable(false);
+        sendBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        sendBtn.addActionListener(e -> sendMessage());
+
+        inputArea.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER && !e.isShiftDown()) {
@@ -97,13 +120,6 @@ public class ChatPanel extends JPanel {
             }
         });
 
-        JScrollPane inputScroll = new JScrollPane(inputField);
-        inputScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-
-        JButton sendBtn = new JButton("Send");
-        sendBtn.setFocusable(false);
-        sendBtn.addActionListener(e -> sendMessage());
-
         panel.add(inputScroll, BorderLayout.CENTER);
         panel.add(sendBtn, BorderLayout.EAST);
 
@@ -111,48 +127,68 @@ public class ChatPanel extends JPanel {
     }
 
     private void sendMessage() {
-        String text = inputField.getText().trim();
+        String text = inputArea.getText().trim();
         if (!text.isEmpty()) {
-            chatController.sendMessage(currentUserId, otherUserId, text);
-            inputField.setText("");
+            chatController.sendMessage(currentUserId, otherUser.getId(), text);
+            inputArea.setText("");
             loadMessages();
         }
     }
 
-    private void loadMessages() {
+    public void loadMessages() {
         messagesContainer.removeAll();
-        List<ChatPojo> messages = chatController.getMessagesBetween(currentUserId, otherUserId);
+
+        List<ChatPojo> messages = chatController.getMessagesBetween(currentUserId, otherUser.getId());
 
         for (ChatPojo msg : messages) {
-            boolean sentByMe = msg.getSenderId() == currentUserId;
-            messagesContainer.add(createMessageBubble(msg.getContent(), sentByMe));
-            messagesContainer.add(Box.createVerticalStrut(5));
+            messagesContainer.add(createMessageBubble(msg));
+            messagesContainer.add(Box.createVerticalStrut(6)); // gap between messages
         }
 
         messagesContainer.revalidate();
         messagesContainer.repaint();
-        scrollToBottom();
+
+        SwingUtilities.invokeLater(() -> scrollPane.getVerticalScrollBar().setValue(scrollPane.getVerticalScrollBar().getMaximum()));
     }
 
-    private JPanel createMessageBubble(String text, boolean sentByMe) {
+    private JPanel createMessageBubble(ChatPojo msg) {
         JPanel panel = new JPanel();
-        panel.setLayout(new FlowLayout(sentByMe ? FlowLayout.RIGHT : FlowLayout.LEFT));
-        panel.setBackground(Color.WHITE);
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setOpaque(false);
 
-        JTextArea bubble = new JTextArea(text);
-        bubble.setEditable(false);
-        bubble.setLineWrap(true);
-        bubble.setWrapStyleWord(true);
-        bubble.setFont(new Font("Verdana", Font.PLAIN, 13));
-        bubble.setBorder(BorderFactory.createEmptyBorder(5, 8, 5, 8));
-        bubble.setBackground(sentByMe ? new Color(0, 180, 255) : new Color(220, 220, 220));
-        bubble.setForeground(sentByMe ? Color.WHITE : Color.BLACK);
+        String timeText = timeAgo(msg.getCreatedAt());
 
-        panel.add(bubble);
+        JLabel messageLabel = new JLabel("<html>" + msg.getContent() + "</html>");
+        messageLabel.setFont(new Font("Verdana", Font.PLAIN, 13));
+        messageLabel.setBorder(new EmptyBorder(6, 10, 6, 10));
+        messageLabel.setOpaque(true);
+
+        JLabel timeLabel = new JLabel(timeText);
+        timeLabel.setFont(new Font("Verdana", Font.PLAIN, 10));
+        timeLabel.setForeground(Color.GRAY);
+
+        if (msg.getSenderId() == currentUserId) {
+            messageLabel.setBackground(new Color(0, 132, 255)); // blue bubble
+            messageLabel.setForeground(Color.WHITE);
+            panel.setAlignmentX(Component.RIGHT_ALIGNMENT);
+        } else {
+            messageLabel.setBackground(new Color(230, 230, 230)); // gray bubble
+            messageLabel.setForeground(Color.BLACK);
+            panel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        }
+
+        panel.add(messageLabel);
+        panel.add(timeLabel);
+
         return panel;
     }
 
-    private void scrollToBottom() {
-        SwingUtilities.invokeLater(() -> scrollPane.getVerticalScrollBar().setValue(scrollPane.getVerticalScrollBar().getMaximum()));
+    private String timeAgo(java.sql.Timestamp ts) {
+        if (ts == null) return "";
+        Duration d = Duration.between(ts.toInstant(), Instant.now());
+        if (d.toMinutes() < 1) return "Just now";
+        if (d.toHours() < 1) return d.toMinutes() + "m";
+        if (d.toDays() < 1) return d.toHours() + "h";
+        return d.toDays() + "d";
     }
 }
