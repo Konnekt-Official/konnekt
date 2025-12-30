@@ -42,7 +42,7 @@ public class NotificationPanel extends JPanel {
 
         if (list.isEmpty()) {
             JLabel msg = new JLabel("No notifications.");
-            msg.setFont(new Font("Verdana", Font.ITALIC, 12));
+            msg.setFont(new Font("Verdana", Font.PLAIN, 12));
             msg.setForeground(Color.GRAY);
             msg.setAlignmentX(Component.CENTER_ALIGNMENT);
             container.add(Box.createVerticalStrut(20));
