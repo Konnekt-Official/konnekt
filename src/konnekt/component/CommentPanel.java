@@ -111,8 +111,8 @@ public class CommentPanel extends JPanel {
 
         JLabel name = new JLabel(
                 "<html><b>" + post.getFullName() + "</b> "
-                + "<font color='blue'>@" + post.getUsername() + "</font> "
-                + "<font color='gray'>· " + timeAgo(post.getCreatedAt()) + "</font></html>"
+                        + "<font color='blue'>@" + post.getUsername() + "</font> "
+                        + "<font color='gray'>· " + timeAgo(post.getCreatedAt()) + "</font></html>"
         );
         name.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         name.addMouseListener(new MouseAdapter() {
@@ -126,10 +126,17 @@ public class CommentPanel extends JPanel {
         root.add(header, BorderLayout.NORTH);
 
         // ---------- CONTENT ----------
+        JPanel contentWrapper = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 6));
+        contentWrapper.setBackground(Color.WHITE);
+
         JLabel body = new JLabel("<html>" + post.getContent() + "</html>");
         body.setFont(new Font("Verdana", Font.PLAIN, 13));
-        body.setBorder(new EmptyBorder(5, 48, 5, 0)); // optional small indent if needed
-        root.add(body, BorderLayout.CENTER);
+        int maxWidth = 500; // adjust as needed
+        body.setMaximumSize(new Dimension(maxWidth, Integer.MAX_VALUE));
+        body.setPreferredSize(new Dimension(maxWidth, body.getPreferredSize().height));
+
+        contentWrapper.add(body);
+        root.add(contentWrapper, BorderLayout.CENTER);
 
         // ---------- ACTIONS ----------
         JPanel meta = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
@@ -153,6 +160,9 @@ public class CommentPanel extends JPanel {
         meta.add(comment);
         root.add(meta, BorderLayout.SOUTH);
 
+        // Fit-content height
+        root.setMaximumSize(new Dimension(Integer.MAX_VALUE, root.getPreferredSize().height));
+
         return root;
     }
 
@@ -172,8 +182,8 @@ public class CommentPanel extends JPanel {
         // Header with clickable username
         JLabel header = new JLabel(
                 "<html><b>" + c.getFullName() + "</b> "
-                + "<font color='blue'>@" + c.getUsername() + "</font> "
-                + "<font color='gray'>· " + timeAgo(c.getCreatedAt()) + "</font></html>"
+                        + "<font color='blue'>@" + c.getUsername() + "</font> "
+                        + "<font color='gray'>· " + timeAgo(c.getCreatedAt()) + "</font></html>"
         );
         header.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         header.addMouseListener(new MouseAdapter() {
@@ -188,6 +198,7 @@ public class CommentPanel extends JPanel {
         body.setFont(new Font("Verdana", Font.PLAIN, 13));
 
         content.add(header);
+        content.add(Box.createVerticalStrut(4)); // small gap between header and text
         content.add(body);
 
         root.add(content, BorderLayout.CENTER);
@@ -203,7 +214,7 @@ public class CommentPanel extends JPanel {
         }
         Duration d = Duration.between(ts.toInstant(), Instant.now());
         if (d.toMinutes() < 1) {
-            return "Just now";
+            return "Just Now";
         }
         if (d.toHours() < 1) {
             return d.toMinutes() + "m";
