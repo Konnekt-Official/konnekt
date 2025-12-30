@@ -206,6 +206,7 @@ public class SearchPanel extends JPanel {
         );
 
         JLabel body = new JLabel("<html>" + post.getContent() + "</html>");
+        body.setFont(new Font("Verdana", Font.PLAIN, 13));
 
         JLabel meta = new JLabel("Like (" + post.getLikes() + ")   Comment (" + post.getCommentCount() + ")");
         meta.setForeground(Color.GRAY);
