@@ -14,11 +14,13 @@ import java.awt.event.MouseEvent;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
+import konnekt.controller.NotificationController;
 
 public class FeedPanel extends JPanel {
 
     private final PostDao postDao = new PostDao();
     private final PostController postController = new PostController();
+    private final NotificationController notificationController = new NotificationController();
 
     private final JPanel postsContainer = new JPanel();
     private final JScrollPane scrollPane;
@@ -228,6 +230,7 @@ public class FeedPanel extends JPanel {
             postController.likePost(post.getId()); // DB increment
             post.setLikes(post.getLikes() + 1);     // UI update
             likeBtn.setText("Like (" + post.getLikes() + ")");
+            notificationController.notifyLike(post.getUserId(), post.getId());
         });
 
         commentBtn.addActionListener(e -> {
