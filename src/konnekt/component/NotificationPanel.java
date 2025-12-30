@@ -67,7 +67,7 @@ public class NotificationPanel extends JPanel {
 
         // Avatar
         JLabel avatar = new JLabel(new ImageIcon(
-                getClass().getResource("/konnekt/resources/images/default_profile.png")
+                getClass().getResource("/konnekt/resources/images/default_profile-2.png")
         ));
         p.add(avatar);
         p.add(Box.createHorizontalStrut(8));
