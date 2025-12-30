@@ -98,6 +98,23 @@ CREATE TABLE IF NOT EXISTS follow (
     FOREIGN KEY (following_id) REFERENCES user(id) ON DELETE CASCADE
 );
 
+-- ===============================
+-- Chat / Message table
+-- ===============================
+CREATE TABLE IF NOT EXISTS chat (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    sender_id INT UNSIGNED NOT NULL,
+    receiver_id INT UNSIGNED NOT NULL,
+    content TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    is_read BOOLEAN DEFAULT FALSE,
+    
+    FOREIGN KEY (sender_id) REFERENCES user(id) ON DELETE CASCADE,
+    FOREIGN KEY (receiver_id) REFERENCES user(id) ON DELETE CASCADE
+);
+
+-- Index for faster queries per conversation
+CREATE INDEX idx_chat_sender_receiver ON chat(sender_id, receiver_id);
 
 -- ===============================
 -- Notification table
