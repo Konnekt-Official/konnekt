@@ -618,7 +618,7 @@ public class NavigatorView extends BaseFrame {
     }
 
     private void startNotificationTimer() {
-        new javax.swing.Timer(5000, e -> {
+        new javax.swing.Timer(500, e -> {
             int count = new NotificationDao().unreadCount(SessionManager.getCurrentUserId());
 
             // Play sound if there’s a new notification

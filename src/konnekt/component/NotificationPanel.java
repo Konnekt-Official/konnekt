@@ -15,20 +15,29 @@ public class NotificationPanel extends JPanel {
 
     private final NotificationDao dao = new NotificationDao();
     private final JPanel container = new JPanel();
+    private final JScrollPane scrollPane;
 
     public NotificationPanel() {
         setLayout(new BorderLayout());
         setBackground(new Color(245, 245, 245));
 
         container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
+        container.setAlignmentY(Component.TOP_ALIGNMENT);
         container.setBackground(new Color(245, 245, 245));
 
-        add(new JScrollPane(container), BorderLayout.CENTER);
+        scrollPane = new JScrollPane(container);
+        scrollPane.setBorder(null);
+        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+
+        add(scrollPane, BorderLayout.CENTER);
+
         refresh();
     }
 
     public void refresh() {
         container.removeAll();
+
         List<NotificationPojo> list = dao.allForUser(SessionManager.getCurrentUserId());
 
         if (list.isEmpty()) {
@@ -45,8 +54,8 @@ public class NotificationPanel extends JPanel {
             }
         }
 
-        revalidate();
-        repaint();
+        container.revalidate();
+        container.repaint();
     }
 
     private JPanel card(NotificationPojo n) {
@@ -56,12 +65,14 @@ public class NotificationPanel extends JPanel {
         p.setBorder(new EmptyBorder(8, 8, 8, 8));
         p.setAlignmentX(Component.LEFT_ALIGNMENT);
 
+        // Avatar
         JLabel avatar = new JLabel(new ImageIcon(
                 getClass().getResource("/konnekt/resources/images/default_profile.png")
         ));
         p.add(avatar);
         p.add(Box.createHorizontalStrut(8));
 
+        // Text
         JLabel text = new JLabel(buildText(n));
         text.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
@@ -75,7 +86,15 @@ public class NotificationPanel extends JPanel {
             }
         });
 
+        // Wrap text, fit-content width/height
+        text.setMaximumSize(new Dimension(400, Integer.MAX_VALUE));
+        text.setAlignmentY(Component.TOP_ALIGNMENT);
+
         p.add(text);
+
+        // Fit-content height for panel
+        p.setMaximumSize(new Dimension(Integer.MAX_VALUE, p.getPreferredSize().height));
+
         return p;
     }
 
@@ -90,5 +109,15 @@ public class NotificationPanel extends JPanel {
             case "MESSAGE" -> "<html>" + sender + " sent you a message " + time + "</html>";
             default -> "<html>" + sender + " did something " + time + "</html>";
         };
+    }
+
+    // Optional: scroll to top
+    public void scrollToTop() {
+        SwingUtilities.invokeLater(() -> scrollPane.getVerticalScrollBar().setValue(0));
+    }
+
+    // Optional: get unread count if needed
+    public int getUnreadCount() {
+        return dao.unreadCount(SessionManager.getCurrentUserId());
     }
 }
