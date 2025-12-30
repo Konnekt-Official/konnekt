@@ -1,7 +1,9 @@
 package konnekt.component;
 
-import konnekt.model.dao.UserDao;
+import konnekt.dao.ChatDao;
+import konnekt.dao.UserDao;
 import konnekt.model.pojo.UserPojo;
+import konnekt.manager.SessionManager;
 import konnekt.view.NavigatorView;
 
 import javax.swing.*;
@@ -10,82 +12,82 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
+import konnekt.model.dao.ChatDao;
+import konnekt.model.dao.UserDao;
 
 public class InboxPanel extends JPanel {
 
-    private JPanel userListPanel;
-    private UserDao userDao;
+    private final JPanel usersContainer = new JPanel();
+    private final JScrollPane scrollPane;
+
+    private final UserDao userDao = new UserDao();
+    private final ChatDao chatDao = new ChatDao();
 
     public InboxPanel() {
-        userDao = new UserDao();
-        initUI();
+        setLayout(new BorderLayout());
+        setBackground(new Color(245, 245, 245));
+
+        usersContainer.setLayout(new BoxLayout(usersContainer, BoxLayout.Y_AXIS));
+        usersContainer.setBackground(new Color(245, 245, 245));
+
+        scrollPane = new JScrollPane(usersContainer);
+        scrollPane.setBorder(null);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        scrollPane.setHorizontalScrollBarPolicy(
+                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER
+        );
+
+        add(scrollPane, BorderLayout.CENTER);
+
         loadUsers();
     }
 
-    private void initUI() {
-        setLayout(new BorderLayout());
-
-        JLabel title = new JLabel("Inbox");
-        title.setFont(new Font("Verdana", Font.BOLD, 18));
-        title.setBorder(new EmptyBorder(10, 10, 10, 10));
-        add(title, BorderLayout.NORTH);
-
-        userListPanel = new JPanel();
-        userListPanel.setLayout(new BoxLayout(userListPanel, BoxLayout.Y_AXIS));
-
-        JScrollPane scrollPane = new JScrollPane(userListPanel);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        add(scrollPane, BorderLayout.CENTER);
-    }
-
     private void loadUsers() {
-        // Load users from DAO
-        List<UserPojo> users = userDao.getAllUsers(); // make sure your UserDao has getAllUsers()
-        if (users == null) return;
+        usersContainer.removeAll();
+
+        int currentUserId = SessionManager.getCurrentUserId();
+        List<UserPojo> users = userDao.getAllUsers();
 
         for (UserPojo user : users) {
-            JPanel panel = createUserItem(user);
-            userListPanel.add(panel);
+            // ignore the logged-in user
+            if (user.getId() == currentUserId) continue;
+
+            usersContainer.add(createUserItem(user));
+            usersContainer.add(Box.createVerticalStrut(5));
         }
 
-        revalidate();
-        repaint();
+        usersContainer.revalidate();
+        usersContainer.repaint();
     }
 
     private JPanel createUserItem(UserPojo user) {
-        JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
-        panel.setBorder(new EmptyBorder(5, 5, 5, 5));
-        panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
-        panel.setBackground(new Color(40, 40, 40));
-        panel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        JPanel panel = new JPanel(new BorderLayout(8, 8));
+        panel.setBorder(new EmptyBorder(5, 10, 5, 10));
+        panel.setBackground(Color.WHITE);
+        panel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
-        // Profile icon
-        JLabel avatarLabel = new JLabel();
-        avatarLabel.setIcon(new ImageIcon(getClass().getResource("/konnekt/resources/images/user.png"))); // default icon
-        avatarLabel.setPreferredSize(new Dimension(50, 50));
-        panel.add(avatarLabel, BorderLayout.WEST);
+        // User name
+        JLabel nameLabel = new JLabel(user.getFullName() != null ? user.getFullName() : user.getUsername());
+        nameLabel.setFont(new Font("Verdana", Font.BOLD, 13));
 
-        // Fullname
-        JLabel nameLabel = new JLabel(user.getFullName() != null ? user.getFullName() : "Default Profile");
-        nameLabel.setForeground(Color.WHITE);
-        panel.add(nameLabel, BorderLayout.CENTER);
+        // Latest message snippet
+        String latestMsg = chatDao.getLatestMessageSnippet(SessionManager.getCurrentUserId(), user.getId());
+        JLabel msgLabel = new JLabel(latestMsg != null ? latestMsg : "");
+        msgLabel.setFont(new Font("Verdana", Font.PLAIN, 12));
+        msgLabel.setForeground(Color.GRAY);
 
-        // On click → open chat
+        JPanel textPanel = new JPanel();
+        textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
+        textPanel.setBackground(Color.WHITE);
+        textPanel.add(nameLabel);
+        textPanel.add(msgLabel);
+
+        panel.add(textPanel, BorderLayout.CENTER);
+
+        // Click to open chat
         panel.addMouseListener(new MouseAdapter() {
-            @Override
             public void mouseClicked(MouseEvent e) {
                 NavigatorView.showChat(user.getId());
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                panel.setBackground(new Color(60, 60, 60));
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                panel.setBackground(new Color(40, 40, 40));
             }
         });
 

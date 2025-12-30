@@ -11,7 +11,7 @@ public class ChatDao {
 
     // Send a message
     public boolean sendMessage(ChatPojo chat) {
-        String sql = "INSERT INTO chat(sender_id, receiver_id, content) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO chat(sender_id, receiver_id, content) VALUES(?,?,?)";
         try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement(sql)) {
             ps.setInt(1, chat.getSenderId());
             ps.setInt(2, chat.getReceiverId());
@@ -23,24 +23,52 @@ public class ChatDao {
         return false;
     }
 
-    // Get latest messages grouped by sender for Inbox
+    // Get full conversation between two users
+    public List<ChatPojo> getConversation(int user1, int user2) {
+        List<ChatPojo> list = new ArrayList<>();
+        String sql = "SELECT * FROM chat "
+                + "WHERE (sender_id=? AND receiver_id=?) OR (sender_id=? AND receiver_id=?) "
+                + "ORDER BY created_at ASC";
+        try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement(sql)) {
+            ps.setInt(1, user1);
+            ps.setInt(2, user2);
+            ps.setInt(3, user2);
+            ps.setInt(4, user1);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                ChatPojo c = new ChatPojo();
+                c.setId(rs.getInt("id"));
+                c.setSenderId(rs.getInt("sender_id"));
+                c.setReceiverId(rs.getInt("receiver_id"));
+                c.setContent(rs.getString("content"));
+                c.setRead(rs.getBoolean("is_read"));
+                c.setCreatedAt(rs.getTimestamp("created_at"));
+                list.add(c);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    // Get latest message for each user (for Inbox)
     public List<ChatPojo> getLatestMessages(int userId) {
         List<ChatPojo> list = new ArrayList<>();
         String sql = """
-            SELECT c1.*
-            FROM chat c1
+            SELECT * FROM chat c
             INNER JOIN (
                 SELECT 
-                    CASE WHEN sender_id = ? THEN receiver_id ELSE sender_id END AS user_id,
-                    MAX(created_at) AS max_created
+                    CASE 
+                        WHEN sender_id=? THEN receiver_id
+                        ELSE sender_id
+                    END AS other_user,
+                    MAX(created_at) AS latest
                 FROM chat
-                WHERE sender_id = ? OR receiver_id = ?
-                GROUP BY user_id
-            ) c2
-            ON ((c1.sender_id = ? AND c1.receiver_id = c2.user_id)
-            OR  (c1.sender_id = c2.user_id AND c1.receiver_id = ?))
-            AND c1.created_at = c2.max_created
-            ORDER BY c1.created_at DESC
+                WHERE sender_id=? OR receiver_id=?
+                GROUP BY other_user
+            ) t ON ( (c.sender_id = ? AND c.receiver_id = t.other_user) OR (c.sender_id = t.other_user AND c.receiver_id = ?) )
+            AND c.created_at = t.latest
+            ORDER BY c.created_at DESC
         """;
 
         try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement(sql)) {
@@ -49,17 +77,16 @@ public class ChatDao {
             ps.setInt(3, userId);
             ps.setInt(4, userId);
             ps.setInt(5, userId);
-
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                ChatPojo chat = new ChatPojo();
-                chat.setId(rs.getInt("id"));
-                chat.setSenderId(rs.getInt("sender_id"));
-                chat.setReceiverId(rs.getInt("receiver_id"));
-                chat.setContent(rs.getString("content"));
-                chat.setCreatedAt(rs.getTimestamp("created_at"));
-                chat.setRead(rs.getBoolean("is_read"));
-                list.add(chat);
+                ChatPojo c = new ChatPojo();
+                c.setId(rs.getInt("id"));
+                c.setSenderId(rs.getInt("sender_id"));
+                c.setReceiverId(rs.getInt("receiver_id"));
+                c.setContent(rs.getString("content"));
+                c.setRead(rs.getBoolean("is_read"));
+                c.setCreatedAt(rs.getTimestamp("created_at"));
+                list.add(c);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -67,47 +94,42 @@ public class ChatDao {
         return list;
     }
 
-    // Get full conversation between two users
-    public List<ChatPojo> getConversation(int user1, int user2) {
-        List<ChatPojo> list = new ArrayList<>();
+    public String getLatestMessageSnippet(int currentUserId, int otherUserId) {
         String sql = """
-            SELECT * FROM chat 
-            WHERE (sender_id = ? AND receiver_id = ?) 
-               OR (sender_id = ? AND receiver_id = ?)
-            ORDER BY created_at ASC
-        """;
+        SELECT content
+        FROM chat
+        WHERE (sender_id = ? AND receiver_id = ?) 
+           OR (sender_id = ? AND receiver_id = ?)
+        ORDER BY created_at DESC
+        LIMIT 1
+    """;
+
         try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement(sql)) {
-            ps.setInt(1, user1);
-            ps.setInt(2, user2);
-            ps.setInt(3, user2);
-            ps.setInt(4, user1);
+            ps.setInt(1, currentUserId);
+            ps.setInt(2, otherUserId);
+            ps.setInt(3, otherUserId);
+            ps.setInt(4, currentUserId);
+
             ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                ChatPojo chat = new ChatPojo();
-                chat.setId(rs.getInt("id"));
-                chat.setSenderId(rs.getInt("sender_id"));
-                chat.setReceiverId(rs.getInt("receiver_id"));
-                chat.setContent(rs.getString("content"));
-                chat.setCreatedAt(rs.getTimestamp("created_at"));
-                chat.setRead(rs.getBoolean("is_read"));
-                list.add(chat);
+            if (rs.next()) {
+                String content = rs.getString("content");
+                return content.length() > 30 ? content.substring(0, 30) + "..." : content;
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return list;
+        return null;
     }
 
-    // Mark all messages as read
-    public boolean markAsRead(int senderId, int receiverId) {
-        String sql = "UPDATE chat SET is_read = TRUE WHERE sender_id = ? AND receiver_id = ?";
+    // Mark messages as read
+    public void markAsRead(int senderId, int receiverId) {
+        String sql = "UPDATE chat SET is_read=TRUE WHERE sender_id=? AND receiver_id=? AND is_read=FALSE";
         try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement(sql)) {
             ps.setInt(1, senderId);
             ps.setInt(2, receiverId);
-            return ps.executeUpdate() > 0;
+            ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return false;
     }
 }
