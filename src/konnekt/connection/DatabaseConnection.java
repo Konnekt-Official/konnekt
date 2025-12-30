@@ -11,7 +11,9 @@ public class DatabaseConnection {
         Properties props = new Properties();
         InputStream input = DatabaseConnection.class.getClassLoader()
                 .getResourceAsStream("konnekt/resources/config.properties");
-        if (input == null) throw new RuntimeException("config.properties not found");
+        if (input == null) {
+            throw new RuntimeException("config.properties not found");
+        }
 
         props.load(input);
         String host = props.getProperty("DB_HOST");
@@ -20,7 +22,11 @@ public class DatabaseConnection {
         String user = props.getProperty("DB_USER");
         String password = props.getProperty("DB_PASSWORD");
 
-        String url = "jdbc:mysql://" + host + ":" + port + "/" + dbName + "?useSSL=false&serverTimezone=UTC";
+        String url
+                = "jdbc:mysql://" + host + ":" + port + "/" + dbName
+                + "?useSSL=false"
+                + "&serverTimezone=UTC"
+                + "&allowPublicKeyRetrieval=true";
 
         Class.forName("com.mysql.cj.jdbc.Driver");
         return DriverManager.getConnection(url, user, password);
