@@ -7,6 +7,7 @@ package konnekt.view;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
+import javax.swing.SwingConstants;
 
 import konnekt.component.FeedPanel;
 import konnekt.component.ProfilePanel;
@@ -19,6 +20,7 @@ import konnekt.component.CommentPanel;
 import konnekt.manager.SessionManager;
 import konnekt.model.dao.NotificationDao;
 import static konnekt.utils.SoundPlayer.playNotification;
+import konnekt.utils.Toast;
 
 /**
  *
@@ -619,10 +621,51 @@ public class NavigatorView extends BaseFrame {
 
     private void startNotificationTimer() {
         new javax.swing.Timer(500, e -> {
-            int count = new NotificationDao().unreadCount(SessionManager.getCurrentUserId());
+            NotificationDao dao = new NotificationDao();
+            int count = dao.unreadCount(SessionManager.getCurrentUserId());
 
-            // Play sound if there’s a new notification
             if (count > lastNotificationCount) {
+//                // Get latest notification
+//                var list = dao.allForUser(SessionManager.getCurrentUserId());
+//                if (!list.isEmpty()) {
+//                    var latest = list.get(0);
+//                    String senderName = latest.getSenderFullName();
+//                    if (senderName == null || senderName.isEmpty()) {
+//                        senderName = "Default Profile";
+//                    }
+//
+//                    ImageIcon avatar = konnekt.utils.AvatarUtil.avatarIcon(latest.getSenderId());
+//
+//                    String actionText = switch (latest.getType()) {
+//                        case "LIKE" ->
+//                            "liked your post";
+//                        case "COMMENT" ->
+//                            "commented on your post";
+//                        case "FOLLOW" ->
+//                            "followed you";
+//                        case "MESSAGE" ->
+//                            ""; // actual message will be shown below
+//                        default ->
+//                            "did something";
+//                    };
+//
+//                    // Time (implement getTimeAgo() or calculate)
+//                    String time = latest.getTimeAgo();
+//
+//                    String toastMessage = latest.getType().equals("MESSAGE") ? latest.getMessage() : actionText;
+//
+//                    Toast.show(avatar, senderName, time, toastMessage, () -> {
+//                        switch (latest.getType()) {
+//                            case "FOLLOW", "MESSAGE" ->
+//                                NavigatorView.showProfile(latest.getSenderId());
+//                            case "LIKE", "COMMENT" ->
+//                                NavigatorView.showComments(latest.getReferenceId());
+//                        }
+//                    });
+//
+//                }
+
+                // Play notification sound
                 playNotification();
             }
 
@@ -634,9 +677,15 @@ public class NavigatorView extends BaseFrame {
     public void updateNotificationBadge() {
         int count = new NotificationDao().unreadCount(SessionManager.getCurrentUserId());
 
-        jLabel17.setBackground(new Color(255, 51, 51));
+        jLabel17.setOpaque(true); // Make background visible
+        jLabel17.setBackground(new Color(255, 0, 0)); // Red background
+        jLabel17.setForeground(Color.WHITE); // White text
         jLabel17.setText(count > 0 ? String.valueOf(count) : "");
         jLabel17.setVisible(count > 0);
+
+        // Optional: Rounded badge effect
+        jLabel17.setHorizontalAlignment(SwingConstants.CENTER);
+        jLabel17.setVerticalAlignment(SwingConstants.CENTER);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
