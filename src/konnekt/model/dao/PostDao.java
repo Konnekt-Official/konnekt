@@ -57,13 +57,13 @@ public class PostDao {
 
     public PostPojo getPostById(int postId) {
         String sql = """
-    SELECT p.id, p.user_id, p.content, p.likes, p.created_at,
-           u.username, u.full_name,
-           (SELECT COUNT(*) FROM comment c WHERE c.post_id = p.id) AS comment_count
-    FROM post p
-    JOIN user u ON p.user_id = u.id
-    WHERE p.id = ?
-    """;
+                    SELECT p.id, p.user_id, p.content, p.likes, p.created_at,
+                           u.username, u.full_name,
+                           (SELECT COUNT(*) FROM comment c WHERE c.post_id = p.id) AS comment_count
+                    FROM post p
+                    JOIN user u ON p.user_id = u.id
+                    WHERE p.id = ?
+                    """;
 
         try (Connection con = DatabaseConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 
@@ -142,16 +142,16 @@ public class PostDao {
     public List<PostPojo> searchPosts(String keyword) {
         List<PostPojo> list = new ArrayList<>();
         String sql = """
-        SELECT p.*,
-               u.full_name,
-               u.username,
-               (SELECT COUNT(*) FROM post_like l WHERE l.post_id = p.id) AS like_count,
-               (SELECT COUNT(*) FROM comment c WHERE c.post_id = p.id) AS comment_count
-        FROM post p
-        JOIN user u ON u.id = p.user_id
-        WHERE p.content LIKE ?
-        ORDER BY p.created_at DESC
-    """;
+                SELECT p.*,
+                       u.full_name,
+                       u.username,
+                       p.likes AS like_count,
+                       (SELECT COUNT(*) FROM comment c WHERE c.post_id = p.id) AS comment_count
+                FROM post p
+                JOIN user u ON u.id = p.user_id
+                WHERE p.content LIKE ?
+                ORDER BY p.created_at DESC
+                """;
 
         try (Connection c = DatabaseConnection.getConnection(); PreparedStatement ps = c.prepareStatement(sql)) {
 
@@ -166,7 +166,7 @@ public class PostDao {
                 p.setFullName(rs.getString("full_name"));
                 p.setUsername(rs.getString("username"));
                 p.setCreatedAt(rs.getTimestamp("created_at"));
-                p.setLikes(rs.getInt("like_count"));
+                p.setLikes(rs.getInt("like_count"));  // now from post.likes
                 p.setCommentCount(rs.getInt("comment_count"));
 
                 list.add(p);
