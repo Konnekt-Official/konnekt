@@ -156,7 +156,7 @@ public class ProfilePanel extends JPanel {
             followDao.unfollowUser(loggedInUserId, profileUserId);
         } else {
             followDao.followUser(loggedInUserId, profileUserId);
-            notificationController.notifyFollow(loggedInUserId);
+            notificationController.notifyFollow(profileUserId);
         }
 
         followBtn.setText(followDao.isFollowing(loggedInUserId, profileUserId) ? "Following" : "Follow");
@@ -173,7 +173,11 @@ public class ProfilePanel extends JPanel {
         List<PostPojo> posts = postDao.getPostsByUser(profileUserId);
 
         if (posts.isEmpty()) {
-            JLabel noPosts = new JLabel("This user has no posts yet.");
+            String msgText = (loggedInUserId == profileUserId)
+                    ? "You haven't posted anything yet."
+                    : "This user hasn't posted anything yet.";
+
+            JLabel noPosts = new JLabel(msgText);
             noPosts.setFont(FONT);
             noPosts.setForeground(Color.GRAY);
             noPosts.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -195,7 +199,7 @@ public class ProfilePanel extends JPanel {
             JScrollPane scrollPane = (JScrollPane) this.getComponent(1);
             scrollPane.getVerticalScrollBar().setValue(0);
         });
-    }     
+    }
 
     private JPanel createPostCard(PostPojo post) {
         JPanel root = new JPanel();
@@ -250,6 +254,8 @@ public class ProfilePanel extends JPanel {
             postDao.incrementLike(post.getId());
             post.setLikes(post.getLikes() + 1);
             likeBtn.setText("Like (" + post.getLikes() + ")");
+
+            notificationController.notifyLike(post.getUserId(), post.getId());
         });
 
         commentBtn.addActionListener(e -> NavigatorView.showComments(post.getId()));
