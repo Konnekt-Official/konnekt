@@ -2,38 +2,43 @@ package konnekt.controller;
 
 import konnekt.model.dao.PostDao;
 import konnekt.model.pojo.PostPojo;
-import konnekt.manager.SessionManager;
 
-import javax.swing.*;
-import java.awt.*;
+import java.util.HashSet;
+import java.util.Set;
 
 public class PostController {
 
-    private final PostDao postDao;
+    private final PostDao postDao = new PostDao();
 
-    public PostController() {
-        this.postDao = new PostDao();
-    }
-
-    public void createPost(Component parent, String content) {
-        if (content.isEmpty()) {
-            JOptionPane.showMessageDialog(parent, "Post cannot be empty!", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
+    public boolean createPost(int userId, String content) {
         PostPojo post = new PostPojo();
-        post.setUserId(SessionManager.getCurrentUserId());
+        post.setUserId(userId);
         post.setContent(content);
         post.setLikes(0);
-
-        if (postDao.addPost(post)) {
-            JOptionPane.showMessageDialog(parent, "Post created successfully!");
-        } else {
-            JOptionPane.showMessageDialog(parent, "Failed to create post.", "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        return postDao.addPost(post);
     }
 
     public void likePost(int postId) {
-        postDao.likePost(postId);
+        postDao.incrementLike(postId);
+    }
+
+    public java.util.List<PostPojo> getAllPosts() {
+        return postDao.getAllPosts();
+    }
+
+    public PostPojo getPostById(int postId) {
+        return postDao.getPostById(postId);
+    }
+
+    public java.util.List<PostPojo> searchPosts(String keyword) {
+        return postDao.searchPosts(keyword);
+    }
+
+    public java.util.List<PostPojo> getPostsByUser(int userId) {
+        return postDao.getPostsByUser(userId);
+    }
+
+    public boolean deletePost(int postId) {
+        return postDao.deletePost(postId);
     }
 }

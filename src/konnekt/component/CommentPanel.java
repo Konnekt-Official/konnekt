@@ -177,7 +177,7 @@ public class CommentPanel extends JPanel {
         commentBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
         likeBtn.addActionListener(e -> {
-            new PostDao().likePost(post.getId());
+            new PostDao().incrementLike(post.getId());
             refresh();
         });
 
@@ -247,7 +247,7 @@ public class CommentPanel extends JPanel {
         }
         Duration d = Duration.between(ts.toInstant(), Instant.now());
         if (d.toMinutes() < 1) {
-            return "Just now";
+            return "Just Now";
         }
         if (d.toHours() < 1) {
             return d.toMinutes() + "m";
