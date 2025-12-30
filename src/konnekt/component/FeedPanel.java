@@ -166,7 +166,7 @@ public class FeedPanel extends JPanel {
         fullName.setFont(new Font("Verdana", Font.BOLD, 13));
 
         JLabel username = new JLabel(" @" + post.getUsername());
-        username.setFont(FONT);
+        username.setFont(new Font("Verdana", Font.PLAIN, 13));
         username.setForeground(Color.BLUE);
         username.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         username.addMouseListener(new MouseAdapter() {

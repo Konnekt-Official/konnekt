@@ -117,6 +117,7 @@ public class ProfilePanel extends JPanel {
 
         JLabel username = new JLabel("@" + user.getUsername());
         username.setForeground(Color.BLUE);
+        username.setFont(new Font("Verdana", Font.PLAIN, 13));
         username.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         username.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override

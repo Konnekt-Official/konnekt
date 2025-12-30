@@ -114,8 +114,8 @@ public class CommentPanel extends JPanel {
 
         JLabel name = new JLabel(
                 "<html><b>" + post.getFullName() + "</b> "
-                        + "<font color='blue'>@" + post.getUsername() + "</font> "
-                        + "<font color='gray'>· " + timeAgo(post.getCreatedAt()) + "</font></html>"
+                + "<span style='font-weight:normal; color:blue'>@" + post.getUsername() + "</span> "
+                + "<span style='font-weight:normal; color:gray'>• " + timeAgo(post.getCreatedAt()) + "</font></html>"
         );
         name.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         name.addMouseListener(new MouseAdapter() {
@@ -186,8 +186,8 @@ public class CommentPanel extends JPanel {
         // Header with clickable username
         JLabel header = new JLabel(
                 "<html><b>" + c.getFullName() + "</b> "
-                        + "<font color='blue'>@" + c.getUsername() + "</font> "
-                        + "<font color='gray'>· " + timeAgo(c.getCreatedAt()) + "</font></html>"
+                + "<span style='font-weight:normal; color:blue'>@" + c.getUsername() + "</span> "
+                + "<span style='font-weight:normal; color:gray'>• " + timeAgo(c.getCreatedAt()) + "</span></html>"
         );
         header.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         header.addMouseListener(new MouseAdapter() {
