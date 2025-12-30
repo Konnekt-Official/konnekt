@@ -60,6 +60,27 @@ public class UserDao {
         return false;
     }
 
+    public List<UserPojo> getAllUsers() {
+        List<UserPojo> users = new ArrayList<>();
+        String sql = "SELECT id, full_name, username FROM user";
+
+        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                UserPojo user = new UserPojo();
+                user.setId(rs.getInt("id"));
+                user.setFullName(rs.getString("full_name"));
+                user.setUsername(rs.getString("username"));
+                users.add(user);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return users;
+    }
+
     public UserPojo getUserByEmail(String email) {
         String sql = "SELECT * FROM user WHERE email = ?";
         try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement(sql)) {

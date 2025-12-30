@@ -8,6 +8,7 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
 import javax.swing.SwingConstants;
+import konnekt.component.ChatPanel;
 
 import konnekt.component.FeedPanel;
 import konnekt.component.ProfilePanel;
@@ -617,6 +618,26 @@ public class NavigatorView extends BaseFrame {
                 }
             }
         }
+    }
+
+    // Add inside NavigatorView class
+    public static void showChat(int userId) {
+        String cardName = "CHAT_" + userId;
+
+        // Check if chat already exists
+        for (Component c : instance.mainPanel.getComponents()) {
+            if (cardName.equals(c.getName()) && c instanceof ChatPanel cp) {
+                ((CardLayout) instance.mainPanel.getLayout()).show(instance.mainPanel, cardName);
+                return;
+            }
+        }
+
+        // Create new chat panel
+        ChatPanel chat = new ChatPanel(userId);
+        chat.setName(cardName);
+
+        instance.mainPanel.add(chat, cardName);
+        ((CardLayout) instance.mainPanel.getLayout()).show(instance.mainPanel, cardName);
     }
 
     private void startNotificationTimer() {
