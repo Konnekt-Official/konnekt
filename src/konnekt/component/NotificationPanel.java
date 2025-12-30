@@ -3,7 +3,6 @@ package konnekt.component;
 import konnekt.model.dao.NotificationDao;
 import konnekt.model.pojo.NotificationPojo;
 import konnekt.utils.TimeAgo;
-import konnekt.utils.SoundPlayer;
 import konnekt.manager.SessionManager;
 import konnekt.view.NavigatorView;
 
@@ -30,38 +29,48 @@ public class NotificationPanel extends JPanel {
 
     public void refresh() {
         container.removeAll();
-        List<NotificationPojo> list
-                = dao.groupedForUser(SessionManager.getCurrentUserId());
+        List<NotificationPojo> list = dao.allForUser(SessionManager.getCurrentUserId());
 
-        for (NotificationPojo n : list) {
-            container.add(card(n));
-            container.add(Box.createVerticalStrut(6));
+        if (list.isEmpty()) {
+            JLabel msg = new JLabel("No notifications.");
+            msg.setFont(new Font("Verdana", Font.ITALIC, 12));
+            msg.setForeground(Color.GRAY);
+            msg.setAlignmentX(Component.CENTER_ALIGNMENT);
+            container.add(Box.createVerticalStrut(20));
+            container.add(msg);
+        } else {
+            for (NotificationPojo n : list) {
+                container.add(card(n));
+                container.add(Box.createVerticalStrut(6));
+            }
         }
+
         revalidate();
         repaint();
     }
 
     private JPanel card(NotificationPojo n) {
-        JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 8));
+        JPanel p = new JPanel();
+        p.setLayout(new BoxLayout(p, BoxLayout.X_AXIS));
         p.setBackground(Color.WHITE);
         p.setBorder(new EmptyBorder(8, 8, 8, 8));
+        p.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         JLabel avatar = new JLabel(new ImageIcon(
                 getClass().getResource("/konnekt/resources/images/default_profile.png")
         ));
         p.add(avatar);
+        p.add(Box.createHorizontalStrut(8));
 
         JLabel text = new JLabel(buildText(n));
         text.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
         text.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent e) {
-                if ("FOLLOW".equals(n.getType())) {
-                    NavigatorView.showProfile(n.getSenderId());
-                } else {
-                    NavigatorView.showComments(n.getReferenceId());
+                switch (n.getType()) {
+                    case "FOLLOW", "MESSAGE" -> NavigatorView.showProfile(n.getSenderId());
+                    case "LIKE", "COMMENT" -> NavigatorView.showComments(n.getReferenceId());
                 }
-
                 dao.markAllRead(SessionManager.getCurrentUserId());
             }
         });
@@ -71,26 +80,15 @@ public class NotificationPanel extends JPanel {
     }
 
     private String buildText(NotificationPojo n) {
-        String message = "";
-        String senderName = "<b>" + n.getSenderFullName() + "</b>";
-        String username = "<font color='blue'>@" + n.getSenderUsername() + "</font>";
+        String sender = "<b>" + n.getSenderFullName() + "</b> <font color='blue'>@" + n.getSenderUsername() + "</font>";
         String time = "<span style='color:gray'>" + TimeAgo.format(n.getCreatedAt()) + "</span>";
 
-        switch (n.getType()) {
-            case "LIKE":
-                message = senderName + " " + username + " <b>liked</b> your post " + time;
-                break;
-            case "COMMENT":
-                message = senderName + " " + username + " <b>commented</b> on your post " + time;
-                break;
-            case "FOLLOW":
-                message = senderName + " " + username + " <b>followed</b> you " + time;
-                break;
-            default:
-                message = senderName + " " + username + " did something " + time;
-        }
-
-        return "<html>" + message + "</html>";
+        return switch (n.getType()) {
+            case "LIKE" -> "<html>" + sender + " liked your post " + time + "</html>";
+            case "COMMENT" -> "<html>" + sender + " commented on your post " + time + "</html>";
+            case "FOLLOW" -> "<html>" + sender + " followed you " + time + "</html>";
+            case "MESSAGE" -> "<html>" + sender + " sent you a message " + time + "</html>";
+            default -> "<html>" + sender + " did something " + time + "</html>";
+        };
     }
-
 }

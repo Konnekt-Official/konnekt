@@ -116,12 +116,13 @@ public class FeedPanel extends JPanel {
 
         if (posts.isEmpty()) {
             JLabel msg = new JLabel("No posts available.");
-            msg.setFont(new Font("Verdana", Font.ITALIC, 12));
+            msg.setFont(new Font("Verdana", Font.PLAIN, 12));
             msg.setForeground(Color.GRAY);
             msg.setAlignmentX(Component.CENTER_ALIGNMENT);
             postsContainer.add(Box.createVerticalStrut(20));
             postsContainer.add(msg);
         } else {
+            postsContainer.add(Box.createVerticalStrut(10)); // GAP below input panel
             for (PostPojo post : posts) {
                 postsContainer.add(createPostCard(post));
                 postsContainer.add(Box.createVerticalStrut(10));

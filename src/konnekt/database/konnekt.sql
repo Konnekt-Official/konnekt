@@ -108,9 +108,9 @@ CREATE TABLE IF NOT EXISTS notification (
     user_id INT UNSIGNED NOT NULL,        -- receiver
     sender_id INT UNSIGNED DEFAULT NULL,  -- who triggered it
 
-    type ENUM('LIKE','COMMENT','FOLLOW') NOT NULL,
+    type ENUM('LIKE','COMMENT','FOLLOW','MESSAGE') NOT NULL,
 
-    reference_id INT DEFAULT NULL,        -- post_id (LIKE/COMMENT), null for FOLLOW
+    reference_id INT DEFAULT NULL,        -- post_id (LIKE/COMMENT), null for FOLLOW/MESSAGE
     is_read BOOLEAN DEFAULT FALSE,
 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

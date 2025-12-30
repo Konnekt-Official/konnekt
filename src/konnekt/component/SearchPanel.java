@@ -117,7 +117,7 @@ public class SearchPanel extends JPanel {
         if (users.isEmpty()) {
             JLabel msg = new JLabel("No users found.");
             msg.setForeground(Color.GRAY);
-            msg.setFont(new Font("Verdana", Font.ITALIC, 12));
+            msg.setFont(new Font("Verdana", Font.PLAIN, 12));
             msg.setAlignmentX(Component.CENTER_ALIGNMENT);
             userList.add(Box.createVerticalStrut(20));
             userList.add(msg);
@@ -173,7 +173,7 @@ public class SearchPanel extends JPanel {
         if (posts.isEmpty()) {
             JLabel msg = new JLabel("No posts found.");
             msg.setForeground(Color.GRAY);
-            msg.setFont(new Font("Verdana", Font.ITALIC, 12));
+            msg.setFont(new Font("Verdana", Font.PLAIN, 12));
             msg.setAlignmentX(Component.CENTER_ALIGNMENT);
             postList.add(Box.createVerticalStrut(20));
             postList.add(msg);
