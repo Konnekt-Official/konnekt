@@ -1,7 +1,7 @@
 package konnekt.model.dao;
 
-import konnekt.model.pojo.PostPojo;
 import konnekt.connection.DatabaseConnection;
+import konnekt.model.pojo.PostPojo;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -9,9 +9,15 @@ import java.util.List;
 
 public class PostDao {
 
+    // ---------- GET CONNECTION ----------
+    public Connection getConnection() throws Exception {
+        return DatabaseConnection.getConnection();
+    }
+
+    // ---------- ADD POST ----------
     public boolean addPost(PostPojo post) {
         String sql = "INSERT INTO post (user_id, content, likes) VALUES (?, ?, ?)";
-        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, post.getUserId());
             ps.setString(2, post.getContent());
             ps.setInt(3, post.getLikes());
@@ -22,21 +28,18 @@ public class PostDao {
         }
     }
 
+    // ---------- GET ALL POSTS ----------
     public List<PostPojo> getAllPosts() {
         List<PostPojo> posts = new ArrayList<>();
         String sql = """
-                    SELECT p.id, p.user_id, p.content, p.likes, p.created_at,
-                    u.full_name, u.username,
-                    COUNT(c.id) AS comment_count
-                    FROM post p
-                    JOIN user u ON p.user_id = u.id
-                    LEFT JOIN comment c ON c.post_id = p.id
-                    GROUP BY p.id, p.user_id, p.content, p.likes, p.created_at, u.full_name, u.username
-                    ORDER BY p.created_at DESC
-                    """;
-
-        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
-
+                SELECT p.id, p.user_id, p.content, p.likes, p.created_at,
+                       u.full_name, u.username,
+                       (SELECT COUNT(*) FROM comment c WHERE c.post_id = p.id) AS comment_count
+                FROM post p
+                JOIN user u ON p.user_id = u.id
+                ORDER BY p.created_at DESC
+                """;
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 PostPojo post = new PostPojo();
                 post.setId(rs.getInt("id"));
@@ -55,50 +58,50 @@ public class PostDao {
         return posts;
     }
 
+    // ---------- GET POST BY ID ----------
     public PostPojo getPostById(int postId) {
         String sql = """
-    SELECT p.id, p.user_id, p.content, p.likes, p.created_at,
-           u.username, u.full_name,
-           (SELECT COUNT(*) FROM comment c WHERE c.post_id = p.id) AS comment_count
-    FROM post p
-    JOIN user u ON p.user_id = u.id
-    WHERE p.id = ?
-    """;
-
-        try (Connection con = DatabaseConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
-
+                SELECT p.id, p.user_id, p.content, p.likes, p.created_at,
+                       u.full_name, u.username,
+                       (SELECT COUNT(*) FROM comment c WHERE c.post_id = p.id) AS comment_count
+                FROM post p
+                JOIN user u ON p.user_id = u.id
+                WHERE p.id = ?
+                """;
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, postId);
             ResultSet rs = ps.executeQuery();
-
             if (rs.next()) {
-                PostPojo p = new PostPojo();
-                p.setId(rs.getInt("id"));
-                p.setUserId(rs.getInt("user_id"));
-                p.setContent(rs.getString("content"));
-                p.setLikes(rs.getInt("likes"));
-                p.setCreatedAt(rs.getTimestamp("created_at"));
-                p.setUsername(rs.getString("username"));
-                p.setFullName(rs.getString("full_name"));
-                p.setCommentCount(rs.getInt("comment_count"));
-                return p;
+                PostPojo post = new PostPojo();
+                post.setId(rs.getInt("id"));
+                post.setUserId(rs.getInt("user_id"));
+                post.setContent(rs.getString("content"));
+                post.setLikes(rs.getInt("likes"));
+                post.setCreatedAt(rs.getTimestamp("created_at"));
+                post.setFullName(rs.getString("full_name"));
+                post.setUsername(rs.getString("username"));
+                post.setCommentCount(rs.getInt("comment_count"));
+                return post;
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
     }
 
+    // ---------- GET POSTS BY USER ----------
     public List<PostPojo> getPostsByUser(int userId) {
         List<PostPojo> posts = new ArrayList<>();
-        String sql = "SELECT p.id, p.user_id, p.content, p.likes, p.created_at, "
-                + "u.full_name, u.username "
-                + "FROM post p "
-                + "JOIN user u ON p.user_id = u.id "
-                + "WHERE p.user_id = ? "
-                + "ORDER BY p.created_at DESC";
-
-        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+        String sql = """
+                SELECT p.id, p.user_id, p.content, p.likes, p.created_at,
+                       u.full_name, u.username,
+                       (SELECT COUNT(*) FROM comment c WHERE c.post_id = p.id) AS comment_count
+                FROM post p
+                JOIN user u ON p.user_id = u.id
+                WHERE p.user_id = ?
+                ORDER BY p.created_at DESC
+                """;
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, userId);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -110,6 +113,7 @@ public class PostDao {
                 post.setCreatedAt(rs.getTimestamp("created_at"));
                 post.setFullName(rs.getString("full_name"));
                 post.setUsername(rs.getString("username"));
+                post.setCommentCount(rs.getInt("comment_count"));
                 posts.add(post);
             }
         } catch (Exception e) {
@@ -118,19 +122,43 @@ public class PostDao {
         return posts;
     }
 
-    public void likePost(int postId) {
-        String sql = "UPDATE post SET likes = likes + 1 WHERE id = ?";
-        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, postId);
-            ps.executeUpdate();
+    // ---------- SEARCH POSTS ----------
+    public List<PostPojo> searchPosts(String keyword) {
+        List<PostPojo> posts = new ArrayList<>();
+        String sql = """
+                SELECT p.id, p.user_id, p.content, p.likes, p.created_at,
+                       u.full_name, u.username,
+                       (SELECT COUNT(*) FROM comment c WHERE c.post_id = p.id) AS comment_count
+                FROM post p
+                JOIN user u ON p.user_id = u.id
+                WHERE p.content LIKE ?
+                ORDER BY p.created_at DESC
+                """;
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, "%" + keyword + "%");
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                PostPojo post = new PostPojo();
+                post.setId(rs.getInt("id"));
+                post.setUserId(rs.getInt("user_id"));
+                post.setContent(rs.getString("content"));
+                post.setLikes(rs.getInt("likes"));
+                post.setCreatedAt(rs.getTimestamp("created_at"));
+                post.setFullName(rs.getString("full_name"));
+                post.setUsername(rs.getString("username"));
+                post.setCommentCount(rs.getInt("comment_count"));
+                posts.add(post);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return posts;
     }
 
+    // ---------- DELETE POST ----------
     public boolean deletePost(int postId) {
         String sql = "DELETE FROM post WHERE id = ?";
-        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, postId);
             return ps.executeUpdate() > 0;
         } catch (Exception e) {
@@ -139,4 +167,15 @@ public class PostDao {
         }
     }
 
+    public void incrementLike(int postId) {
+        String sql = "UPDATE post SET likes = likes + 1 WHERE id = ?";
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, postId);
+            ps.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -58,9 +58,9 @@ public class UserController {
                 + "<p>We received a request to register your account.</p>"
                 + "<p>Your One-Time Password (OTP) is:</p>"
                 + "<h2 style='color:#01FE49;'>" + otp + "</h2>"
-                + "<p>This OTP will expire in <b>5 minutes</b>. Please do not share it with anyone.</p>"
+                + "<p>This OTP is valid for the next <b>5 minutes</b> and can only be used once. For your security, please do not share this code with anyone.</p>"
                 + "<p>If you did not request this, please ignore this email or contact support immediately.</p>"
-                + "<h2><b>Best regards,</b><br><a href=\"https://rajeshthapa69.com.np\">Bokshi</a></h2>"
+                + "<h2><b>Best regards,</b><br>Bokshi</h2>"
                 + "<hr style='border:none; border-top:1px solid #ccc;'/>"
                 + "<p style='font-size:12px; color:#888;'>This is an automated message, please do not reply.</p>"
                 + "<p style='font-size:12px; color:#888;'>© 2025 Konnekt. All rights reserved.</p>"
@@ -68,7 +68,7 @@ public class UserController {
 
         new EmailService().sendEmail(email, "Account Registration OTP", body);
 
-        String message = "An OTP has been sent to " + email + ". Please enter it below:";
+        String message = "Please enter the OTP sent to your email (" + email + ")" ;
         while (true) {
             String inputOTP = JOptionPane.showInputDialog(rv, message, "OTP Verification", JOptionPane.PLAIN_MESSAGE);
             if (inputOTP == null) {
@@ -116,5 +116,9 @@ public class UserController {
         } else {
             JOptionPane.showMessageDialog(lv, "Login failed. Try again.", "Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
+    
+    public UserPojo getUserById(int id) {
+        return userDao.getUserById(id);
     }
 }

@@ -4,15 +4,11 @@
  */
 package konnekt.view;
 
-import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Font;
-import javax.swing.BorderFactory;
-import javax.swing.JLabel;
 import javax.swing.SwingConstants;
+import konnekt.component.ChatPanel;
 
 import konnekt.component.FeedPanel;
 import konnekt.component.ProfilePanel;
@@ -22,10 +18,10 @@ import konnekt.component.NotificationPanel;
 import konnekt.component.SettingPanel;
 import konnekt.component.CommentPanel;
 
-import konnekt.model.pojo.PostPojo;
-
 import konnekt.manager.SessionManager;
 import konnekt.model.dao.NotificationDao;
+import static konnekt.utils.SoundPlayer.playNotification;
+import konnekt.utils.Toast;
 
 /**
  *
@@ -36,7 +32,8 @@ public class NavigatorView extends BaseFrame {
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(NavigatorView.class.getName());
     private static NavigatorView instance;
     private FeedPanel feedPanel;
-    private JLabel notificationBadge;
+    private int lastNotificationCount = 0;
+    public static InboxPanel inboxPanel;
 
     /**
      * Creates new form FeedView
@@ -53,20 +50,6 @@ public class NavigatorView extends BaseFrame {
         addHoverEffect(jPanel7);
 
         instance = this;
-
-        notificationBadge = new JLabel();
-        notificationBadge.setOpaque(true);
-        notificationBadge.setBackground(Color.RED);
-        notificationBadge.setForeground(Color.WHITE);
-        notificationBadge.setFont(new Font("Verdana", Font.BOLD, 12));
-        notificationBadge.setHorizontalAlignment(SwingConstants.CENTER);
-        notificationBadge.setVisible(false); // hide initially
-        notificationBadge.setPreferredSize(new Dimension(20, 20));
-        notificationBadge.setBorder(BorderFactory.createLineBorder(Color.WHITE, 1));
-
-        // Add badge to notification panel (jPanel6)
-        jPanel6.setLayout(new BorderLayout());
-        jPanel6.add(notificationBadge, BorderLayout.EAST);
 
         updateNotificationBadge();
         startNotificationTimer();
@@ -99,6 +82,7 @@ public class NavigatorView extends BaseFrame {
         jPanel6 = new javax.swing.JPanel();
         jLabel11 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
+        jLabel17 = new javax.swing.JLabel();
         jPanel7 = new javax.swing.JPanel();
         jLabel13 = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
@@ -281,6 +265,10 @@ public class NavigatorView extends BaseFrame {
 
         jLabel12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/konnekt/resources/images/bell.png"))); // NOI18N
 
+        jLabel17.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
+        jLabel17.setForeground(new java.awt.Color(255, 51, 51));
+        jLabel17.setText("0");
+
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
@@ -290,7 +278,9 @@ public class NavigatorView extends BaseFrame {
                 .addComponent(jLabel12)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel11)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(0, 0, 0)
+                .addComponent(jLabel17)
+                .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -298,11 +288,16 @@ public class NavigatorView extends BaseFrame {
                 .addContainerGap()
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addGap(7, 7, 7)
-                        .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jLabel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jLabel17)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jLabel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addGap(8, 8, 8)
+                        .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
+
+        jLabel17.setBackground(new java.awt.Color(255, 0, 0));
 
         jPanel7.setBackground(new java.awt.Color(51, 51, 51));
         jPanel7.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -428,8 +423,8 @@ public class NavigatorView extends BaseFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 679, Short.MAX_VALUE))
+                .addGap(0, 0, 0)
+                .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 685, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -531,10 +526,11 @@ public class NavigatorView extends BaseFrame {
 
     private void initPanels() {
         feedPanel = new FeedPanel();
+        inboxPanel = new InboxPanel();
 
         mainPanel.add(feedPanel, "FEED");
         mainPanel.add(new ProfilePanel(SessionManager.getCurrentUserId(), SessionManager.getCurrentUserId()), "PROFILE");
-        mainPanel.add(new InboxPanel(), "INBOX");
+        mainPanel.add(inboxPanel, "INBOX");
         mainPanel.add(new SearchPanel(), "SEARCH");
         mainPanel.add(new NotificationPanel(), "NOTIFICATION");
         mainPanel.add(new SettingPanel(), "SETTING");
@@ -594,40 +590,131 @@ public class NavigatorView extends BaseFrame {
 
         String cardName = "PROFILE_" + userId;
 
-        // Avoid re-adding same profile
+        // Check if profile already exists
         for (Component c : instance.mainPanel.getComponents()) {
-            if (cardName.equals(c.getName())) {
-                ((CardLayout) instance.mainPanel.getLayout())
-                        .show(instance.mainPanel, cardName);
+            if (cardName.equals(c.getName()) && c instanceof ProfilePanel pp) {
+                ((CardLayout) instance.mainPanel.getLayout()).show(instance.mainPanel, cardName);
+                pp.onShow(); // refresh posts and scroll to top
+                instance.setSelectedPanel(instance.jPanel3);
                 return;
             }
         }
 
-        ProfilePanel profile = new ProfilePanel(
-                SessionManager.getCurrentUserId(),
-                userId
-        );
+        // Create new profile if doesn't exist
+        ProfilePanel profile = new ProfilePanel(SessionManager.getCurrentUserId(), userId);
         profile.setName(cardName);
-
-        instance.mainPanel.remove(profile);
         instance.mainPanel.add(profile, cardName);
 
         CardLayout cl = (CardLayout) instance.mainPanel.getLayout();
         cl.show(instance.mainPanel, cardName);
 
+        profile.onShow();
         instance.setSelectedPanel(instance.jPanel3);
     }
 
+    public static void refreshProfile(int userId) {
+        for (Component c : instance.mainPanel.getComponents()) {
+            if (c instanceof ProfilePanel pp) {
+                if (pp.getProfileUserId() == userId) {
+                    pp.onShow();
+                }
+            }
+        }
+    }
+
+    public static void refreshInboxPanel() {
+        if (inboxPanel != null) {
+            inboxPanel.refreshInbox();
+        }
+    }
+
+    // Add inside NavigatorView class
+    public static void showChat(int userId) {
+        String cardName = "CHAT_" + userId;
+
+        // Check if chat already exists
+        for (Component c : instance.mainPanel.getComponents()) {
+            if (cardName.equals(c.getName()) && c instanceof ChatPanel cp) {
+                ((CardLayout) instance.mainPanel.getLayout()).show(instance.mainPanel, cardName);
+                return;
+            }
+        }
+
+        // Create new chat panel
+        ChatPanel chat = new ChatPanel(userId);
+        chat.setName(cardName);
+
+        instance.mainPanel.add(chat, cardName);
+        ((CardLayout) instance.mainPanel.getLayout()).show(instance.mainPanel, cardName);
+    }
+
     private void startNotificationTimer() {
-        // refresh every 5 seconds
-        new javax.swing.Timer(5000, e -> updateNotificationBadge()).start();
+        new javax.swing.Timer(500, e -> {
+            NotificationDao dao = new NotificationDao();
+            int count = dao.unreadCount(SessionManager.getCurrentUserId());
+
+            if (count > lastNotificationCount) {
+//                // Get latest notification
+//                var list = dao.allForUser(SessionManager.getCurrentUserId());
+//                if (!list.isEmpty()) {
+//                    var latest = list.get(0);
+//                    String senderName = latest.getSenderFullName();
+//                    if (senderName == null || senderName.isEmpty()) {
+//                        senderName = "Default Profile";
+//                    }
+//
+//                    ImageIcon avatar = konnekt.utils.AvatarUtil.avatarIcon(latest.getSenderId());
+//
+//                    String actionText = switch (latest.getType()) {
+//                        case "LIKE" ->
+//                            "liked your post";
+//                        case "COMMENT" ->
+//                            "commented on your post";
+//                        case "FOLLOW" ->
+//                            "followed you";
+//                        case "MESSAGE" ->
+//                            ""; // actual message will be shown below
+//                        default ->
+//                            "did something";
+//                    };
+//
+//                    // Time (implement getTimeAgo() or calculate)
+//                    String time = latest.getTimeAgo();
+//
+//                    String toastMessage = latest.getType().equals("MESSAGE") ? latest.getMessage() : actionText;
+//
+//                    Toast.show(avatar, senderName, time, toastMessage, () -> {
+//                        switch (latest.getType()) {
+//                            case "FOLLOW", "MESSAGE" ->
+//                                NavigatorView.showProfile(latest.getSenderId());
+//                            case "LIKE", "COMMENT" ->
+//                                NavigatorView.showComments(latest.getReferenceId());
+//                        }
+//                    });
+//
+//                }
+
+                // Play notification sound
+                playNotification();
+            }
+
+            lastNotificationCount = count;
+            updateNotificationBadge();
+        }).start();
     }
 
     public void updateNotificationBadge() {
         int count = new NotificationDao().unreadCount(SessionManager.getCurrentUserId());
 
-        notificationBadge.setText(count > 0 ? String.valueOf(count) : "");
-        notificationBadge.setVisible(count > 0);
+        jLabel17.setOpaque(true); // Make background visible
+        jLabel17.setBackground(new Color(255, 0, 0)); // Red background
+        jLabel17.setForeground(Color.WHITE); // White text
+        jLabel17.setText(count > 0 ? String.valueOf(count) : "");
+        jLabel17.setVisible(count > 0);
+
+        // Optional: Rounded badge effect
+        jLabel17.setHorizontalAlignment(SwingConstants.CENTER);
+        jLabel17.setVerticalAlignment(SwingConstants.CENTER);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -639,6 +726,7 @@ public class NavigatorView extends BaseFrame {
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;

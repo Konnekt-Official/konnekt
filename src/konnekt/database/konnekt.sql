@@ -98,6 +98,23 @@ CREATE TABLE IF NOT EXISTS follow (
     FOREIGN KEY (following_id) REFERENCES user(id) ON DELETE CASCADE
 );
 
+-- ===============================
+-- Chat / Message table
+-- ===============================
+CREATE TABLE IF NOT EXISTS chat (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    sender_id INT UNSIGNED NOT NULL,
+    receiver_id INT UNSIGNED NOT NULL,
+    content TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    is_read BOOLEAN DEFAULT FALSE,
+    
+    FOREIGN KEY (sender_id) REFERENCES user(id) ON DELETE CASCADE,
+    FOREIGN KEY (receiver_id) REFERENCES user(id) ON DELETE CASCADE
+);
+
+-- Index for faster queries per conversation
+CREATE INDEX idx_chat_sender_receiver ON chat(sender_id, receiver_id);
 
 -- ===============================
 -- Notification table
@@ -108,9 +125,9 @@ CREATE TABLE IF NOT EXISTS notification (
     user_id INT UNSIGNED NOT NULL,        -- receiver
     sender_id INT UNSIGNED DEFAULT NULL,  -- who triggered it
 
-    type ENUM('LIKE','COMMENT','FOLLOW') NOT NULL,
+    type ENUM('LIKE','COMMENT','FOLLOW','MESSAGE') NOT NULL,
 
-    reference_id INT DEFAULT NULL,        -- post_id (LIKE/COMMENT), null for FOLLOW
+    reference_id INT DEFAULT NULL,        -- post_id (LIKE/COMMENT), null for FOLLOW/MESSAGE
     is_read BOOLEAN DEFAULT FALSE,
 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

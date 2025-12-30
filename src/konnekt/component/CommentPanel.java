@@ -5,86 +5,71 @@ import konnekt.model.dao.CommentDao;
 import konnekt.model.dao.PostDao;
 import konnekt.model.pojo.CommentPojo;
 import konnekt.model.pojo.PostPojo;
+import konnekt.utils.AvatarUtil;
+import konnekt.view.NavigatorView;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
-import konnekt.view.NavigatorView;
+import konnekt.controller.NotificationController;
 
 public class CommentPanel extends JPanel {
 
-    private final JPanel container = new JPanel();
-    private final JScrollPane scrollPane;
+    private final JPanel list = new JPanel();
     private final CommentDao commentDao = new CommentDao();
-    private final CommentController controller = new CommentController();
     private final PostDao postDao = new PostDao();
+    private final CommentController controller = new CommentController();
+    private final NotificationController notificationController = new NotificationController();
 
     private int postId;
-    private PostPojo post;
-
-    private static final Font FONT = new Font("Verdana", Font.PLAIN, 13);
-    private static final Font NAME_FONT = new Font("Verdana", Font.BOLD, 13);
-    private static final Font COMMENT_FONT = new Font("Verdana", Font.PLAIN, 12);
-    private static final ImageIcon DEFAULT_PROFILE;
-
-    static {
-        URL url = CommentPanel.class.getClassLoader()
-                .getResource("konnekt/resources/images/default_profile.png");
-        if (url != null) {
-            DEFAULT_PROFILE = new ImageIcon(new ImageIcon(url).getImage()
-                    .getScaledInstance(40, 40, Image.SCALE_SMOOTH));
-        } else {
-            DEFAULT_PROFILE = new ImageIcon();
-            System.err.println("Default profile picture not found!");
-        }
-    }
 
     public CommentPanel() {
         setLayout(new BorderLayout());
         setBackground(new Color(245, 245, 245));
 
-        container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
-        container.setBackground(new Color(245, 245, 245));
+        list.setLayout(new BoxLayout(list, BoxLayout.Y_AXIS));
+        list.setAlignmentX(Component.LEFT_ALIGNMENT);
+        list.setBackground(new Color(245, 245, 245));
 
-        scrollPane = new JScrollPane(container);
-        scrollPane.setBorder(null);
-        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        JScrollPane scroll = new JScrollPane(list);
+        scroll.setBorder(null);
+        scroll.getVerticalScrollBar().setUnitIncrement(16);
 
-        add(scrollPane, BorderLayout.CENTER);
+        add(scroll, BorderLayout.CENTER);
         add(createInputPanel(), BorderLayout.SOUTH);
     }
 
     public void loadPost(int postId) {
         this.postId = postId;
-        this.post = postDao.getPostById(postId);
         refresh();
     }
 
+    // ---------- INPUT ----------
     private JPanel createInputPanel() {
-        JPanel panel = new JPanel(new BorderLayout(5, 5));
-        panel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        JPanel panel = new JPanel(new BorderLayout(5, 0));
+        panel.setBorder(new EmptyBorder(8, 8, 8, 8));
         panel.setBackground(Color.WHITE);
 
         JTextArea input = new JTextArea(2, 1);
-        input.setFont(FONT);
         input.setLineWrap(true);
         input.setWrapStyleWord(true);
+        input.setFont(new Font("Verdana", Font.PLAIN, 13));
 
         JButton send = new JButton("Comment");
-        send.setFont(FONT);
-        send.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         send.setFocusable(false);
+        send.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
         send.addActionListener(e -> {
-            if (!input.getText().trim().isEmpty()) {
-                controller.addComment(postId, input.getText());
+            String text = input.getText().trim();
+            if (!text.isEmpty()) {
+                controller.addComment(postId, text);
                 input.setText("");
+                notificationController.notifyComment(postDao.getPostById(postId).getUserId(), postId);
                 refresh();
             }
         });
@@ -94,160 +79,146 @@ public class CommentPanel extends JPanel {
         return panel;
     }
 
+    // ---------- REFRESH ----------
     private void refresh() {
-        container.removeAll();
+        list.removeAll();
 
+        PostPojo post = postDao.getPostById(postId);
         if (post != null) {
-            container.add(createPostCard(post));
-            container.add(Box.createVerticalStrut(10));
+            list.add(createPostItem(post));
+            list.add(Box.createVerticalStrut(10));
         }
 
         List<CommentPojo> comments = commentDao.getCommentsByPost(postId);
         for (CommentPojo c : comments) {
-            container.add(createCommentCard(c));
-            container.add(Box.createVerticalStrut(8));
+            list.add(createCommentItem(c));
+            list.add(Box.createVerticalStrut(5));
         }
 
-        container.revalidate();
-        container.repaint();
+        list.revalidate();
+        list.repaint();
     }
 
-    private JPanel createPostCard(PostPojo post) {
-        JPanel card = new JPanel(new BorderLayout());
-        card.setBackground(Color.WHITE);
-        card.setBorder(new EmptyBorder(10, 10, 10, 10));
+    // ---------- POST ----------
+    private JPanel createPostItem(PostPojo post) {
+        JPanel root = new JPanel(new BorderLayout());
+        root.setBackground(Color.WHITE);
+        root.setBorder(new EmptyBorder(6, 8, 6, 8));
 
         // ---------- HEADER ----------
-        JPanel header = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
+        JPanel header = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
         header.setBackground(Color.WHITE);
 
-        JLabel avatar = new JLabel(DEFAULT_PROFILE);
+        JLabel avatar = AvatarUtil.avatar(40);
         header.add(avatar);
 
-        JPanel namePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
-        namePanel.setBackground(Color.WHITE);
-
-        JLabel fullName = new JLabel(post.getFullName());
-        fullName.setFont(NAME_FONT);
-
-        JLabel username = new JLabel("@" + post.getUsername());
-        username.setFont(FONT);
-        username.setForeground(Color.BLUE);
-        username.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        username.addMouseListener(new MouseAdapter() {
+        JLabel name = new JLabel(
+                "<html><b>" + post.getFullName() + "</b> "
+                + "<span style='font-weight:normal; color:blue'>@" + post.getUsername() + "</span> "
+                + "<span style='font-weight:normal; color:gray'>• " + timeAgo(post.getCreatedAt()) + "</font></html>"
+        );
+        name.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        name.addMouseListener(new MouseAdapter() {
+            @Override
             public void mouseClicked(MouseEvent e) {
                 NavigatorView.showProfile(post.getUserId());
             }
         });
 
-        JLabel time = new JLabel("· " + timeAgo(post.getCreatedAt()));
-        time.setFont(FONT);
-        time.setForeground(Color.GRAY);
-
-        namePanel.add(fullName);
-        namePanel.add(username);
-        namePanel.add(time);
-        header.add(namePanel);
-
-        card.add(header, BorderLayout.NORTH);
+        header.add(name);
+        root.add(header, BorderLayout.NORTH);
 
         // ---------- CONTENT ----------
-        JTextArea content = new JTextArea(post.getContent());
-        content.setFont(FONT);
-        content.setLineWrap(true);
-        content.setWrapStyleWord(true);
-        content.setEditable(false);
-        content.setOpaque(false);
-        content.setBorder(new EmptyBorder(6, 48, 6, 0));
-        card.add(content, BorderLayout.CENTER);
+        JPanel contentWrapper = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 6));
+        contentWrapper.setBackground(Color.WHITE);
+
+        JLabel body = new JLabel("<html>" + post.getContent() + "</html>");
+        body.setFont(new Font("Verdana", Font.PLAIN, 13));
+        int maxWidth = 500; // adjust as needed
+        body.setMaximumSize(new Dimension(maxWidth, Integer.MAX_VALUE));
+        body.setPreferredSize(new Dimension(maxWidth, body.getPreferredSize().height));
+
+        contentWrapper.add(body);
+        root.add(contentWrapper, BorderLayout.CENTER);
 
         // ---------- ACTIONS ----------
-        JPanel actions = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 0));
-        actions.setBackground(Color.WHITE);
-        actions.setBorder(new EmptyBorder(0, 48, 0, 0));
+        JPanel meta = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
+        meta.setBackground(Color.WHITE);
 
-        JButton likeBtn = new JButton("Like (" + post.getLikes() + ")");
-        JButton commentBtn = new JButton("Comment (" + post.getCommentCount() + ")");
+        JButton like = new JButton("Like (" + post.getLikes() + ")");
+        JButton comment = new JButton("Comment (" + post.getCommentCount() + ")");
+        like.setFocusable(false);
+        comment.setFocusable(false);
+        like.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        comment.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
-        likeBtn.setFont(FONT);
-        commentBtn.setFont(FONT);
-        likeBtn.setFocusable(false);
-        commentBtn.setFocusable(false);
-        likeBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        commentBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-
-        likeBtn.addActionListener(e -> {
-            new PostDao().likePost(post.getId());
+        like.addActionListener(e -> {
+            postDao.incrementLike(post.getId());
+            notificationController.notifyLike(post.getUserId(), post.getId());
             refresh();
         });
 
-        commentBtn.addActionListener(e -> new CommentController().openComments(post.getId()));
+        comment.addActionListener(e -> NavigatorView.showComments(post.getId()));
 
-        actions.add(likeBtn);
-        actions.add(commentBtn);
-        card.add(actions, BorderLayout.SOUTH);
+        meta.add(like);
+        meta.add(comment);
+        root.add(meta, BorderLayout.SOUTH);
 
-        return card;
+        // Fit-content height
+        root.setMaximumSize(new Dimension(Integer.MAX_VALUE, root.getPreferredSize().height));
+
+        return root;
     }
 
-    private JPanel createCommentCard(CommentPojo c) {
-        JPanel p = new JPanel(new BorderLayout());
-        p.setBackground(Color.WHITE);
-        p.setBorder(new EmptyBorder(5, 48, 5, 0));
+    // ---------- COMMENT ----------
+    private JPanel createCommentItem(CommentPojo c) {
+        JPanel root = new JPanel(new BorderLayout(10, 0));
+        root.setBackground(Color.WHITE);
+        root.setBorder(new EmptyBorder(6, 48, 6, 8));
 
-        // ---------- HEADER ----------
-        JPanel header = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
-        header.setBackground(Color.WHITE);
+        JLabel avatar = AvatarUtil.avatar(32);
+        root.add(avatar, BorderLayout.WEST);
 
-        JLabel avatar = new JLabel(DEFAULT_PROFILE);
-        header.add(avatar);
+        JPanel content = new JPanel();
+        content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
+        content.setOpaque(false);
 
-        JLabel fullName = new JLabel(c.getFullName());
-        fullName.setFont(new Font("Verdana", Font.BOLD, 12));
-
-        JLabel username = new JLabel("@" + c.getUsername());
-        username.setFont(COMMENT_FONT);
-        username.setForeground(Color.BLUE);
-        username.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        username.addMouseListener(new MouseAdapter() {
+        // Header with clickable username
+        JLabel header = new JLabel(
+                "<html><b>" + c.getFullName() + "</b> "
+                + "<span style='font-weight:normal; color:blue'>@" + c.getUsername() + "</span> "
+                + "<span style='font-weight:normal; color:gray'>• " + timeAgo(c.getCreatedAt()) + "</span></html>"
+        );
+        header.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        header.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                int userId;
                 NavigatorView.showProfile(c.getUserId());
             }
         });
 
-        JLabel time = new JLabel("· " + timeAgo(c.getCreatedAt()));
-        time.setFont(COMMENT_FONT);
-        time.setForeground(Color.GRAY);
+        // Comment text normal
+        JLabel body = new JLabel("<html>" + c.getContent() + "</html>");
+        body.setFont(new Font("Verdana", Font.PLAIN, 13));
 
-        header.add(fullName);
-        header.add(username);
-        header.add(time);
+        content.add(header);
+        content.add(Box.createVerticalStrut(4)); // small gap between header and text
+        content.add(body);
 
-        p.add(header, BorderLayout.NORTH);
+        root.add(content, BorderLayout.CENTER);
+        root.setMaximumSize(new Dimension(Integer.MAX_VALUE, root.getPreferredSize().height));
 
-        // ---------- CONTENT ----------
-        JTextArea content = new JTextArea(c.getContent());
-        content.setFont(COMMENT_FONT);
-        content.setLineWrap(true);
-        content.setWrapStyleWord(true);
-        content.setEditable(false);
-        content.setOpaque(false);
-        content.setBorder(new EmptyBorder(2, 48, 2, 0));
-
-        p.add(content, BorderLayout.CENTER);
-
-        return p;
+        return root;
     }
 
+    // ---------- TIME ----------
     private String timeAgo(java.sql.Timestamp ts) {
         if (ts == null) {
             return "";
         }
         Duration d = Duration.between(ts.toInstant(), Instant.now());
         if (d.toMinutes() < 1) {
-            return "just now";
+            return "Just Now";
         }
         if (d.toHours() < 1) {
             return d.toMinutes() + "m";

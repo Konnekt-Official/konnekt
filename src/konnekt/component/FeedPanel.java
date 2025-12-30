@@ -3,9 +3,8 @@ package konnekt.component;
 import konnekt.controller.PostController;
 import konnekt.model.dao.PostDao;
 import konnekt.model.pojo.PostPojo;
-import konnekt.controller.CommentController;
-
 import konnekt.view.NavigatorView;
+import konnekt.manager.SessionManager;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -15,11 +14,13 @@ import java.awt.event.MouseEvent;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
+import konnekt.controller.NotificationController;
 
 public class FeedPanel extends JPanel {
 
     private final PostDao postDao = new PostDao();
     private final PostController postController = new PostController();
+    private final NotificationController notificationController = new NotificationController();
 
     private final JPanel postsContainer = new JPanel();
     private final JScrollPane scrollPane;
@@ -38,12 +39,15 @@ public class FeedPanel extends JPanel {
         scrollPane = new JScrollPane(postsContainer);
         scrollPane.setBorder(null);
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        scrollPane.setHorizontalScrollBarPolicy(
+                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER
+        );
 
         add(scrollPane, BorderLayout.CENTER);
         refreshFeed();
     }
 
-    // ================= INPUT PANEL =================
+    // ================= INPUT =================
     private JPanel createInputPanel() {
         JPanel panel = new JPanel(new BorderLayout(8, 8));
         panel.setBackground(Color.WHITE);
@@ -74,6 +78,9 @@ public class FeedPanel extends JPanel {
 
         JScrollPane inputScroll = new JScrollPane(input);
         inputScroll.setBorder(BorderFactory.createLineBorder(new Color(220, 220, 220)));
+        inputScroll.setHorizontalScrollBarPolicy(
+                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER
+        );
 
         JButton postBtn = new JButton("Post");
         postBtn.setFont(FONT);
@@ -83,14 +90,18 @@ public class FeedPanel extends JPanel {
         postBtn.addActionListener(e -> {
             String text = input.getText().trim();
             if (!text.isEmpty() && !text.equals("What's on your mind?")) {
-                postController.createPost(this, text);
+                postController.createPost(SessionManager.getCurrentUserId(), text);
+
+                // reset input
                 input.setText("What's on your mind?");
                 input.setForeground(Color.GRAY);
-                refreshFeed();
 
-                SwingUtilities.invokeLater(()
-                        -> scrollPane.getVerticalScrollBar().setValue(0)
-                );
+                // refresh UI
+                refreshFeed();
+                scrollToTop();
+
+                // optionally refresh profile panel
+                NavigatorView.refreshProfile(SessionManager.getCurrentUserId());
             }
         });
 
@@ -99,49 +110,63 @@ public class FeedPanel extends JPanel {
         return panel;
     }
 
-    // ================= REFRESH FEED =================
+    // ================= FEED =================
     public void refreshFeed() {
         postsContainer.removeAll();
 
         List<PostPojo> posts = postDao.getAllPosts();
-        for (PostPojo post : posts) {
-            postsContainer.add(createPostCard(post));
-            postsContainer.add(Box.createVerticalStrut(10));
+
+        if (posts.isEmpty()) {
+            JLabel msg = new JLabel("No posts available.");
+            msg.setFont(new Font("Verdana", Font.PLAIN, 12));
+            msg.setForeground(Color.GRAY);
+            msg.setAlignmentX(Component.CENTER_ALIGNMENT);
+            postsContainer.add(Box.createVerticalStrut(20));
+            postsContainer.add(msg);
+        } else {
+            postsContainer.add(Box.createVerticalStrut(10)); // GAP below input panel
+            for (PostPojo post : posts) {
+                postsContainer.add(createPostCard(post));
+                postsContainer.add(Box.createVerticalStrut(10));
+            }
         }
 
         postsContainer.revalidate();
         postsContainer.repaint();
-        requestFocusInWindow();
     }
 
     // ================= POST CARD =================
     private JPanel createPostCard(PostPojo post) {
-        JPanel card = new JPanel(new BorderLayout());
+        JPanel card = new JPanel();
+        card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
         card.setBackground(Color.WHITE);
         card.setBorder(new EmptyBorder(10, 10, 10, 10));
+        card.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        // ---------- HEADER ROW ----------
-        JPanel header = new JPanel(new BorderLayout());
+        // ---------- HEADER ----------
+        JPanel header = new JPanel();
+        header.setLayout(new BoxLayout(header, BoxLayout.X_AXIS));
         header.setBackground(Color.WHITE);
+        header.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        JLabel avatar = new JLabel();
-        ImageIcon icon = new ImageIcon(
-                getClass().getResource("/konnekt/resources/images/default_profile.png")
-        );
-        avatar.setIcon(new ImageIcon(
-                icon.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH)
+        JLabel avatar = new JLabel(new ImageIcon(
+                new ImageIcon(
+                        getClass().getResource("/konnekt/resources/images/default_profile-2.png")
+                ).getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH)
         ));
-        avatar.setBorder(new EmptyBorder(0, 0, 0, 8));
-        header.add(avatar, BorderLayout.WEST);
 
-        JPanel nameRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+        header.add(avatar);
+        header.add(Box.createHorizontalStrut(8));
+
+        JPanel nameRow = new JPanel();
+        nameRow.setLayout(new BoxLayout(nameRow, BoxLayout.X_AXIS));
         nameRow.setBackground(Color.WHITE);
 
         JLabel fullName = new JLabel(post.getFullName());
         fullName.setFont(new Font("Verdana", Font.BOLD, 13));
 
-        JLabel username = new JLabel("@" + post.getUsername());
-        username.setFont(FONT);
+        JLabel username = new JLabel(" @" + post.getUsername());
+        username.setFont(new Font("Verdana", Font.PLAIN, 13));
         username.setForeground(Color.BLUE);
         username.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         username.addMouseListener(new MouseAdapter() {
@@ -150,7 +175,7 @@ public class FeedPanel extends JPanel {
             }
         });
 
-        JLabel time = new JLabel("· " + timeAgo(post.getCreatedAt()));
+        JLabel time = new JLabel(" · " + timeAgo(post.getCreatedAt()));
         time.setFont(FONT);
         time.setForeground(Color.GRAY);
 
@@ -158,49 +183,84 @@ public class FeedPanel extends JPanel {
         nameRow.add(username);
         nameRow.add(time);
 
-        header.add(nameRow, BorderLayout.CENTER);
-        card.add(header, BorderLayout.NORTH);
+        header.add(nameRow);
 
-        // ---------- CONTENT ----------
+        header.setMaximumSize(
+                new Dimension(Integer.MAX_VALUE, header.getPreferredSize().height)
+        );
+
+        card.add(header);
+        card.add(Box.createVerticalStrut(6));
+
+        // ---------- CONTENT (TRUE FIT CONTENT) ----------
         JTextArea content = new JTextArea(post.getContent());
         content.setFont(FONT);
         content.setLineWrap(true);
         content.setWrapStyleWord(true);
         content.setEditable(false);
         content.setOpaque(false);
-        content.setBorder(new EmptyBorder(6, 48, 6, 0));
-        card.add(content, BorderLayout.CENTER);
+
+        // align under name (avatar + gap = ~48px)
+        content.setBorder(new EmptyBorder(0, 48, 0, 0));
+        content.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        content.setMaximumSize(new Dimension(
+                Integer.MAX_VALUE,
+                content.getPreferredSize().height
+        ));
+
+        card.add(content);
+        card.add(Box.createVerticalStrut(6));
 
         // ---------- ACTIONS ----------
-        JPanel actions = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 0));
+        JPanel actions = new JPanel();
+        actions.setLayout(new BoxLayout(actions, BoxLayout.X_AXIS));
         actions.setBackground(Color.WHITE);
-        actions.setBorder(new EmptyBorder(0, 48, 0, 0));
+        actions.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         JButton likeBtn = new JButton("Like (" + post.getLikes() + ")");
         JButton commentBtn = new JButton("Comment (" + post.getCommentCount() + ")");
 
-        likeBtn.setFont(FONT);
-        commentBtn.setFont(FONT);
-
         likeBtn.setFocusable(false);
         commentBtn.setFocusable(false);
-
         likeBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         commentBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
         likeBtn.addActionListener(e -> {
-            postController.likePost(post.getId());
-            refreshFeed();
+            postController.likePost(post.getId()); // DB increment
+            post.setLikes(post.getLikes() + 1);     // UI update
+            likeBtn.setText("Like (" + post.getLikes() + ")");
+            notificationController.notifyLike(post.getUserId(), post.getId());
         });
 
-        commentBtn.addActionListener(e -> new CommentController().openComments(post.getId())
+        commentBtn.addActionListener(e -> {
+            NavigatorView.showComments(post.getId());
+        });
+
+        actions.add(Box.createHorizontalStrut(48)); // align with content
+        actions.add(likeBtn);
+        actions.add(Box.createHorizontalStrut(15));
+        actions.add(commentBtn);
+
+        actions.setMaximumSize(
+                new Dimension(Integer.MAX_VALUE, actions.getPreferredSize().height)
         );
 
-        actions.add(likeBtn);
-        actions.add(commentBtn);
-        card.add(actions, BorderLayout.SOUTH);
+        card.add(actions);
+
+        card.setMaximumSize(
+                new Dimension(Integer.MAX_VALUE, card.getPreferredSize().height)
+        );
 
         return card;
+    }
+
+    public void scrollToTop() {
+        SwingUtilities.invokeLater(() -> {
+            if (scrollPane.getViewport() != null) {
+                scrollPane.getViewport().setViewPosition(new Point(0, 0));
+            }
+        });
     }
 
     // ================= TIME =================
@@ -208,10 +268,9 @@ public class FeedPanel extends JPanel {
         if (ts == null) {
             return "";
         }
-
         Duration d = Duration.between(ts.toInstant(), Instant.now());
         if (d.toMinutes() < 1) {
-            return "just now";
+            return "Just Now";
         }
         if (d.toHours() < 1) {
             return d.toMinutes() + "m";

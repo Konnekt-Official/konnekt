@@ -14,7 +14,7 @@ public class OTPDao {
             ps.setString(2, otp.getType());
             ps.setString(3, otp.getEmail());
             return ps.executeUpdate() > 0;
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return false;
@@ -31,7 +31,7 @@ public class OTPDao {
                 Timestamp expiresAt = rs.getTimestamp("expires_at");
                 return expiresAt != null && expiresAt.after(new Timestamp(System.currentTimeMillis()));
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return false;

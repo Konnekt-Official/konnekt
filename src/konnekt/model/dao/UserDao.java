@@ -4,6 +4,8 @@ import konnekt.connection.DatabaseConnection;
 import konnekt.model.pojo.UserPojo;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserDao {
 
@@ -15,7 +17,7 @@ public class UserDao {
             ps.setString(3, user.getEmail());
             ps.setString(4, user.getPassword());
             return ps.executeUpdate() > 0;
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return false;
@@ -28,7 +30,7 @@ public class UserDao {
             ps.setString(2, password);
             ResultSet rs = ps.executeQuery();
             return rs.next();
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return false;
@@ -40,7 +42,7 @@ public class UserDao {
             ps.setString(1, username);
             ResultSet rs = ps.executeQuery();
             return rs.next();
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return false;
@@ -52,10 +54,31 @@ public class UserDao {
             ps.setString(1, email);
             ResultSet rs = ps.executeQuery();
             return rs.next();
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public List<UserPojo> getAllUsers() {
+        List<UserPojo> users = new ArrayList<>();
+        String sql = "SELECT id, full_name, username FROM user";
+
+        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                UserPojo user = new UserPojo();
+                user.setId(rs.getInt("id"));
+                user.setFullName(rs.getString("full_name"));
+                user.setUsername(rs.getString("username"));
+                users.add(user);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return users;
     }
 
     public UserPojo getUserByEmail(String email) {
@@ -72,7 +95,7 @@ public class UserDao {
                 user.setPassword(rs.getString("password"));
                 return user;
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
@@ -92,9 +115,38 @@ public class UserDao {
                 user.setPassword(rs.getString("password"));
                 return user;
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
     }
+
+    public List<UserPojo> searchUsers(String keyword) {
+        List<UserPojo> list = new ArrayList<>();
+        String sql = """
+        SELECT id, full_name, username
+        FROM user
+        WHERE full_name LIKE ? OR username LIKE ?
+    """;
+
+        try (Connection c = DatabaseConnection.getConnection(); PreparedStatement ps = c.prepareStatement(sql)) {
+
+            String k = "%" + keyword + "%";
+            ps.setString(1, k);
+            ps.setString(2, k);
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                UserPojo u = new UserPojo();
+                u.setId(rs.getInt("id"));
+                u.setFullName(rs.getString("full_name"));
+                u.setUsername(rs.getString("username"));
+                list.add(u);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
 }
