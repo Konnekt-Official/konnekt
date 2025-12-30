@@ -3,9 +3,6 @@ package konnekt.controller;
 import konnekt.model.dao.PostDao;
 import konnekt.model.pojo.PostPojo;
 
-import java.util.HashSet;
-import java.util.Set;
-
 public class PostController {
 
     private final PostDao postDao = new PostDao();

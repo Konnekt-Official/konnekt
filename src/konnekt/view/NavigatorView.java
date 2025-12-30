@@ -4,15 +4,9 @@
  */
 package konnekt.view;
 
-import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Font;
-import javax.swing.BorderFactory;
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
 
 import konnekt.component.FeedPanel;
 import konnekt.component.ProfilePanel;
@@ -21,8 +15,6 @@ import konnekt.component.SearchPanel;
 import konnekt.component.NotificationPanel;
 import konnekt.component.SettingPanel;
 import konnekt.component.CommentPanel;
-
-import konnekt.model.pojo.PostPojo;
 
 import konnekt.manager.SessionManager;
 import konnekt.model.dao.NotificationDao;
@@ -37,7 +29,6 @@ public class NavigatorView extends BaseFrame {
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(NavigatorView.class.getName());
     private static NavigatorView instance;
     private FeedPanel feedPanel;
-    private JLabel notificationBadge;
     private int lastNotificationCount = 0;
 
     /**
