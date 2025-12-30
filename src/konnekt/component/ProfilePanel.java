@@ -38,7 +38,7 @@ public class ProfilePanel extends JPanel {
 
     static {
         URL avatarUrl = ProfilePanel.class.getClassLoader()
-                .getResource("konnekt/resources/images/default_profile-2.png");
+                .getResource("konnekt/resources/images/default_profile.png");
         DEFAULT_PROFILE = (avatarUrl != null)
                 ? new ImageIcon(new ImageIcon(avatarUrl).getImage()
                         .getScaledInstance(80, 80, Image.SCALE_SMOOTH))
