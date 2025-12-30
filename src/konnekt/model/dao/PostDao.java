@@ -139,4 +139,35 @@ public class PostDao {
         }
     }
 
+    public List<PostPojo> searchPosts(String keyword) {
+        List<PostPojo> list = new ArrayList<>();
+        String sql = """
+        SELECT p.*, u.full_name, u.username
+        FROM post p
+        JOIN user u ON u.id = p.user_id
+        WHERE p.content LIKE ?
+        ORDER BY p.created_at DESC
+    """;
+
+        try (Connection c = DatabaseConnection.getConnection(); PreparedStatement ps = c.prepareStatement(sql)) {
+
+            ps.setString(1, "%" + keyword + "%");
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                PostPojo p = new PostPojo();
+                p.setId(rs.getInt("id"));
+                p.setUserId(rs.getInt("user_id"));
+                p.setContent(rs.getString("content"));
+                p.setFullName(rs.getString("full_name"));
+                p.setUsername(rs.getString("username"));
+                p.setCreatedAt(rs.getTimestamp("created_at"));
+                list.add(p);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
 }

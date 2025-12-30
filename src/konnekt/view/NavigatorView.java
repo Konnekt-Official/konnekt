@@ -270,7 +270,8 @@ public class NavigatorView extends BaseFrame {
 
         jLabel12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/konnekt/resources/images/bell.png"))); // NOI18N
 
-        jLabel17.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel17.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
+        jLabel17.setForeground(new java.awt.Color(255, 51, 51));
         jLabel17.setText("0");
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
@@ -300,6 +301,8 @@ public class NavigatorView extends BaseFrame {
                         .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
+
+        jLabel17.setBackground(new java.awt.Color(255, 0, 0));
 
         jPanel7.setBackground(new java.awt.Color(51, 51, 51));
         jPanel7.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -632,7 +635,7 @@ public class NavigatorView extends BaseFrame {
     public void updateNotificationBadge() {
         int count = new NotificationDao().unreadCount(SessionManager.getCurrentUserId());
 
-        jLabel17.setBackground(Color.red);
+        jLabel17.setBackground(new Color(255, 51, 51));
         jLabel17.setText(count > 0 ? String.valueOf(count) : "");
         jLabel17.setVisible(count > 0);
     }
