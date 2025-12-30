@@ -2,7 +2,6 @@ package konnekt.component;
 
 import konnekt.controller.ChatController;
 import konnekt.manager.SessionManager;
-import konnekt.model.dao.UserDao;
 import konnekt.model.pojo.ChatPojo;
 import konnekt.model.pojo.UserPojo;
 import konnekt.view.NavigatorView;
@@ -32,29 +31,19 @@ public class InboxPanel extends JPanel {
 
         add(scrollPane, BorderLayout.CENTER);
 
-        loadInbox();
+        refreshInbox(); // initial load
     }
 
-    public void loadInbox() {
+    // ---------- REFRESH INBOX ----------
+    public void refreshInbox() {
         userListContainer.removeAll();
 
-        // Load all users except current
-        List<UserPojo> allUsers = new UserDao().getAllUsers();
-        allUsers.removeIf(u -> u.getId() == currentUserId);
-
-        if (allUsers.isEmpty()) {
-            JLabel msg = new JLabel("No users available.");
-            msg.setFont(new Font("Verdana", Font.PLAIN, 12));
-            msg.setForeground(Color.GRAY);
-            msg.setAlignmentX(Component.CENTER_ALIGNMENT);
-            userListContainer.add(Box.createVerticalStrut(20));
-            userListContainer.add(msg);
-        } else {
-            for (UserPojo user : allUsers) {
-                ChatPojo latestMsg = chatController.getLatestMessageBetween(currentUserId, user.getId());
-                userListContainer.add(createUserItem(user, latestMsg));
-                userListContainer.add(Box.createVerticalStrut(5));
-            }
+        // Load **all users** if no message, else latest message between current user and each user
+        List<UserPojo> allUsers = chatController.getAllUsers(); // new method in ChatController
+        for (UserPojo user : allUsers) {
+            ChatPojo latestMsg = chatController.getLatestMessageBetween(currentUserId, user.getId());
+            userListContainer.add(createUserItem(user, latestMsg));
+            userListContainer.add(Box.createVerticalStrut(5));
         }
 
         userListContainer.revalidate();
@@ -70,12 +59,13 @@ public class InboxPanel extends JPanel {
         JLabel avatar = AvatarUtil.avatar(50);
         row.add(avatar, BorderLayout.WEST);
 
+        // Info panel
         JPanel info = new JPanel();
         info.setLayout(new BoxLayout(info, BoxLayout.Y_AXIS));
         info.setOpaque(false);
 
-        JLabel fullName = new JLabel(user.getFullName());
-        fullName.setFont(new Font("Verdana", Font.BOLD, 14));
+        JLabel name = new JLabel(user.getFullName());
+        name.setFont(new Font("Verdana", Font.BOLD, 14));
 
         JLabel username = new JLabel("@" + user.getUsername());
         username.setFont(new Font("Verdana", Font.PLAIN, 12));
@@ -85,9 +75,8 @@ public class InboxPanel extends JPanel {
         latestMessage.setFont(new Font("Verdana", Font.PLAIN, 12));
         latestMessage.setForeground(Color.GRAY);
 
-        info.add(fullName);
+        info.add(name);
         info.add(username);
-        info.add(Box.createVerticalStrut(2));
         info.add(latestMessage);
 
         row.add(info, BorderLayout.CENTER);
@@ -95,9 +84,7 @@ public class InboxPanel extends JPanel {
         row.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                NavigatorView.showChat(user.getId());
-                // optional: refresh inbox when returning
-                SwingUtilities.invokeLater(InboxPanel.this::loadInbox);
+                NavigatorView.showChat(user.getId()); // go to chat panel
             }
 
             @Override

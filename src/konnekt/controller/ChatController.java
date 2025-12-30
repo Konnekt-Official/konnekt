@@ -49,4 +49,8 @@ public class ChatController {
         return chatDao.getLatestMessageBetween(user1Id, user2Id);
     }
 
+    public List<UserPojo> getAllUsers() {
+        return userDao.getAllUsers(); // uses UserDao.getAllUsers()
+    }
+
 }

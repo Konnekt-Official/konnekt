@@ -33,6 +33,7 @@ public class NavigatorView extends BaseFrame {
     private static NavigatorView instance;
     private FeedPanel feedPanel;
     private int lastNotificationCount = 0;
+    public static InboxPanel inboxPanel;
 
     /**
      * Creates new form FeedView
@@ -525,10 +526,11 @@ public class NavigatorView extends BaseFrame {
 
     private void initPanels() {
         feedPanel = new FeedPanel();
+        inboxPanel = new InboxPanel();
 
         mainPanel.add(feedPanel, "FEED");
         mainPanel.add(new ProfilePanel(SessionManager.getCurrentUserId(), SessionManager.getCurrentUserId()), "PROFILE");
-        mainPanel.add(new InboxPanel(), "INBOX");
+        mainPanel.add(inboxPanel, "INBOX");
         mainPanel.add(new SearchPanel(), "SEARCH");
         mainPanel.add(new NotificationPanel(), "NOTIFICATION");
         mainPanel.add(new SettingPanel(), "SETTING");
@@ -617,6 +619,12 @@ public class NavigatorView extends BaseFrame {
                     pp.onShow();
                 }
             }
+        }
+    }
+
+    public static void refreshInboxPanel() {
+        if (inboxPanel != null) {
+            inboxPanel.refreshInbox();
         }
     }
 
