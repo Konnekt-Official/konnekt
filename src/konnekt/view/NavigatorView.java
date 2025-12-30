@@ -21,7 +21,7 @@ import konnekt.component.SettingsPanel;
 import konnekt.component.CommentPanel;
 import konnekt.component.HelpPanel;
 import konnekt.component.PrivacyPanel;
-import konnekt.component.ReportBugPanel;
+import konnekt.component.ReportPanel;
 import konnekt.component.TermsPanel;
 
 import konnekt.manager.SessionManager;
@@ -541,11 +541,11 @@ public class NavigatorView extends BaseFrame {
         mainPanel.add(new NotificationPanel(), "NOTIFICATION");
 
         mainPanel.add(new SettingsPanel(), "SETTINGS");
-        mainPanel.add(new AccountPanel(), "ACCOUNT");
+        // mainPanel.add(new AccountPanel(), "ACCOUNT");
         mainPanel.add(new AboutPanel(), "ABOUT");
         mainPanel.add(new TermsPanel(), "TERMS");
         mainPanel.add(new PrivacyPanel(), "PRIVACY");
-        mainPanel.add(new ReportBugPanel(), "REPORT");
+        mainPanel.add(new ReportPanel(), "REPORT");
         mainPanel.add(new HelpPanel(), "HELP");
 
         CardLayout cl = (CardLayout) mainPanel.getLayout();
