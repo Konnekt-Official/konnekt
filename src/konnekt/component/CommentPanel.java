@@ -16,6 +16,7 @@ import java.awt.event.MouseEvent;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
+import konnekt.controller.NotificationController;
 
 public class CommentPanel extends JPanel {
 
@@ -23,6 +24,7 @@ public class CommentPanel extends JPanel {
     private final CommentDao commentDao = new CommentDao();
     private final PostDao postDao = new PostDao();
     private final CommentController controller = new CommentController();
+    private final NotificationController notificationController = new NotificationController();
 
     private int postId;
 
@@ -67,6 +69,7 @@ public class CommentPanel extends JPanel {
             if (!text.isEmpty()) {
                 controller.addComment(postId, text);
                 input.setText("");
+                notificationController.notifyComment(postDao.getPostById(postId).getUserId(), postId);
                 refresh();
             }
         });
@@ -151,6 +154,7 @@ public class CommentPanel extends JPanel {
 
         like.addActionListener(e -> {
             postDao.incrementLike(post.getId());
+            notificationController.notifyLike(post.getUserId(), post.getId());
             refresh();
         });
 
