@@ -7,8 +7,8 @@ public class ChatPojo {
     private int senderId;
     private int receiverId;
     private String content;
-    private boolean isRead;
     private Timestamp createdAt;
+    private boolean isRead;
 
     public ChatPojo() {}
 
@@ -24,9 +24,9 @@ public class ChatPojo {
     public String getContent() { return content; }
     public void setContent(String content) { this.content = content; }
 
-    public boolean isRead() { return isRead; }
-    public void setRead(boolean read) { isRead = read; }
-
     public Timestamp getCreatedAt() { return createdAt; }
     public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }
+
+    public boolean isRead() { return isRead; }
+    public void setRead(boolean read) { isRead = read; }
 }

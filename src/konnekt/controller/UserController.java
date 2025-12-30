@@ -117,4 +117,8 @@ public class UserController {
             JOptionPane.showMessageDialog(lv, "Login failed. Try again.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+    
+    public UserPojo getUserById(int id) {
+        return userDao.getUserById(id);
+    }
 }
