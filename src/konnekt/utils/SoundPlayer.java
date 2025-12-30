@@ -9,7 +9,7 @@ public class SoundPlayer {
         try {
             InputStream is =
                     SoundPlayer.class.getResourceAsStream(
-                            "/konnekt/resources/sounds/fahhhhhhhhhhhhhh.wav");
+                            "/konnekt/resources/sounds/notification.wav");
             AudioInputStream audio = AudioSystem.getAudioInputStream(is);
             Clip clip = AudioSystem.getClip();
             clip.open(audio);
