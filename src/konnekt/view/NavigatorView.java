@@ -8,6 +8,8 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
 import javax.swing.SwingConstants;
+import konnekt.component.AboutPanel;
+import konnekt.component.AccountPanel;
 import konnekt.component.ChatPanel;
 
 import konnekt.component.FeedPanel;
@@ -15,8 +17,12 @@ import konnekt.component.ProfilePanel;
 import konnekt.component.InboxPanel;
 import konnekt.component.SearchPanel;
 import konnekt.component.NotificationPanel;
-import konnekt.component.SettingPanel;
+import konnekt.component.SettingsPanel;
 import konnekt.component.CommentPanel;
+import konnekt.component.HelpPanel;
+import konnekt.component.PrivacyPanel;
+import konnekt.component.ReportBugPanel;
+import konnekt.component.TermsPanel;
 
 import konnekt.manager.SessionManager;
 import konnekt.model.dao.NotificationDao;
@@ -486,7 +492,7 @@ public class NavigatorView extends BaseFrame {
     private void jPanel7MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel7MouseClicked
         // TODO add your handling code here:
         CardLayout cl = (CardLayout) mainPanel.getLayout();
-        cl.show(mainPanel, "SETTING");
+        cl.show(mainPanel, "SETTINGS");
 
         setSelectedPanel(jPanel7);
     }//GEN-LAST:event_jPanel7MouseClicked
@@ -533,7 +539,14 @@ public class NavigatorView extends BaseFrame {
         mainPanel.add(inboxPanel, "INBOX");
         mainPanel.add(new SearchPanel(), "SEARCH");
         mainPanel.add(new NotificationPanel(), "NOTIFICATION");
-        mainPanel.add(new SettingPanel(), "SETTING");
+
+        mainPanel.add(new SettingsPanel(), "SETTINGS");
+        mainPanel.add(new AccountPanel(), "ACCOUNT");
+        mainPanel.add(new AboutPanel(), "ABOUT");
+        mainPanel.add(new TermsPanel(), "TERMS");
+        mainPanel.add(new PrivacyPanel(), "PRIVACY");
+        mainPanel.add(new ReportBugPanel(), "REPORT");
+        mainPanel.add(new HelpPanel(), "HELP");
 
         CardLayout cl = (CardLayout) mainPanel.getLayout();
         cl.show(mainPanel, "FEED");
@@ -716,6 +729,12 @@ public class NavigatorView extends BaseFrame {
         jLabel17.setHorizontalAlignment(SwingConstants.CENTER);
         jLabel17.setVerticalAlignment(SwingConstants.CENTER);
     }
+
+    public static void navigate(String route) {
+        CardLayout cl = (CardLayout) instance.mainPanel.getLayout();
+        cl.show(instance.mainPanel, route);
+    }
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
