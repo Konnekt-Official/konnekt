@@ -247,7 +247,7 @@ public class CommentPanel extends JPanel {
         }
         Duration d = Duration.between(ts.toInstant(), Instant.now());
         if (d.toMinutes() < 1) {
-            return "just now";
+            return "Just now";
         }
         if (d.toHours() < 1) {
             return d.toMinutes() + "m";
