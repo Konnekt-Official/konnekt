@@ -12,6 +12,7 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
+import konnekt.utils.AvatarUtil;
 
 public class SearchPanel extends JPanel {
 
@@ -60,7 +61,9 @@ public class SearchPanel extends JPanel {
     // ---------- SEARCH LOGIC ----------
     private void search() {
         String keyword = searchInput.getText().trim();
-        if (keyword.isEmpty()) return;
+        if (keyword.isEmpty()) {
+            return;
+        }
 
         loadUsers(keyword);
         loadPosts(keyword);
@@ -79,24 +82,48 @@ public class SearchPanel extends JPanel {
         refresh(userList);
     }
 
-    private JPanel createUserItem(UserPojo u) {
-        JPanel p = new JPanel(new BorderLayout());
-        p.setBackground(Color.WHITE);
-        p.setBorder(new EmptyBorder(8, 8, 8, 8));
-        p.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+    private JPanel createPostItem(PostPojo post) {
+        JPanel root = new JPanel(new BorderLayout(10, 0));
+        root.setBackground(Color.WHITE);
+        root.setBorder(new EmptyBorder(8, 8, 8, 8));
+        root.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
-        JLabel name = new JLabel("<html><b>" + u.getFullName() +
-                "</b> <font color='blue'>@" + u.getUsername() + "</font></html>");
+        // avatar
+        root.add(AvatarUtil.avatar(40), BorderLayout.WEST);
 
-        p.add(name, BorderLayout.CENTER);
+        // content
+        JPanel content = new JPanel();
+        content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
+        content.setOpaque(false);
 
-        p.addMouseListener(new MouseAdapter() {
+        JLabel header = new JLabel(
+                "<html><b>" + post.getFullName()
+                + "</b> <font color='gray'>@" + post.getUsername() + "</font></html>"
+        );
+
+        JLabel body = new JLabel("<html>" + post.getContent() + "</html>");
+
+        JLabel meta = new JLabel(
+                "❤️ " + post.getLikes()
+                + "   💬 " + post.getCommentCount()
+        );
+        meta.setForeground(Color.GRAY);
+        meta.setFont(new Font("Verdana", Font.PLAIN, 11));
+
+        content.add(header);
+        content.add(body);
+        content.add(Box.createVerticalStrut(5));
+        content.add(meta);
+
+        root.add(content, BorderLayout.CENTER);
+
+        root.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
-                NavigatorView.showProfile(u.getId());
+                NavigatorView.showComments(post.getId());
             }
         });
 
-        return p;
+        return root;
     }
 
     // ---------- POSTS ----------
@@ -112,28 +139,30 @@ public class SearchPanel extends JPanel {
         refresh(postList);
     }
 
-    private JPanel createPostItem(PostPojo post) {
-        JPanel p = new JPanel(new BorderLayout());
-        p.setBackground(Color.WHITE);
-        p.setBorder(new EmptyBorder(8, 8, 8, 8));
-        p.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+    private JPanel createUserItem(UserPojo u) {
+        JPanel root = new JPanel(new BorderLayout(10, 0));
+        root.setBackground(Color.WHITE);
+        root.setBorder(new EmptyBorder(8, 8, 8, 8));
+        root.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
-        JLabel content = new JLabel(
-                "<html><b>" + post.getFullName() + "</b> " +
-                        "<font color='gray'>@" + post.getUsername() + "</font><br>" +
-                        post.getContent() +
-                        "</html>"
+        // avatar
+        root.add(AvatarUtil.avatar(40), BorderLayout.WEST);
+
+        // text
+        JLabel name = new JLabel(
+                "<html><b>" + u.getFullName() + "</b><br>"
+                + "<font color='blue'>@" + u.getUsername() + "</font></html>"
         );
 
-        p.add(content, BorderLayout.CENTER);
+        root.add(name, BorderLayout.CENTER);
 
-        p.addMouseListener(new MouseAdapter() {
+        root.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
-                NavigatorView.showComments(post.getId());
+                NavigatorView.showProfile(u.getId());
             }
         });
 
-        return p;
+        return root;
     }
 
     private void refresh(JPanel panel) {
