@@ -594,28 +594,36 @@ public class NavigatorView extends BaseFrame {
 
         String cardName = "PROFILE_" + userId;
 
-        // Avoid re-adding same profile
+        // Check if profile already exists
         for (Component c : instance.mainPanel.getComponents()) {
-            if (cardName.equals(c.getName())) {
-                ((CardLayout) instance.mainPanel.getLayout())
-                        .show(instance.mainPanel, cardName);
+            if (cardName.equals(c.getName()) && c instanceof ProfilePanel pp) {
+                ((CardLayout) instance.mainPanel.getLayout()).show(instance.mainPanel, cardName);
+                pp.onShow(); // refresh posts and scroll to top
+                instance.setSelectedPanel(instance.jPanel3);
                 return;
             }
         }
 
-        ProfilePanel profile = new ProfilePanel(
-                SessionManager.getCurrentUserId(),
-                userId
-        );
+        // Create new profile if doesn't exist
+        ProfilePanel profile = new ProfilePanel(SessionManager.getCurrentUserId(), userId);
         profile.setName(cardName);
-
-        instance.mainPanel.remove(profile);
         instance.mainPanel.add(profile, cardName);
 
         CardLayout cl = (CardLayout) instance.mainPanel.getLayout();
         cl.show(instance.mainPanel, cardName);
 
+        profile.onShow();
         instance.setSelectedPanel(instance.jPanel3);
+    }
+
+    public static void refreshProfile(int userId) {
+        for (Component c : instance.mainPanel.getComponents()) {
+            if (c instanceof ProfilePanel pp) {
+                if (pp.getProfileUserId() == userId) {
+                    pp.onShow();
+                }
+            }
+        }
     }
 
     private void startNotificationTimer() {

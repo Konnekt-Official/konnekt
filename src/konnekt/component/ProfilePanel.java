@@ -76,6 +76,10 @@ public class ProfilePanel extends JPanel {
         refreshPosts();
     }
 
+    public int getProfileUserId() {
+        return profileUserId;
+    }
+
     // ---------------- HEADER ----------------
     private void initHeader() {
         headerPanel.removeAll();
@@ -93,7 +97,7 @@ public class ProfilePanel extends JPanel {
         header.add(banner, BorderLayout.NORTH);
 
         JPanel info = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 10));
-        info.setBackground(new Color(250, 250, 250)); // light grayish background
+        info.setBackground(new Color(250, 250, 250));
         info.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createMatteBorder(0, 0, 1, 0, Color.LIGHT_GRAY),
                 new EmptyBorder(10, 10, 10, 10)
@@ -123,7 +127,7 @@ public class ProfilePanel extends JPanel {
 
         followInfoLabel = new JLabel(
                 followDao.getFollowingCount(profileUserId) + " Following • "
-                        + followDao.getFollowersCount(profileUserId) + " Followers"
+                + followDao.getFollowersCount(profileUserId) + " Followers"
         );
 
         text.add(fullName);
@@ -136,7 +140,7 @@ public class ProfilePanel extends JPanel {
         if (loggedInUserId != profileUserId) {
             followBtn = new JButton(
                     followDao.isFollowing(loggedInUserId, profileUserId)
-                            ? "Following" : "Follow"
+                    ? "Following" : "Follow"
             );
             followBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             followBtn.addActionListener(e -> toggleFollow());
@@ -155,29 +159,43 @@ public class ProfilePanel extends JPanel {
             notificationController.notifyFollow(loggedInUserId);
         }
 
-        // update button text
         followBtn.setText(followDao.isFollowing(loggedInUserId, profileUserId) ? "Following" : "Follow");
-
-        // update follower count label
         followInfoLabel.setText(
                 followDao.getFollowingCount(profileUserId) + " Following • "
-                        + followDao.getFollowersCount(profileUserId) + " Followers"
+                + followDao.getFollowersCount(profileUserId) + " Followers"
         );
     }
 
     // ---------------- POSTS ----------------
-    private void refreshPosts() {
+    public void refreshPosts() {
         postsContainer.removeAll();
 
         List<PostPojo> posts = postDao.getPostsByUser(profileUserId);
-        for (PostPojo post : posts) {
-            postsContainer.add(createPostCard(post));
-            postsContainer.add(Box.createVerticalStrut(10));
+
+        if (posts.isEmpty()) {
+            JLabel noPosts = new JLabel("This user has no posts yet.");
+            noPosts.setFont(FONT);
+            noPosts.setForeground(Color.GRAY);
+            noPosts.setAlignmentX(Component.CENTER_ALIGNMENT);
+            postsContainer.add(Box.createVerticalStrut(20));
+            postsContainer.add(noPosts);
+            postsContainer.add(Box.createVerticalStrut(20));
+        } else {
+            for (PostPojo post : posts) {
+                postsContainer.add(createPostCard(post));
+                postsContainer.add(Box.createVerticalStrut(10));
+            }
         }
 
         postsContainer.revalidate();
         postsContainer.repaint();
-    }
+
+        // Scroll to top
+        SwingUtilities.invokeLater(() -> {
+            JScrollPane scrollPane = (JScrollPane) this.getComponent(1);
+            scrollPane.getVerticalScrollBar().setValue(0);
+        });
+    }     
 
     private JPanel createPostCard(PostPojo post) {
         JPanel root = new JPanel();
@@ -194,8 +212,8 @@ public class ProfilePanel extends JPanel {
 
         JLabel name = new JLabel(
                 "<html><b>" + post.getFullName() + "</b> "
-                        + "<font color='blue'>@" + post.getUsername() + "</font> "
-                        + "<font color='gray'>· " + timeAgo(post.getCreatedAt()) + "</font></html>"
+                + "<font color='blue'>@" + post.getUsername() + "</font> "
+                + "<font color='gray'>· " + timeAgo(post.getCreatedAt()) + "</font></html>"
         );
         name.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         name.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -260,14 +278,26 @@ public class ProfilePanel extends JPanel {
         return root;
     }
 
+    public void onShow() {
+        refreshPosts();
+    }
+
     private String timeAgo(java.sql.Timestamp ts) {
-        if (ts == null) return "";
+        if (ts == null) {
+            return "";
+        }
         long diff = System.currentTimeMillis() - ts.getTime();
         long minutes = diff / (1000 * 60);
-        if (minutes < 1) return "Just now";
-        if (minutes < 60) return minutes + "m";
+        if (minutes < 1) {
+            return "Just Now";
+        }
+        if (minutes < 60) {
+            return minutes + "m";
+        }
         long hours = minutes / 60;
-        if (hours < 24) return hours + "h";
+        if (hours < 24) {
+            return hours + "h";
+        }
         long days = hours / 24;
         return days + "d";
     }

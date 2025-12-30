@@ -89,9 +89,17 @@ public class FeedPanel extends JPanel {
             String text = input.getText().trim();
             if (!text.isEmpty() && !text.equals("What's on your mind?")) {
                 postController.createPost(SessionManager.getCurrentUserId(), text);
+
+                // reset input
                 input.setText("What's on your mind?");
                 input.setForeground(Color.GRAY);
+
+                // refresh UI
                 refreshFeed();
+                scrollToTop();
+
+                // optionally refresh profile panel
+                NavigatorView.refreshProfile(SessionManager.getCurrentUserId());
             }
         });
 
@@ -241,6 +249,14 @@ public class FeedPanel extends JPanel {
         );
 
         return card;
+    }
+
+    public void scrollToTop() {
+        SwingUtilities.invokeLater(() -> {
+            if (scrollPane.getViewport() != null) {
+                scrollPane.getViewport().setViewPosition(new Point(0, 0));
+            }
+        });
     }
 
     // ================= TIME =================
