@@ -28,6 +28,7 @@ public class ProfilePanel extends JPanel {
     private JPanel postsContainer;
     private JPanel headerPanel;
     private JButton followBtn;
+    private JLabel followInfoLabel;
 
     private static final Font FONT = new Font("Verdana", Font.PLAIN, 13);
     private static final Font NAME_FONT = new Font("Verdana", Font.BOLD, 16);
@@ -37,17 +38,17 @@ public class ProfilePanel extends JPanel {
 
     static {
         URL avatarUrl = ProfilePanel.class.getClassLoader()
-                .getResource("konnekt/resources/images/default_profile.png");
+                .getResource("konnekt/resources/images/default_profile-2.png");
         DEFAULT_PROFILE = (avatarUrl != null)
                 ? new ImageIcon(new ImageIcon(avatarUrl).getImage()
-                .getScaledInstance(80, 80, Image.SCALE_SMOOTH))
+                        .getScaledInstance(80, 80, Image.SCALE_SMOOTH))
                 : new ImageIcon();
 
         URL bannerUrl = ProfilePanel.class.getClassLoader()
-                .getResource("konnekt/resources/images/default_banner.jpeg");
+                .getResource("konnekt/resources/images/default_banner-2.jpg");
         DEFAULT_BANNER = (bannerUrl != null)
                 ? new ImageIcon(new ImageIcon(bannerUrl).getImage()
-                .getScaledInstance(600, 150, Image.SCALE_SMOOTH))
+                        .getScaledInstance(685, 170, Image.SCALE_SMOOTH))
                 : new ImageIcon();
     }
 
@@ -71,20 +72,18 @@ public class ProfilePanel extends JPanel {
 
         add(scrollPane, BorderLayout.CENTER);
 
-        refresh();
+        initHeader();
+        refreshPosts();
     }
 
-    private void refresh() {
+    // ---------------- HEADER ----------------
+    private void initHeader() {
         headerPanel.removeAll();
         headerPanel.add(createHeaderPanel(), BorderLayout.CENTER);
-
-        refreshPosts();
-
         revalidate();
         repaint();
     }
 
-    // ---------------- HEADER ----------------
     private JPanel createHeaderPanel() {
         JPanel header = new JPanel(new BorderLayout());
         header.setBackground(Color.WHITE);
@@ -94,8 +93,11 @@ public class ProfilePanel extends JPanel {
         header.add(banner, BorderLayout.NORTH);
 
         JPanel info = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 10));
-        info.setBackground(Color.WHITE);
-        info.setBorder(new EmptyBorder(10, 10, 10, 10));
+        info.setBackground(new Color(250, 250, 250)); // light grayish background
+        info.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createMatteBorder(0, 0, 1, 0, Color.LIGHT_GRAY),
+                new EmptyBorder(10, 10, 10, 10)
+        ));
 
         JLabel avatar = new JLabel(DEFAULT_PROFILE);
         info.add(avatar);
@@ -104,7 +106,7 @@ public class ProfilePanel extends JPanel {
 
         JPanel text = new JPanel();
         text.setLayout(new BoxLayout(text, BoxLayout.Y_AXIS));
-        text.setBackground(Color.WHITE);
+        text.setBackground(info.getBackground());
 
         JLabel fullName = new JLabel(user.getFullName());
         fullName.setFont(NAME_FONT);
@@ -119,15 +121,15 @@ public class ProfilePanel extends JPanel {
             }
         });
 
-        JLabel followInfo = new JLabel(
-                followDao.getFollowingCount(profileUserId) + " Following • " +
-                        followDao.getFollowersCount(profileUserId) + " Followers"
+        followInfoLabel = new JLabel(
+                followDao.getFollowingCount(profileUserId) + " Following • "
+                        + followDao.getFollowersCount(profileUserId) + " Followers"
         );
 
         text.add(fullName);
         text.add(username);
         text.add(Box.createVerticalStrut(5));
-        text.add(followInfo);
+        text.add(followInfoLabel);
 
         info.add(text);
 
@@ -152,7 +154,15 @@ public class ProfilePanel extends JPanel {
             followDao.followUser(loggedInUserId, profileUserId);
             notificationController.notifyFollow(loggedInUserId);
         }
-        refresh();
+
+        // update button text
+        followBtn.setText(followDao.isFollowing(loggedInUserId, profileUserId) ? "Following" : "Follow");
+
+        // update follower count label
+        followInfoLabel.setText(
+                followDao.getFollowingCount(profileUserId) + " Following • "
+                        + followDao.getFollowersCount(profileUserId) + " Followers"
+        );
     }
 
     // ---------------- POSTS ----------------
@@ -183,9 +193,9 @@ public class ProfilePanel extends JPanel {
         header.add(avatar);
 
         JLabel name = new JLabel(
-                "<html><b>" + post.getFullName() + "</b> " +
-                        "<font color='blue'>@" + post.getUsername() + "</font> " +
-                        "<font color='gray'>· " + timeAgo(post.getCreatedAt()) + "</font></html>"
+                "<html><b>" + post.getFullName() + "</b> "
+                        + "<font color='blue'>@" + post.getUsername() + "</font> "
+                        + "<font color='gray'>· " + timeAgo(post.getCreatedAt()) + "</font></html>"
         );
         name.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         name.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -200,19 +210,15 @@ public class ProfilePanel extends JPanel {
         root.add(header);
         root.add(Box.createVerticalStrut(6));
 
-        // Content (fit-content height, slight indent to right)
-        JPanel contentWrapper = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
-        contentWrapper.setBackground(Color.WHITE);
-
+        // --- Content ---
         JLabel body = new JLabel("<html>" + post.getContent() + "</html>");
         body.setFont(FONT);
-
-        contentWrapper.add(body);
-        root.add(contentWrapper);
+        body.setAlignmentX(Component.LEFT_ALIGNMENT);
+        root.add(body);
         root.add(Box.createVerticalStrut(6));
 
-        // Actions
-        JPanel actions = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
+        // --- Actions ---
+        JPanel actions = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         actions.setBackground(Color.WHITE);
 
         JButton likeBtn = new JButton("Like (" + post.getLikes() + ")");
@@ -231,9 +237,9 @@ public class ProfilePanel extends JPanel {
         commentBtn.addActionListener(e -> NavigatorView.showComments(post.getId()));
 
         actions.add(likeBtn);
+        actions.add(Box.createHorizontalStrut(10));
         actions.add(commentBtn);
 
-        // Delete button if same user
         if (loggedInUserId == post.getUserId()) {
             JButton deleteBtn = new JButton("Delete");
             deleteBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -241,9 +247,11 @@ public class ProfilePanel extends JPanel {
                 postDao.deletePost(post.getId());
                 refreshPosts();
             });
+            actions.add(Box.createHorizontalStrut(10));
             actions.add(deleteBtn);
         }
 
+        actions.setAlignmentX(Component.LEFT_ALIGNMENT);
         root.add(actions);
 
         // Fit-content height

@@ -7,7 +7,7 @@ public class AvatarUtil {
 
     public static JLabel avatar(int size) {
         ImageIcon icon = new ImageIcon(
-                AvatarUtil.class.getResource("/konnekt/resources/images/default_profile.png")
+                AvatarUtil.class.getResource("/konnekt/resources/images/default_profile-2.png")
         );
 
         Image img = icon.getImage().getScaledInstance(size, size, Image.SCALE_SMOOTH);
