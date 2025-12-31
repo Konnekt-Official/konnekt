@@ -6,6 +6,7 @@ import konnekt.model.pojo.PostPojo;
 import konnekt.model.pojo.UserPojo;
 import konnekt.view.NavigatorView;
 import konnekt.utils.AvatarUtil;
+import konnekt.*;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
