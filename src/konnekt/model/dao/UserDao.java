@@ -5,7 +5,9 @@ import konnekt.model.pojo.UserPojo;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class UserDao {
 
@@ -176,6 +178,21 @@ public class UserDao {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public Map<String, Integer> getUserCount() {
+        Map<String, Integer> map = new LinkedHashMap<>();
+        String sql = "SELECT DATE(created_at) d, COUNT(*) c FROM user GROUP BY d";
+
+        try (Connection c = DatabaseConnection.getConnection(); PreparedStatement ps = c.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                map.put(rs.getString("d"), rs.getInt("c"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return map;
     }
 
 }
