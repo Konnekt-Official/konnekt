@@ -22,7 +22,7 @@ public class ChatPanel extends JPanel {
     private final JPanel messageContainer = new JPanel();
     private final JScrollPane scrollPane = new JScrollPane();
     private final JTextArea inputField = new JTextArea();
-    private final JButton sendButton = new JButton("Send");
+    private final JButton sendButton = new JButton("SEND");
 
     public ChatPanel(int otherUserId) {
         this.otherUser = chatController.getUserById(otherUserId);
@@ -75,9 +75,11 @@ public class ChatPanel extends JPanel {
         header.add(left, BorderLayout.WEST);
 
         // Right side: Video Call button
-        JButton videoCall = new JButton("Video Call");
+        JButton videoCall = new JButton("VIDEO CALL");
+        videoCall.setForeground(Color.WHITE);
+        videoCall.setBackground(Color.BLACK);
         videoCall.setFont(new Font("Verdana", Font.PLAIN, 12));
-        videoCall.setPreferredSize(new Dimension(100, 30));
+        videoCall.setPreferredSize(new Dimension(105, 30));
         videoCall.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         header.add(videoCall, BorderLayout.EAST);
 
@@ -108,6 +110,8 @@ public class ChatPanel extends JPanel {
 
         sendButton.setFont(new Font("Verdana", Font.BOLD, 13));
         sendButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        sendButton.setForeground(Color.WHITE);
+        sendButton.setBackground(Color.BLACK);
 
         sendButton.addActionListener(e -> sendMessage());
         inputField.addKeyListener(new KeyAdapter() {
