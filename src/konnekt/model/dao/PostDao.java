@@ -5,7 +5,9 @@ import konnekt.model.pojo.PostPojo;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PostDao {
 
@@ -178,4 +180,35 @@ public class PostDao {
             e.printStackTrace();
         }
     }
+
+    // ---------- COUNT POSTS ----------
+    public int countPosts() {
+        String sql = "SELECT COUNT(*) FROM post";
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public Map<String, Integer> getPostCount() {
+        Map<String, Integer> map = new LinkedHashMap<>();
+        String sql = "SELECT DATE(created_at) d, COUNT(*) c FROM post GROUP BY d";
+
+        try (Connection c = getConnection(); PreparedStatement ps = c.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                map.put(rs.getString("d"), rs.getInt("c"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return map;
+    }
+
 }

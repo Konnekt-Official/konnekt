@@ -24,7 +24,7 @@ public class SettingsPanel extends JPanel {
         panel.setBackground(Color.WHITE);
 
         JLabel title = new JLabel("Settings");
-        title.setFont(new Font("Segoe UI", Font.BOLD, 22));
+        title.setFont(new Font("Verdana", Font.BOLD, 22));
 
         panel.add(title, BorderLayout.WEST);
         return panel;
@@ -37,11 +37,11 @@ public class SettingsPanel extends JPanel {
         panel.setBackground(Color.WHITE);
 
         panel.add(item("Account", "ACCOUNT"));
-        panel.add(item("Privacy Policy", "PRIVACY"));
-        panel.add(item("Terms & Conditions", "TERMS"));
         panel.add(item("About", "ABOUT"));
-        panel.add(item("Report a Bug", "REPORT"));
+        panel.add(item("Terms & Conditions", "TERMS"));
+        panel.add(item("Privacy Policy", "PRIVACY"));
         panel.add(item("Help & Support", "HELP"));
+        panel.add(item("Report a Bug", "REPORT"));
 
         return panel;
     }
@@ -54,10 +54,10 @@ public class SettingsPanel extends JPanel {
         panel.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         JLabel label = new JLabel(text);
-        label.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+        label.setFont(new Font("Verdana", Font.PLAIN, 15));
 
-        JLabel arrow = new JLabel(">");
-        arrow.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        JLabel arrow = new JLabel("<html>&#9654;</html>");
+        arrow.setFont(new Font("Verdana", Font.BOLD, 16));
 
         panel.add(label, BorderLayout.WEST);
         panel.add(arrow, BorderLayout.EAST);

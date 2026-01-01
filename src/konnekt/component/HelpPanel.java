@@ -12,7 +12,7 @@ public class HelpPanel extends JPanel {
         setBorder(new EmptyBorder(30, 30, 30, 30));
 
         JLabel title = new JLabel("Help & Support");
-        title.setFont(new Font("Segoe UI", Font.BOLD, 22));
+        title.setFont(new Font("Verdana", Font.BOLD, 22));
 
         JTextArea text = new JTextArea(
             "If you need assistance while using Konnekt, we are here to help.\n\n" +
@@ -24,7 +24,8 @@ public class HelpPanel extends JPanel {
             "Response time: within 24–48 hours."
         );
 
-        text.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        text.setFont(new Font("Verdana", Font.PLAIN, 14));
+        text.setBorder(new EmptyBorder(20, 0, 0, 0));
         text.setEditable(false);
         text.setLineWrap(true);
         text.setWrapStyleWord(true);

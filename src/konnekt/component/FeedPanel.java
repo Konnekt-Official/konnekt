@@ -151,7 +151,7 @@ public class FeedPanel extends JPanel {
 
         JLabel avatar = new JLabel(new ImageIcon(
                 new ImageIcon(
-                        getClass().getResource("/konnekt/resources/images/default_profile-2.png")
+                        getClass().getResource("/konnekt/resources/images/default_profile.png")
                 ).getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH)
         ));
 

@@ -8,14 +8,14 @@ package konnekt.view;
  *
  * @author Hp
  */
-public class ForgotPasswordView extends BaseFrame {
+public class ChangePasswordView extends BaseFrame {
 
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ForgotPasswordView.class.getName());
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ChangePasswordView.class.getName());
 
     /**
      * Creates new form RegisterView
      */
-    public ForgotPasswordView() {
+    public ChangePasswordView() {
         initComponents();
     }
 
@@ -187,7 +187,7 @@ public class ForgotPasswordView extends BaseFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new ForgotPasswordView().setVisible(true));
+        java.awt.EventQueue.invokeLater(() -> new ChangePasswordView().setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

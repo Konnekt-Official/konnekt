@@ -12,27 +12,27 @@ public class TermsPanel extends JPanel {
         setBorder(new EmptyBorder(30, 30, 30, 30));
 
         JLabel title = new JLabel("Terms & Conditions");
-        title.setFont(new Font("Segoe UI", Font.BOLD, 22));
+        title.setFont(new Font("Verdana", Font.BOLD, 22));
 
         JTextArea text = new JTextArea(
-            "By accessing or using Konnekt, you agree to be bound by these Terms and Conditions.\n\n" +
-
-            "Users are expected to behave responsibly and respectfully when using the platform. " +
-            "Any form of abuse, harassment, or misuse of the application is strictly prohibited.\n\n" +
-
-            "Konnekt reserves the right to suspend or terminate accounts that violate " +
-            "these terms without prior notice.\n\n" +
-
-            "Continued use of the application indicates acceptance of all terms stated above."
+                "By accessing or using Konnekt, you agree to be bound by these Terms and Conditions.\n\n"
+                + "Users are expected to behave responsibly and respectfully when using the platform. "
+                + "Any form of abuse, harassment, or misuse of the application is strictly prohibited.\n\n"
+                + "Konnekt reserves the right to suspend or terminate accounts that violate "
+                + "these terms without prior notice.\n\n"
+                + "Continued use of the application indicates acceptance of all terms stated above."
         );
 
-        text.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        text.setFont(new Font("Verdana", Font.PLAIN, 14));
+        text.setBorder(new EmptyBorder(20, 0, 0, 0));
         text.setEditable(false);
         text.setLineWrap(true);
         text.setWrapStyleWord(true);
         text.setBackground(Color.WHITE);
 
         add(title, BorderLayout.NORTH);
-        add(new JScrollPane(text), BorderLayout.CENTER);
+        JScrollPane scrollPane = new JScrollPane(text);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
+        add(scrollPane, BorderLayout.CENTER);
     }
 }

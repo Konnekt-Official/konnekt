@@ -5,7 +5,9 @@ import konnekt.model.pojo.UserPojo;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class UserDao {
 
@@ -147,6 +149,85 @@ public class UserDao {
             e.printStackTrace();
         }
         return list;
+    }
+
+    // ---------- COUNT USERS ----------
+    public int countUsers() {
+        String sql = "SELECT COUNT(*) FROM user";
+        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+// ---------- DELETE USER ----------
+    public boolean deleteUser(int userId) {
+        String sql = "DELETE FROM user WHERE id = ?";
+        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, userId);
+            return ps.executeUpdate() > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public Map<String, Integer> getUserCount() {
+        Map<String, Integer> map = new LinkedHashMap<>();
+        String sql = "SELECT DATE(created_at) d, COUNT(*) c FROM user GROUP BY d";
+
+        try (Connection c = DatabaseConnection.getConnection(); PreparedStatement ps = c.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                map.put(rs.getString("d"), rs.getInt("c"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return map;
+    }
+
+    // In UserDao.java
+    public boolean updateUser(UserPojo user) {
+        String sql = "UPDATE user SET full_name=?, username=?, email=? WHERE id=?";
+        try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement(sql)) {
+            ps.setString(1, user.getFullName());
+            ps.setString(2, user.getUsername());
+            ps.setString(3, user.getEmail());
+            ps.setInt(4, user.getId());
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public UserPojo getUserByUsername(String username) {
+        String sql = "SELECT * FROM user WHERE username=?";
+        try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement(sql)) {
+            ps.setString(1, username);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                UserPojo u = new UserPojo();
+                u.setId(rs.getInt("id"));
+                u.setFullName(rs.getString("full_name"));
+                u.setUsername(rs.getString("username"));
+                u.setEmail(rs.getString("email"));
+                u.setPassword(rs.getString("password"));
+                return u;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }
