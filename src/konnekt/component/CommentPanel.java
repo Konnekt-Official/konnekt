@@ -55,12 +55,13 @@ public class CommentPanel extends JPanel {
         panel.setBorder(new EmptyBorder(8, 8, 8, 8));
         panel.setBackground(Color.WHITE);
 
-        JTextArea input = new JTextArea(2, 1);
+        JTextArea input = new JTextArea();
+        input.setRows(2);
         input.setLineWrap(true);
         input.setWrapStyleWord(true);
         input.setFont(new Font("Verdana", Font.PLAIN, 13));
 
-        JButton send = new JButton("Comment");
+        JButton send = new JButton("COMMENT");
         send.setFocusable(false);
         send.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         send.setForeground(Color.WHITE);

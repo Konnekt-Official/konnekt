@@ -139,7 +139,7 @@ public class SearchPanel extends JPanel {
         root.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
         // avatar
-        JLabel avatar = AvatarUtil.avatar(40);
+        JLabel avatar = AvatarUtil.avatar(20);
         root.add(avatar, BorderLayout.WEST);
 
         // user info
@@ -148,7 +148,7 @@ public class SearchPanel extends JPanel {
         info.setOpaque(false);
 
         JLabel name = new JLabel(
-                "<html><b>" + u.getFullName() + "</b> <font color='blue'>@" + u.getUsername() + "</font></html>"
+                "<html><b>" + u.getFullName() + "</b> <span style='font-weight:normal; color:blue'>@" + u.getUsername() + "</span></html>"
         );
         name.setAlignmentX(Component.LEFT_ALIGNMENT);
         info.add(name);
@@ -203,7 +203,7 @@ public class SearchPanel extends JPanel {
         content.setAlignmentY(Component.TOP_ALIGNMENT);
 
         JLabel header = new JLabel(
-                "<html><b>" + post.getFullName() + "</b> <font color='gray'>@" + post.getUsername() + "</font></html>"
+                "<html><b>" + post.getFullName() + "</b> <span style='font-weight:normal; color:blue'>@" + post.getUsername() + "</span></html>"
         );
 
         JLabel body = new JLabel("<html>" + post.getContent() + "</html>");
