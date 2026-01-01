@@ -119,6 +119,7 @@ public class ChatPanel extends JPanel {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER && !e.isShiftDown()) {
                     e.consume();
                     sendMessage();
+                    NavigatorView.refreshInboxPanel();
                 }
             }
         });
