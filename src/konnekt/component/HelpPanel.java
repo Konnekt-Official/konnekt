@@ -25,6 +25,7 @@ public class HelpPanel extends JPanel {
         );
 
         text.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        text.setBorder(new EmptyBorder(20, 0, 0, 0));
         text.setEditable(false);
         text.setLineWrap(true);
         text.setWrapStyleWord(true);
