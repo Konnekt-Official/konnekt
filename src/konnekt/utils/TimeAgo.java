@@ -6,8 +6,7 @@ import java.time.Duration;
 public class TimeAgo {
 
     public static String format(Timestamp t) {
-        long sec = Duration.between(t.toInstant(),
-                java.time.Instant.now()).getSeconds();
+        long sec = Duration.between(t.toInstant(), java.time.Instant.now()).getSeconds();
 
         if (sec < 60) return "• Just Now";
         if (sec < 3600) return "• " + sec / 60 + "m";

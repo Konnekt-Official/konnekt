@@ -33,8 +33,13 @@ public class ChatPanel extends JPanel {
         add(createMessageScroll(), BorderLayout.CENTER);
         add(createInputPanel(), BorderLayout.SOUTH);
 
-        loadMessages();
+        // Initial load of messages
+        loadMessagesSmooth();
         chatController.markMessagesAsRead(otherUserId, currentUserId);
+
+        // Auto-refresh every 2 seconds
+        int refreshInterval = 2000; // milliseconds
+        new Timer(refreshInterval, e -> loadMessagesSmooth()).start();
     }
 
     // ---------- HEADER ----------
@@ -136,20 +141,21 @@ public class ChatPanel extends JPanel {
         if (!content.isEmpty()) {
             chatController.sendMessage(currentUserId, otherUser.getId(), content);
             inputField.setText("");
-            loadMessages();
+            loadMessagesSmooth();
         }
     }
 
-    // ---------- LOAD MESSAGES ----------
-    private void loadMessages() {
-        messageContainer.removeAll();
+    // ---------- LOAD MESSAGES (SMOOTH AUTO-REFRESH) ----------
+    private void loadMessagesSmooth() {
+        JScrollBar verticalBar = scrollPane.getVerticalScrollBar();
+        boolean atBottom = verticalBar.getValue() + verticalBar.getVisibleAmount() >= verticalBar.getMaximum() - 20;
+
         List<ChatPojo> messages = chatController.getMessagesBetween(currentUserId, otherUser.getId());
+        messageContainer.removeAll();
 
         int lastSender = -1;
         for (ChatPojo msg : messages) {
             boolean isCurrentUser = msg.getSenderId() == currentUserId;
-
-            // If consecutive same sender, no extra gap
             boolean sameSender = lastSender == msg.getSenderId();
             lastSender = msg.getSenderId();
 
@@ -159,8 +165,12 @@ public class ChatPanel extends JPanel {
         messageContainer.revalidate();
         messageContainer.repaint();
 
-        // Scroll to bottom
-        SwingUtilities.invokeLater(() -> scrollPane.getVerticalScrollBar().setValue(scrollPane.getVerticalScrollBar().getMaximum()));
+        // Scroll only if at bottom
+        if (atBottom) {
+            SwingUtilities.invokeLater(() ->
+                verticalBar.setValue(verticalBar.getMaximum())
+            );
+        }
     }
 
     // ---------- MESSAGE BUBBLE ----------
@@ -179,9 +189,8 @@ public class ChatPanel extends JPanel {
                 BorderFactory.createLineBorder(new Color(200,200,200)),
                 BorderFactory.createEmptyBorder(5, 8, 5, 8)
         ));
-        text.setMaximumSize(new Dimension(300, Short.MAX_VALUE)); // max half screen width
+        text.setMaximumSize(new Dimension(300, Short.MAX_VALUE));
 
-        // timestamp
         JLabel time = new JLabel(msg.getCreatedAt().toString());
         time.setFont(new Font("Verdana", Font.PLAIN, 10));
         time.setForeground(Color.GRAY);

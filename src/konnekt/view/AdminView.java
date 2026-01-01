@@ -6,13 +6,12 @@ import konnekt.model.dao.UserDao;
 import konnekt.model.pojo.PostPojo;
 import konnekt.model.pojo.UserPojo;
 import konnekt.utils.AvatarUtil;
+import konnekt.utils.TimeAgo;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.sql.Timestamp;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.List;
 
 public class AdminView extends BaseFrame {
@@ -32,20 +31,31 @@ public class AdminView extends BaseFrame {
 
     private JTabbedPane createTabs() {
         JTabbedPane tabs = new JTabbedPane();
-        tabs.add("Analytics", createAnalyticsTab());
-        tabs.add("Users", createUsersTab());
-        tabs.add("Posts", createPostsTab());
-        tabs.add("Logout", createLogoutTab());
+
+        tabs.addTab("Analytics", createAnalyticsTab());
+        tabs.addTab("Users", createUsersTab());
+        tabs.addTab("Posts", createPostsTab());
+        tabs.addTab("Logout", new JPanel()); // handled by change listener
+
+        tabs.addChangeListener(e -> {
+            if (tabs.getSelectedIndex() == 3) {
+                dispose();
+                new LoginView().setVisible(true);
+            }
+        });
+
         return tabs;
     }
 
-    // -------------------- Analytics --------------------
+    // ================= ANALYTICS =================
     private JPanel createAnalyticsTab() {
         JPanel panel = new JPanel(new BorderLayout(20, 20));
         panel.setBorder(new EmptyBorder(20, 20, 20, 20));
 
         JComboBox<String> selector = new JComboBox<>(new String[]{"Users", "Posts"});
-        GraphPanel graph = new GraphPanel(userDao.getUserCount());
+
+        GraphPanel graph = new GraphPanel();
+        graph.setData(userDao.getUserCount());
 
         selector.addActionListener(e -> {
             if (selector.getSelectedIndex() == 0) {
@@ -61,12 +71,13 @@ public class AdminView extends BaseFrame {
         return panel;
     }
 
-    // -------------------- Users --------------------
+    // ================= USERS =================
     private JComponent createUsersTab() {
         JPanel list = new JPanel();
         list.setLayout(new BoxLayout(list, BoxLayout.Y_AXIS));
 
         List<UserPojo> users = userDao.getAllUsers();
+
         if (users.isEmpty()) {
             JLabel empty = new JLabel("No users found");
             empty.setFont(new Font("Verdana", Font.ITALIC, 14));
@@ -74,18 +85,18 @@ public class AdminView extends BaseFrame {
         } else {
             for (UserPojo u : users) {
                 list.add(createUserRow(u));
-                list.add(Box.createVerticalStrut(5));
+                list.add(Box.createVerticalStrut(6));
             }
         }
 
-        JPanel wrapper = new JPanel(new BorderLayout());
-        wrapper.add(list, BorderLayout.NORTH); // top align, auto height
-        return wrapper;
+        JScrollPane scroll = new JScrollPane(list);
+        scroll.setBorder(null);
+        return scroll;
     }
 
     private JPanel createUserRow(UserPojo u) {
         JPanel row = new JPanel(new BorderLayout(10, 0));
-        row.setBorder(new EmptyBorder(5, 5, 5, 5));
+        row.setBorder(new EmptyBorder(8, 8, 8, 8));
         row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
         row.setBackground(new Color(245, 245, 245));
 
@@ -100,17 +111,22 @@ public class AdminView extends BaseFrame {
             userDao.deleteUser(u.getId());
             refresh();
         });
-        row.add(del, BorderLayout.EAST);
 
+        JPanel right = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+        right.setOpaque(false);
+        right.add(del);
+
+        row.add(right, BorderLayout.EAST);
         return row;
     }
 
-    // -------------------- Posts --------------------
+    // ================= POSTS =================
     private JComponent createPostsTab() {
         JPanel list = new JPanel();
         list.setLayout(new BoxLayout(list, BoxLayout.Y_AXIS));
 
         List<PostPojo> posts = postDao.getAllPosts();
+
         if (posts.isEmpty()) {
             JLabel empty = new JLabel("No posts found");
             empty.setFont(new Font("Verdana", Font.ITALIC, 14));
@@ -122,68 +138,86 @@ public class AdminView extends BaseFrame {
             }
         }
 
-        JPanel wrapper = new JPanel(new BorderLayout());
-        wrapper.add(list, BorderLayout.NORTH); // top align, auto height
-        return wrapper;
+        JScrollPane scroll = new JScrollPane(list);
+        scroll.setBorder(null);
+        return scroll;
     }
 
     private JPanel createPostRow(PostPojo post) {
-        UserPojo user = userDao.getUserById(post.getUserId());
+        JPanel root = new JPanel();
+        root.setLayout(new BoxLayout(root, BoxLayout.Y_AXIS));
+        root.setBackground(Color.WHITE);
+        root.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        JPanel row = new JPanel(new BorderLayout(12, 0));
-        row.setBorder(new EmptyBorder(5, 5, 5, 5));
-        row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 120));
-        row.setBackground(new Color(245, 245, 245));
-
-        row.add(AvatarUtil.avatar(42), BorderLayout.WEST);
-
-        JPanel center = new JPanel();
-        center.setLayout(new BoxLayout(center, BoxLayout.Y_AXIS));
-        center.setOpaque(false);
-
+        // ---------- HEADER ----------
         JPanel header = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
-        header.setOpaque(false);
-        header.add(new JLabel(user.getFullName()));
-        header.add(new JLabel("@" + user.getUsername()));
-        header.add(new JLabel("· " + timeAgo(post.getCreatedAt())));
-        center.add(header);
+        header.setBackground(Color.WHITE);
 
-        center.add(Box.createVerticalStrut(5));
-        center.add(new JLabel("<html>" + post.getContent() + "</html>"));
-        center.add(Box.createVerticalStrut(5));
-        center.add(new JLabel("❤️ " + post.getLikes() + "   💬 " + post.getCommentCount()));
+        JLabel avatar = AvatarUtil.avatar(40);
+        header.add(avatar);
 
-        row.add(center, BorderLayout.CENTER);
+        JLabel name = new JLabel(
+                "<html><b>" + post.getFullName() + "</b> "
+                + "<span style='font-weight:normal; color:blue'>@" + post.getUsername() + "</span> "
+                + "<span style='font-weight:normal; color:gray'>" + TimeAgo.format(post.getCreatedAt()) + "</span></html>"
+        );
+        name.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        name.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                NavigatorView.showProfile(post.getUserId());
+            }
+        });
 
+        header.add(name);
+        header.setAlignmentX(Component.LEFT_ALIGNMENT);
+        root.add(header);
+        root.add(Box.createVerticalStrut(6));
+
+        // ---------- CONTENT ----------
+        JLabel body = new JLabel("<html>" + post.getContent() + "</html>");
+        body.setFont(new Font("Verdana", Font.PLAIN, 13));
+        body.setAlignmentX(Component.LEFT_ALIGNMENT);
+        root.add(body);
+        root.add(Box.createVerticalStrut(6));
+
+        // ---------- ACTIONS (Like/Comment labels only) ----------
+        JPanel actions = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
+        actions.setBackground(Color.WHITE);
+
+        JLabel likeLabel = new JLabel("Like (" + post.getLikes() + ")");
+        JLabel commentLabel = new JLabel("Comment (" + post.getCommentCount() + ")");
+
+        actions.add(likeLabel);
+        actions.add(Box.createHorizontalStrut(10));
+        actions.add(commentLabel);
+
+        actions.setAlignmentX(Component.LEFT_ALIGNMENT);
+        root.add(actions);
+
+        // ---------- DELETE BUTTON ----------
         JButton del = new JButton("Delete");
+        del.setForeground(Color.WHITE);
+        del.setBackground(Color.RED);
+        del.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         del.addActionListener(e -> {
             postDao.deletePost(post.getId());
-            refresh();
+            refresh(); // refresh the Admin posts tab
         });
-        row.add(del, BorderLayout.EAST);
 
-        return row;
+        JPanel deleteWrapper = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+        deleteWrapper.setOpaque(false);
+        deleteWrapper.add(del);
+        deleteWrapper.setAlignmentX(Component.LEFT_ALIGNMENT);
+        root.add(deleteWrapper);
+
+        // ---------- FIT-CONTENT HEIGHT ----------
+        root.setMaximumSize(new Dimension(Integer.MAX_VALUE, root.getPreferredSize().height));
+
+        return root;
     }
 
-    // -------------------- Logout --------------------
-    private JComponent createLogoutTab() {
-        JPanel panel = new JPanel(new FlowLayout());
-        JButton logout = new JButton("Logout");
-        logout.addActionListener(e -> {
-            dispose();
-            new LoginView();
-        });
-        panel.add(logout);
-        return panel;
-    }
-
-    private String timeAgo(Timestamp ts) {
-        Duration d = Duration.between(ts.toInstant(), Instant.now());
-        if (d.toMinutes() < 60) return d.toMinutes() + "m";
-        if (d.toHours() < 24) return d.toHours() + "h";
-        return d.toDays() + "d";
-    }
-
+    // ================= HELPERS =================
     private void refresh() {
         dispose();
         new AdminView();
