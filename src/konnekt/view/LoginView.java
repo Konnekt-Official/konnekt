@@ -4,6 +4,7 @@
  */
 package konnekt.view;
 
+import javax.swing.JOptionPane;
 import konnekt.controller.UserController;
 
 /**
@@ -116,7 +117,7 @@ public class LoginView extends BaseFrame {
         jLabel12.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jLabel12.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jLabel12redirect(evt);
+                adminRedirect(evt);
             }
         });
 
@@ -222,11 +223,25 @@ public class LoginView extends BaseFrame {
         new ChangePasswordView().setVisible(true);
     }//GEN-LAST:event_redirect
 
-    private void jLabel12redirect(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel12redirect
+    private void adminRedirect(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_adminRedirect
         // TODO add your handling code here:
-        this.dispose();
-        new AdminView().setVisible(true);
-    }//GEN-LAST:event_jLabel12redirect
+        while (true) {
+            String passcode = JOptionPane.showInputDialog(this, "Enter the Admin Passcode", "ADMIN VALIDATION", JOptionPane.PLAIN_MESSAGE);
+            if (passcode == null) {
+                return;
+            }
+            passcode = passcode.trim();
+            if (passcode.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Passcode cannot be empty!", "Error", JOptionPane.ERROR_MESSAGE);
+            } else if (passcode.equals("passcode")) {
+                this.dispose();
+                new AdminView().setVisible(true);
+                return;
+            } else {
+                JOptionPane.showMessageDialog(this, "Invalid Passcode!", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_adminRedirect
 
     /**
      * @param args the command line arguments

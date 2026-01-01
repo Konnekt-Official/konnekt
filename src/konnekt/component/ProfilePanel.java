@@ -126,10 +126,18 @@ public class ProfilePanel extends JPanel {
             }
         });
 
-        followInfoLabel = new JLabel(
-                followDao.getFollowingCount(profileUserId) + " Following • "
-                + followDao.getFollowersCount(profileUserId) + " Followers"
-        );
+
+        int followingCount = followDao.getFollowingCount(profileUserId);
+        int followersCount = followDao.getFollowersCount(profileUserId);
+
+        String labelText = "<html>"
+                + "<span style='font-weight:normal;'>" + followingCount + "</span> "
+                + "<b>Following</b> &bull; "
+                + "<span style='font-weight:normal;'>" + followersCount + "</span> "
+                + "<b>Followers</b>"
+                + "</html>";
+
+        JLabel followInfoLabel = new JLabel(labelText);
 
         text.add(fullName);
         text.add(username);
@@ -140,10 +148,11 @@ public class ProfilePanel extends JPanel {
 
         if (loggedInUserId != profileUserId) {
             followBtn = new JButton(
-                    followDao.isFollowing(loggedInUserId, profileUserId)
-                    ? "Following" : "Follow"
+                    followDao.isFollowing(loggedInUserId, profileUserId) ? "UNFOLLOW" : "FOLLOW"
             );
             followBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            followBtn.setForeground(Color.WHITE);
+            followBtn.setBackground(new Color(0, 153, 255));
             followBtn.addActionListener(e -> toggleFollow());
             info.add(followBtn);
         }
@@ -266,7 +275,9 @@ public class ProfilePanel extends JPanel {
         actions.add(commentBtn);
 
         if (loggedInUserId == post.getUserId()) {
-            JButton deleteBtn = new JButton("Delete");
+            JButton deleteBtn = new JButton("DELETE POST");
+            deleteBtn.setForeground(Color.WHITE);
+            deleteBtn.setBackground(Color.RED);
             deleteBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             deleteBtn.addActionListener(e -> {
                 postDao.deletePost(post.getId());
