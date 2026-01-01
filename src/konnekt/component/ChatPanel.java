@@ -77,9 +77,9 @@ public class ChatPanel extends JPanel {
         // Right side: Video Call button
         JButton videoCall = new JButton("VIDEO CALL");
         videoCall.setForeground(Color.WHITE);
-        videoCall.setBackground(Color.BLACK);
-        videoCall.setFont(new Font("Verdana", Font.PLAIN, 12));
-        videoCall.setPreferredSize(new Dimension(105, 30));
+        videoCall.setBackground(new Color(0,153,255));
+        videoCall.setFont(new Font("Verdana", Font.BOLD, 12));
+        videoCall.setPreferredSize(new Dimension(115, 30));
         videoCall.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         header.add(videoCall, BorderLayout.EAST);
 

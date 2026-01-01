@@ -71,9 +71,6 @@ public class ProfilePanel extends JPanel {
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
 
         add(scrollPane, BorderLayout.CENTER);
-        
-        followBtn.setForeground(Color.WHITE);
-        followBtn.setBackground(Color.BLACK);
 
         initHeader();
         refreshPosts();
@@ -143,10 +140,11 @@ public class ProfilePanel extends JPanel {
 
         if (loggedInUserId != profileUserId) {
             followBtn = new JButton(
-                    followDao.isFollowing(loggedInUserId, profileUserId)
-                    ? "UNFOLLOW" : "FOLLOW"
+                    followDao.isFollowing(loggedInUserId, profileUserId) ? "UNFOLLOW" : "FOLLOW"
             );
             followBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            followBtn.setForeground(Color.WHITE);
+            followBtn.setBackground(new Color(0,153,255));
             followBtn.addActionListener(e -> toggleFollow());
             info.add(followBtn);
         }
@@ -271,7 +269,7 @@ public class ProfilePanel extends JPanel {
         if (loggedInUserId == post.getUserId()) {
             JButton deleteBtn = new JButton("DELETE POST");
             deleteBtn.setForeground(Color.WHITE);
-            deleteBtn.setBackground(Color.BLACK);
+            deleteBtn.setBackground(Color.RED);
             deleteBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             deleteBtn.addActionListener(e -> {
                 postDao.deletePost(post.getId());
