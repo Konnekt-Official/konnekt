@@ -126,10 +126,18 @@ public class ProfilePanel extends JPanel {
             }
         });
 
-        followInfoLabel = new JLabel(
-                followDao.getFollowingCount(profileUserId) + " Following • "
-                + followDao.getFollowersCount(profileUserId) + " Followers"
-        );
+
+        int followingCount = followDao.getFollowingCount(profileUserId);
+        int followersCount = followDao.getFollowersCount(profileUserId);
+
+        String labelText = "<html>"
+                + "<span style='font-weight:normal;'>" + followingCount + "</span> "
+                + "<b>Following</b> &bull; "
+                + "<span style='font-weight:normal;'>" + followersCount + "</span> "
+                + "<b>Followers</b>"
+                + "</html>";
+
+        JLabel followInfoLabel = new JLabel(labelText);
 
         text.add(fullName);
         text.add(username);
@@ -144,7 +152,7 @@ public class ProfilePanel extends JPanel {
             );
             followBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             followBtn.setForeground(Color.WHITE);
-            followBtn.setBackground(new Color(0,153,255));
+            followBtn.setBackground(new Color(0, 153, 255));
             followBtn.addActionListener(e -> toggleFollow());
             info.add(followBtn);
         }
