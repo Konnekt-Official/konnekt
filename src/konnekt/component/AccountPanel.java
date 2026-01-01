@@ -70,7 +70,7 @@ public class AccountPanel extends JPanel {
         saveBtn.setFocusPainted(false);
         saveBtn.setFont(new Font("Verdana", Font.BOLD, 12));
         saveBtn.setAlignmentX(Component.LEFT_ALIGNMENT); // align left
-        saveBtn.setCursor(new Cursor(Cursor.HAND_CURSOR)); 
+        saveBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         saveBtn.addActionListener(e -> saveChanges());
         form.add(saveBtn);
 
@@ -85,7 +85,7 @@ public class AccountPanel extends JPanel {
         changePassBtn.setBackground(Color.BLACK);
         changePassBtn.setFocusPainted(false);
         changePassBtn.setFont(new Font("Verdana", Font.BOLD, 12));
-        changePassBtn.setCursor(new Cursor(Cursor.HAND_CURSOR)); 
+        changePassBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         changePassBtn.addActionListener(e -> openChangePassword());
         buttonsRow.add(changePassBtn);
 
@@ -94,7 +94,7 @@ public class AccountPanel extends JPanel {
         deleteBtn.setBackground(new Color(220, 53, 69)); // Bootstrap red
         deleteBtn.setFocusPainted(false);
         deleteBtn.setFont(new Font("Verdana", Font.BOLD, 12));
-        deleteBtn.setCursor(new Cursor(Cursor.HAND_CURSOR)); 
+        deleteBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         deleteBtn.addActionListener(e -> deleteAccount());
         buttonsRow.add(deleteBtn);
 
@@ -144,8 +144,9 @@ public class AccountPanel extends JPanel {
     }
 
     private void openChangePassword() {
-       this.removeAll();
-       new ChangePasswordView().setVisible(true);
+        JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+        topFrame.getContentPane().removeAll();
+        new ChangePasswordView().setVisible(true);
     }
 
     private JPanel labeledField(String label, JTextField field) {
@@ -174,9 +175,8 @@ public class AccountPanel extends JPanel {
                 JOptionPane.showMessageDialog(this, "Account deleted successfully!", "Deleted", JOptionPane.INFORMATION_MESSAGE);
                 JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
                 topFrame.getContentPane().removeAll();
-                topFrame.getContentPane().add(new konnekt.view.LoginView());
-                topFrame.revalidate();
-                topFrame.repaint();
+                new konnekt.view.LoginView().setVisible(true);
+
             } else {
                 JOptionPane.showMessageDialog(this, "Failed to delete account!", "Error", JOptionPane.ERROR_MESSAGE);
             }

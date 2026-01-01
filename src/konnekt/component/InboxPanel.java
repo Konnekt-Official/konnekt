@@ -41,6 +41,9 @@ public class InboxPanel extends JPanel {
         // Load **all users** if no message, else latest message between current user and each user
         List<UserPojo> allUsers = chatController.getAllUsers(); // new method in ChatController
         for (UserPojo user : allUsers) {
+            if (user.getId() == currentUserId) {
+                continue;
+            }
             ChatPojo latestMsg = chatController.getLatestMessageBetween(currentUserId, user.getId());
             userListContainer.add(createUserItem(user, latestMsg));
             userListContainer.add(Box.createVerticalStrut(5));
