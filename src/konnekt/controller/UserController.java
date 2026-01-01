@@ -54,19 +54,19 @@ public class UserController {
         otpDao.insertOtp(otpPojo);
 
         String body = "<html><body style='font-family: Arial, sans-serif; line-height:1.6;'>"
-                + "<h2 style='color:#333;'>Hello, <b>" + fullName + "</b>!</h2>"
+                + "<b>Dear " + fullName + ",</b>"
                 + "<p>We received a request to register your account.</p>"
                 + "<p>Your One-Time Password (OTP) is:</p>"
                 + "<h2 style='color:#01FE49;'>" + otp + "</h2>"
                 + "<p>This OTP is valid for the next <b>5 minutes</b> and can only be used once. For your security, please do not share this code with anyone.</p>"
                 + "<p>If you did not request this, please ignore this email or contact support immediately.</p>"
-                + "<h2><b>Best regards,</b><br>Bokshi</h2>"
+                + "<p><b>Best regards,</b><br>Bokshi</p>"
                 + "<hr style='border:none; border-top:1px solid #ccc;'/>"
                 + "<p style='font-size:12px; color:#888;'>This is an automated message, please do not reply.</p>"
                 + "<p style='font-size:12px; color:#888;'>© 2025 Konnekt. All rights reserved.</p>"
                 + "</body></html>";
 
-        new EmailService().sendEmail(email, "Account Registration OTP", body);
+        new EmailService().sendEmail(email, "Account Registration", body);
 
         String message = "Please enter the OTP sent to your email (" + email + ")" ;
         while (true) {

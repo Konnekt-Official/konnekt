@@ -26,6 +26,7 @@ import konnekt.component.TermsPanel;
 
 import konnekt.manager.SessionManager;
 import konnekt.model.dao.NotificationDao;
+import konnekt.model.dao.UserDao;
 import static konnekt.utils.SoundPlayer.playNotification;
 import konnekt.utils.Toast;
 
@@ -40,6 +41,7 @@ public class NavigatorView extends BaseFrame {
     private FeedPanel feedPanel;
     private int lastNotificationCount = 0;
     public static InboxPanel inboxPanel;
+    private final UserDao userDao = new UserDao();
 
     /**
      * Creates new form FeedView
@@ -541,7 +543,7 @@ public class NavigatorView extends BaseFrame {
         mainPanel.add(new NotificationPanel(), "NOTIFICATION");
 
         mainPanel.add(new SettingsPanel(), "SETTINGS");
-        // mainPanel.add(new AccountPanel(), "ACCOUNT");
+        mainPanel.add(new AccountPanel(userDao.getUserById(SessionManager.getCurrentUserId())), "ACCOUNT");
         mainPanel.add(new AboutPanel(), "ABOUT");
         mainPanel.add(new TermsPanel(), "TERMS");
         mainPanel.add(new PrivacyPanel(), "PRIVACY");
