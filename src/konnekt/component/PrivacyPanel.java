@@ -12,7 +12,7 @@ public class PrivacyPanel extends JPanel {
         setBorder(new EmptyBorder(30, 30, 30, 30));
 
         JLabel title = new JLabel("Privacy Policy");
-        title.setFont(new Font("Segoe UI", Font.BOLD, 22));
+        title.setFont(new Font("Verdana", Font.BOLD, 22));
 
         JTextArea text = new JTextArea(
                 "Your privacy is extremely important to us. Konnekt is designed to protect "
@@ -25,7 +25,7 @@ public class PrivacyPanel extends JPanel {
                 + "accordance with this Privacy Policy."
         );
 
-        text.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        text.setFont(new Font("Verdana", Font.PLAIN, 14));
         text.setBorder(new EmptyBorder(20, 0, 0, 0));
         text.setEditable(false);
         text.setLineWrap(true);

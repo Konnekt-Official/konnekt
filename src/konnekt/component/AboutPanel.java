@@ -38,7 +38,7 @@ public class AboutPanel extends JPanel {
             "Konnekt focuses on usability, performance, and scalability while serving as an " +
             "academic and practical implementation of a full-featured social platform."
         );
-        text.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        text.setFont(new Font("Verdana", Font.PLAIN, 14));
         text.setEditable(false);
         text.setLineWrap(true);
         text.setWrapStyleWord(true);
@@ -51,7 +51,7 @@ public class AboutPanel extends JPanel {
 
         // GitHub link
         JLabel githubLink = new JLabel("<html><a href=''>GitHub Repository</a></html>");
-        githubLink.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        githubLink.setFont(new Font("Verdana", Font.PLAIN, 14));
         githubLink.setForeground(Color.BLUE);
         githubLink.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         githubLink.setBorder(new EmptyBorder(10, 0, 0, 0)); // gap above link

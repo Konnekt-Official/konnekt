@@ -219,7 +219,7 @@ public class LoginView extends BaseFrame {
     private void redirect(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_redirect
         // TODO add your handling code here:
         this.dispose();
-        new ForgotPasswordView().setVisible(true);
+        new ChangePasswordView().setVisible(true);
     }//GEN-LAST:event_redirect
 
     private void jLabel12redirect(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel12redirect

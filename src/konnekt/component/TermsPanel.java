@@ -12,7 +12,7 @@ public class TermsPanel extends JPanel {
         setBorder(new EmptyBorder(30, 30, 30, 30));
 
         JLabel title = new JLabel("Terms & Conditions");
-        title.setFont(new Font("Segoe UI", Font.BOLD, 22));
+        title.setFont(new Font("Verdana", Font.BOLD, 22));
 
         JTextArea text = new JTextArea(
                 "By accessing or using Konnekt, you agree to be bound by these Terms and Conditions.\n\n"
@@ -23,7 +23,7 @@ public class TermsPanel extends JPanel {
                 + "Continued use of the application indicates acceptance of all terms stated above."
         );
 
-        text.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        text.setFont(new Font("Verdana", Font.PLAIN, 14));
         text.setBorder(new EmptyBorder(20, 0, 0, 0));
         text.setEditable(false);
         text.setLineWrap(true);
