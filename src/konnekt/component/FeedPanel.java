@@ -82,8 +82,10 @@ public class FeedPanel extends JPanel {
                 ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER
         );
 
-        JButton postBtn = new JButton("Post");
-        postBtn.setFont(FONT);
+        JButton postBtn = new JButton("POST");
+        postBtn.setForeground(Color.WHITE);
+        postBtn.setBackground(Color.BLACK);
+        postBtn.setFont(new Font("Verdana", Font.BOLD, 12));
         postBtn.setFocusable(false);
         postBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 

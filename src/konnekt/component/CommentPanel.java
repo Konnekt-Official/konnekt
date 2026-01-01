@@ -63,6 +63,9 @@ public class CommentPanel extends JPanel {
         JButton send = new JButton("Comment");
         send.setFocusable(false);
         send.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        send.setForeground(Color.WHITE);
+        send.setBackground(Color.BLACK);
+        send.setFont(new Font("Verdana", Font.BOLD, 12));
 
         send.addActionListener(e -> {
             String text = input.getText().trim();
