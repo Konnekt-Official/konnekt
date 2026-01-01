@@ -56,7 +56,7 @@ public class SettingsPanel extends JPanel {
         JLabel label = new JLabel(text);
         label.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 
-        JLabel arrow = new JLabel(">");
+        JLabel arrow = new JLabel("▶");
         arrow.setFont(new Font("Segoe UI", Font.BOLD, 16));
 
         panel.add(label, BorderLayout.WEST);

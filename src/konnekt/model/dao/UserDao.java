@@ -149,4 +149,33 @@ public class UserDao {
         return list;
     }
 
+    // ---------- COUNT USERS ----------
+    public int countUsers() {
+        String sql = "SELECT COUNT(*) FROM user";
+        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+// ---------- DELETE USER ----------
+    public boolean deleteUser(int userId) {
+        String sql = "DELETE FROM user WHERE id = ?";
+        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, userId);
+            return ps.executeUpdate() > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 }

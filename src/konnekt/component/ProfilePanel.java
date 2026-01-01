@@ -45,7 +45,7 @@ public class ProfilePanel extends JPanel {
                 : new ImageIcon();
 
         URL bannerUrl = ProfilePanel.class.getClassLoader()
-                .getResource("konnekt/resources/images/default_banner-2.jpg");
+                .getResource("konnekt/resources/images/default_banner.jpg");
         DEFAULT_BANNER = (bannerUrl != null)
                 ? new ImageIcon(new ImageIcon(bannerUrl).getImage()
                         .getScaledInstance(685, 170, Image.SCALE_SMOOTH))
