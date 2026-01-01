@@ -10,6 +10,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.List;
+import konnekt.utils.AvatarUtil;
 
 public class NotificationPanel extends JPanel {
 
@@ -65,32 +66,35 @@ public class NotificationPanel extends JPanel {
         p.setBorder(new EmptyBorder(8, 8, 8, 8));
         p.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        // Avatar
-        JLabel avatar = new JLabel(new ImageIcon(
-                getClass().getResource("/konnekt/resources/images/default_profile.png")
-        ));
+        // Avatar (30x30)
+        JLabel avatar = AvatarUtil.avatar(25);
         p.add(avatar);
         p.add(Box.createHorizontalStrut(8));
 
-        // Text
+        // Text Panel to align top
+        JPanel textPanel = new JPanel(new BorderLayout());
+        textPanel.setOpaque(false); // transparent background
         JLabel text = new JLabel(buildText(n));
         text.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        text.setVerticalAlignment(SwingConstants.CENTER); // ensure center
+        textPanel.add(text, BorderLayout.NORTH);
 
         text.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent e) {
                 switch (n.getType()) {
-                    case "FOLLOW", "MESSAGE" -> NavigatorView.showProfile(n.getSenderId());
-                    case "LIKE", "COMMENT" -> NavigatorView.showComments(n.getReferenceId());
+                    case "FOLLOW" ->
+                        NavigatorView.showProfile(n.getSenderId());
+                    case "LIKE", "COMMENT" ->
+                        NavigatorView.showComments(n.getReferenceId());
                 }
                 dao.markAllRead(SessionManager.getCurrentUserId());
             }
         });
 
-        // Wrap text, fit-content width/height
-        text.setMaximumSize(new Dimension(400, Integer.MAX_VALUE));
-        text.setAlignmentY(Component.TOP_ALIGNMENT);
+        // Set max size to wrap properly
+        textPanel.setMaximumSize(new Dimension(400, Integer.MAX_VALUE));
 
-        p.add(text);
+        p.add(textPanel);
 
         // Fit-content height for panel
         p.setMaximumSize(new Dimension(Integer.MAX_VALUE, p.getPreferredSize().height));
@@ -99,16 +103,23 @@ public class NotificationPanel extends JPanel {
     }
 
     private String buildText(NotificationPojo n) {
-        String sender = "<b>" + n.getSenderFullName() + "</b> <font color='blue'>@" + n.getSenderUsername() + "</font>";
-        String time = "<span style='color:gray'>" + TimeAgo.format(n.getCreatedAt()) + "</span>";
-
-        return switch (n.getType()) {
-            case "LIKE" -> "<html>" + sender + " liked your post " + time + "</html>";
-            case "COMMENT" -> "<html>" + sender + " commented on your post " + time + "</html>";
-            case "FOLLOW" -> "<html>" + sender + " followed you " + time + "</html>";
-            case "MESSAGE" -> "<html>" + sender + " sent you a message " + time + "</html>";
-            default -> "<html>" + sender + " did something " + time + "</html>";
+        // Use div to force top alignment in HTML
+        String sender = "<b>" + n.getSenderFullName() + "</b> "
+                + "<span style='font-weight:normal; color:blue'>@" + n.getSenderUsername() + "</span>";
+        String actionText = switch (n.getType()) {
+            case "LIKE" ->
+                " liked <span style='font-weight:normal;'>your post</span>";
+            case "COMMENT" ->
+                " commented <span style='font-weight:normal;'>on your post</span>";
+            case "FOLLOW" ->
+                " followed <span style='font-weight:normal;'>you</span>";
+            default ->
+                " did something";
         };
+        String time = "<span style='font-weight:normal;color:gray'> " + TimeAgo.format(n.getCreatedAt()) + "</span>";
+
+        // Wrap in div to help alignment
+        return "<html><div style='vertical-align:top;'>" + sender + actionText + time + "</div></html>";
     }
 
     // Optional: scroll to top
