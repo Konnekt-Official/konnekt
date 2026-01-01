@@ -5,6 +5,6 @@ dist/
 *.log
 *.db
 
-src/konnekt/resources/config.properties
+# src/konnekt/resources/config.properties
 
 .vscode
