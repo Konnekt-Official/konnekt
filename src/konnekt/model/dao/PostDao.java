@@ -178,4 +178,20 @@ public class PostDao {
             e.printStackTrace();
         }
     }
+
+    // ---------- COUNT POSTS ----------
+    public int countPosts() {
+        String sql = "SELECT COUNT(*) FROM post";
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
 }
