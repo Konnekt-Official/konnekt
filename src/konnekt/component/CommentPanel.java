@@ -55,8 +55,7 @@ public class CommentPanel extends JPanel {
         panel.setBorder(new EmptyBorder(8, 8, 8, 8));
         panel.setBackground(Color.WHITE);
 
-        JTextArea input = new JTextArea();
-        input.setRows(2);
+        JTextArea input = new JTextArea(2, 1);
         input.setLineWrap(true);
         input.setWrapStyleWord(true);
         input.setFont(new Font("Verdana", Font.PLAIN, 13));
