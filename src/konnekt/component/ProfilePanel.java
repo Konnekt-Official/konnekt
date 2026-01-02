@@ -137,7 +137,7 @@ public class ProfilePanel extends JPanel {
                 + "<b>Followers</b>"
                 + "</html>";
 
-        JLabel followInfoLabel = new JLabel(labelText);
+        followInfoLabel = new JLabel(labelText);
 
         text.add(fullName);
         text.add(username);

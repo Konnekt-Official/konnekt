@@ -12,7 +12,9 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.List;
+import konnekt.utils.DateRangeUtil;
 
 public class AdminView extends BaseFrame {
 
@@ -54,14 +56,22 @@ public class AdminView extends BaseFrame {
 
         JComboBox<String> selector = new JComboBox<>(new String[]{"Users", "Posts"});
 
-        GraphPanel graph = new GraphPanel();
-        graph.setData(userDao.getUserCount());
+        LocalDate start = LocalDate.of(2026, 1, 1);
+        LocalDate end = DateRangeUtil.nextSaturday(start);
+
+        GraphPanel graph = new GraphPanel(
+                userDao.getUserCountBetween(start, end)
+        );
 
         selector.addActionListener(e -> {
             if (selector.getSelectedIndex() == 0) {
-                graph.setData(userDao.getUserCount());
+                graph.setData(
+                        userDao.getUserCountBetween(start, end)
+                );
             } else {
-                graph.setData(postDao.getPostCount());
+                graph.setData(
+                        postDao.getPostCountBetween(start, end)
+                );
             }
         });
 

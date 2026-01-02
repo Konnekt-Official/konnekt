@@ -20,8 +20,4 @@ public class NotificationController {
     public void notifyFollow(int targetUserId) {
         dao.create(targetUserId, SessionManager.getCurrentUserId(), "FOLLOW", null);
     }
-
-    public void notifyMessage(int targetUserId) {
-        dao.create(targetUserId, SessionManager.getCurrentUserId(), "MESSAGE", null);
-    }
 }
