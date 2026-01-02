@@ -4,6 +4,7 @@ import konnekt.connection.DatabaseConnection;
 import konnekt.model.pojo.UserPojo;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -228,6 +229,32 @@ public class UserDao {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public Map<String, Integer> getUserCountBetween(LocalDate start, LocalDate end) {
+        Map<String, Integer> map = new LinkedHashMap<>();
+
+        String sql = """
+        SELECT DATE(created_at) d, COUNT(*) c
+        FROM user
+        WHERE DATE(created_at) BETWEEN ? AND ?
+        GROUP BY DATE(created_at)
+        ORDER BY d
+    """;
+
+        try (Connection c = DatabaseConnection.getConnection(); PreparedStatement ps = c.prepareStatement(sql)) {
+
+            ps.setDate(1, java.sql.Date.valueOf(start));
+            ps.setDate(2, java.sql.Date.valueOf(end));
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                map.put(rs.getString("d"), rs.getInt("c"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return map;
     }
 
 }

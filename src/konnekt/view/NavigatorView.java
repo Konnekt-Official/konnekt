@@ -273,8 +273,9 @@ public class NavigatorView extends BaseFrame {
 
         jLabel12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/konnekt/resources/images/bell.png"))); // NOI18N
 
-        jLabel17.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
+        jLabel17.setFont(new java.awt.Font("Verdana", 1, 14)); // NOI18N
         jLabel17.setForeground(new java.awt.Color(255, 51, 51));
+        jLabel17.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel17.setText("0");
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
@@ -286,8 +287,8 @@ public class NavigatorView extends BaseFrame {
                 .addComponent(jLabel12)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel11)
-                .addGap(0, 0, 0)
-                .addComponent(jLabel17)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(
@@ -669,47 +670,6 @@ public class NavigatorView extends BaseFrame {
             int count = dao.unreadCount(SessionManager.getCurrentUserId());
 
             if (count > lastNotificationCount) {
-//                // Get latest notification
-//                var list = dao.allForUser(SessionManager.getCurrentUserId());
-//                if (!list.isEmpty()) {
-//                    var latest = list.get(0);
-//                    String senderName = latest.getSenderFullName();
-//                    if (senderName == null || senderName.isEmpty()) {
-//                        senderName = "Default Profile";
-//                    }
-//
-//                    ImageIcon avatar = konnekt.utils.AvatarUtil.avatarIcon(latest.getSenderId());
-//
-//                    String actionText = switch (latest.getType()) {
-//                        case "LIKE" ->
-//                            "liked your post";
-//                        case "COMMENT" ->
-//                            "commented on your post";
-//                        case "FOLLOW" ->
-//                            "followed you";
-//                        case "MESSAGE" ->
-//                            ""; // actual message will be shown below
-//                        default ->
-//                            "did something";
-//                    };
-//
-//                    // Time (implement getTimeAgo() or calculate)
-//                    String time = latest.getTimeAgo();
-//
-//                    String toastMessage = latest.getType().equals("MESSAGE") ? latest.getMessage() : actionText;
-//
-//                    Toast.show(avatar, senderName, time, toastMessage, () -> {
-//                        switch (latest.getType()) {
-//                            case "FOLLOW", "MESSAGE" ->
-//                                NavigatorView.showProfile(latest.getSenderId());
-//                            case "LIKE", "COMMENT" ->
-//                                NavigatorView.showComments(latest.getReferenceId());
-//                        }
-//                    });
-//
-//                }
-
-                // Play notification sound
                 playNotification();
             }
 
