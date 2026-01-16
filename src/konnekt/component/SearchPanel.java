@@ -37,6 +37,7 @@ public class SearchPanel extends JPanel {
     }
 
     // ---------- SEARCH BAR ----------
+    private JPanel createSearchBar() {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBorder(new EmptyBorder(10, 10, 10, 10));
         panel.setBackground(Color.WHITE);
@@ -63,7 +64,6 @@ public class SearchPanel extends JPanel {
             }
         });
 
-        // Increase height
         searchInput.setPreferredSize(new Dimension(200, 35));
         searchInput.setFont(new Font("Verdana", Font.PLAIN, 14));
         searchInput.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
